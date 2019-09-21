@@ -11,7 +11,7 @@ ba::FBXLoaderTester::~FBXLoaderTester()
 
 void ba::FBXLoaderTester::Render()
 {
-	dc_->ClearRenderTargetView(rtv_, reinterpret_cast<const float*>(&util::color::kMagenta));
+	dc_->ClearRenderTargetView(rtv_, reinterpret_cast<const float*>(&ba::color::kMagenta));
 	dc_->ClearDepthStencilView(dsv_, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0U);
 
 	swap_chain_->Present(0U, 0U);
