@@ -39,6 +39,9 @@
     <Filter Include="Sources\Test">
       <UniqueIdentifier>{6e90a90e-8a3c-4145-9ae2-28476e051e11}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FXs">
+      <UniqueIdentifier>{680a7724-c413-48f4-90a6-35bed227fbac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -110,5 +113,13 @@
     <ClCompile Include="example_code.cpp">
       <Filter>Sources\Test</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HLSL\LightingHelper.hlsli">
+      <Filter>FXs</Filter>
+    </None>
+    <None Include="HLSL\Basic.hlsli">
+      <Filter>FXs</Filter>
+    </None>
   </ItemGroup>
 </Project>

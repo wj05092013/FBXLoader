@@ -43,6 +43,7 @@ namespace ba
 		virtual void UpdateOnKeyInput() {};
 
 		virtual void UpdateDirectX() = 0;
+		//__
 
 	public:
 		// Run main loop.
@@ -52,6 +53,7 @@ namespace ba
 		//
 		bool Init(HINSTANCE wnd_inst);
 		void Release();
+		//__
 
 	private:
 		// Initialize the window.
@@ -76,6 +78,7 @@ namespace ba
 		bool CreateDepthStencilView();
 		void InitViewport();
 		void BindMainRenderTargetsAndViewport();
+		//__
 
 	protected:
 		// Compute aspect ratio and return it.
@@ -99,11 +102,15 @@ namespace ba
 		bool client_minimized_;
 		bool client_maximized_;
 		bool client_resizing_;
+		//__
 
+		// Properties related to the game timer.
+		//
 		Timer timer_;
 		bool paused_;
 		float prev_time_;
 		int frame_count_;
+		//__
 
 		// DirectX properties.
 		//
@@ -119,6 +126,7 @@ namespace ba
 		bool b_4x_msaa_;
 		UINT msaa_quality_level_;
 		DXGI_SAMPLE_DESC sample_desc_;
+		//__
 
 	private:
 		// Called on mouse input.
@@ -130,11 +138,13 @@ namespace ba
 		virtual void OnMouseLBtnUp(WPARAM w_par, int x, int y) {};
 		virtual void OnMouseMBtnUp(WPARAM w_par, int x, int y) {};
 		virtual void OnMouseRBtnUp(WPARAM w_par, int x, int y) {};
+		//__
 
 	protected:
 		// Cache keyboard inputs.
 		//
 		bool key_pressed_[256];
 		bool key_switch_[256];
+		//__
 	};
 }
