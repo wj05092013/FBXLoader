@@ -127,7 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="fbx_loader.cpp" />
     <ClCompile Include="load_fbx_example.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="fbx_loader.h" />
+    <ClInclude Include="unconstructable.h" />
+    <ClInclude Include="uncopiable.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
