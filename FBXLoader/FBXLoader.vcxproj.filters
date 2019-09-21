@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="load_fbx.cpp">
+    <ClCompile Include="load_fbx_example.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
