@@ -1,39 +1,114 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="리소스 파일">
+    <Filter Include="resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{d0824b6e-622c-4d27-a148-852ca6f26dcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{021b6aea-6a9a-4a56-bce3-c13fd7e34364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Etc">
+      <UniqueIdentifier>{913b7f51-7857-4384-97a5-479961b690c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Commons">
+      <UniqueIdentifier>{18da2d41-5c30-4773-b334-95d9386c1784}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Commons">
+      <UniqueIdentifier>{f6414fe2-4fc5-4dbb-bf4e-6756c081bd8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Application">
+      <UniqueIdentifier>{a6c6c995-a7df-4dba-be73-815647bc3da6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Application">
+      <UniqueIdentifier>{32bf7634-f826-490a-8a3e-16d6dd21ae7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Loaders">
+      <UniqueIdentifier>{16c1f007-3724-48f5-8e42-5196d4aa8c37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Loaders">
+      <UniqueIdentifier>{80d169a3-c65a-4020-96b1-6c197c82fe48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Test">
+      <UniqueIdentifier>{6e90a90e-8a3c-4145-9ae2-28476e051e11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="load_fbx_example.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="fbx_loader.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="fbx_loader.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="stdafx.h">
+      <Filter>PCH</Filter>
     </ClInclude>
-    <ClInclude Include="util.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="targetver.h">
+      <Filter>Include\Etc</Filter>
     </ClInclude>
-    <ClInclude Include="unconstructable.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="resource.h">
+      <Filter>Include\Etc</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>Include\Commons</Filter>
     </ClInclude>
     <ClInclude Include="uncopiable.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Include\Commons</Filter>
     </ClInclude>
+    <ClInclude Include="unconstructable.h">
+      <Filter>Include\Commons</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>Include\Commons</Filter>
+    </ClInclude>
+    <ClInclude Include="macros.h">
+      <Filter>Include\Commons</Filter>
+    </ClInclude>
+    <ClInclude Include="application.h">
+      <Filter>Include\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx_loader_tester.h">
+      <Filter>Include\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx_loader.h">
+      <Filter>Include\Loaders</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="FBXLoader.rc">
+      <Filter>resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>resources</Filter>
+    </Image>
+    <Image Include="FBXLoader.ico">
+      <Filter>resources</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.cpp">
+      <Filter>Sources\Commons</Filter>
+    </ClCompile>
+    <ClCompile Include="application.cpp">
+      <Filter>Sources\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx_loader_tester.cpp">
+      <Filter>Sources\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx_loader.cpp">
+      <Filter>Sources\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Sources\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="example_code.cpp">
+      <Filter>Sources\Test</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

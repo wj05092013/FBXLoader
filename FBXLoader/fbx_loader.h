@@ -13,7 +13,7 @@ namespace ba
 		void Init();
 		void Release();
 
-		util::ErrorCode Load(const std::wstring& filename);
+		bool Load(const std::wstring& filename);
 
 	private:
 		FbxManager* fbx_mgr_;

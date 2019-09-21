@@ -1,6 +1,4 @@
-#include "fbx_loader.h"
-
-using namespace ba::util;
+#include "stdafx.h"
 
 ba::FBXLoader& ba::FBXLoader::GetInstance()
 {

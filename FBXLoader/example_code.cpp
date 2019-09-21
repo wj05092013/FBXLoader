@@ -73,12 +73,3 @@ HRESULT LoadFBX(std::vector<MyVertex>* pOutVertexVector)
 	}
 	return S_OK;
 }
-
-int main()
-{
-	std::vector<MyVertex> v;
-
-	LoadFBX(&v);
-
-	return 0;
-}

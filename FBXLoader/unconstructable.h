@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Uncopiable.hpp"
-
-class Unconstructable : private Uncopiable
+namespace ba
 {
-private:
-	Unconstructable() = delete;
-};
+	class Unconstructable : private Uncopiable
+	{
+	private:
+		Unconstructable() = delete;
+	};
+}

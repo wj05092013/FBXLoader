@@ -1,11 +1,14 @@
 #pragma once
 
-class Uncopiable
+namespace ba
 {
-public:
-	Uncopiable() {}
+	class Uncopiable
+	{
+	public:
+		Uncopiable() {}
 
-private:
-	Uncopiable(const Uncopiable&) = delete;
-	Uncopiable& operator=(const Uncopiable&) = delete;
-};
+	private:
+		Uncopiable(const Uncopiable&) = delete;
+		Uncopiable& operator=(const Uncopiable&) = delete;
+	};
+}
