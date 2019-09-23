@@ -115,11 +115,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="HLSL\LightingHelper.hlsli">
+    <FxCompile Include="FX\Basic.fx">
       <Filter>FXs</Filter>
-    </None>
-    <None Include="HLSL\Basic.hlsli">
+    </FxCompile>
+    <FxCompile Include="FX\LightingHelper.fx">
       <Filter>FXs</Filter>
-    </None>
+    </FxCompile>
   </ItemGroup>
 </Project>

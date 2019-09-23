@@ -1,6 +1,5 @@
-
 //
-// Represent 3 kinds of lights.
+// 3 Kinds Of Lights
 //
 
 struct DirectionalLight
@@ -44,7 +43,7 @@ struct SpotLight
 
 
 //
-// Represent material.
+// Material
 //
 
 struct Material
@@ -57,8 +56,7 @@ struct Material
 
 
 //
-// Compute the 3 components of light(ambient, diffuse, specular) according to
-//  the 3 kinds of light.
+// Functions To Compute The 3 Components Of Light.
 //
 
 void ComputeDirectionalLight(

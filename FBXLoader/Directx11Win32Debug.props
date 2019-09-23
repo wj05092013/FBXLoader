@@ -11,11 +11,12 @@
     <Link>
       <AdditionalDependencies>d3d11.lib;d3dx11d.lib;DxErr.lib;Effects11d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <FxCompile>
-      <ShaderType>Effect</ShaderType>
-    </FxCompile>
+    <FxCompile />
+    <FxCompile />
+    <FxCompile />
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <ShaderType>Effect</ShaderType>
       <ObjectFileOutput>FX\%(Filename).fxo</ObjectFileOutput>
     </FxCompile>
   </ItemDefinitionGroup>
