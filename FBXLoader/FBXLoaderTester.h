@@ -1,5 +1,9 @@
 #pragma once
 
+/*
+PCH: No
+*/
+
 namespace ba
 {
 	class FBXLoaderTester : public Application

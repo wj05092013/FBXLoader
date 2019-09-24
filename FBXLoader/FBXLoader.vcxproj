@@ -18,6 +18,44 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="FX\Basic.fx" />
+    <FxCompile Include="FX\LightingHelper.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="BasicEffect.h" />
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="d3dx11effect.h" />
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="FBXLoader.h" />
+    <ClInclude Include="FBXLoaderTester.h" />
+    <ClInclude Include="Macros.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="Unconstructable.h" />
+    <ClInclude Include="Uncopiable.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BasicEffect.cpp" />
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="ExampleCode.cpp" />
+    <ClCompile Include="FBXLoader.cpp" />
+    <ClCompile Include="FBXLoaderTester.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="FBXLoader.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="FBXLoader.ico" />
+    <Image Include="small.ico" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{6E4D7E3B-612F-4FB4-A43E-3F1794CD6344}</ProjectGuid>
@@ -156,42 +194,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="application.h" />
-    <ClInclude Include="constants.h" />
-    <ClInclude Include="fbx_loader.h" />
-    <ClInclude Include="fbx_loader_tester.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="timer.h" />
-    <ClInclude Include="unconstructable.h" />
-    <ClInclude Include="uncopiable.h" />
-    <ClInclude Include="macros.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="application.cpp" />
-    <ClCompile Include="fbx_loader.cpp" />
-    <ClCompile Include="fbx_loader_tester.cpp" />
-    <ClCompile Include="example_code.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="timer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="FBXLoader.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="FBXLoader.ico" />
-    <Image Include="small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="FX\Basic.fx" />
-    <FxCompile Include="FX\LightingHelper.fx" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

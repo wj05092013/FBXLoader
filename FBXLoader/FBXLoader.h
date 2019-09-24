@@ -1,7 +1,8 @@
 #pragma once
 
-#include <fbxsdk.h>
-#include "util.h"
+/*
+PCH: Yes
+*/
 
 namespace ba
 {

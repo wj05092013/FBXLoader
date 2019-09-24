@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "fbx_loader_tester.h"
+#include "FBXLoaderTester.h"
 
 ba::FBXLoaderTester::FBXLoaderTester()
 {

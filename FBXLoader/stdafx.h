@@ -10,38 +10,37 @@
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
 
 // C system header files.
-//
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
 
 // C++ standard library header files.
-//
 #include <string>
 #include <sstream>
+#include <fstream>
+#include <vector>
 
 // Windows header files.
-//
 #include <windows.h>
 #include <windowsx.h>
 
 // DirectX11 header files.
-//
 #include <D3DX11.h>
 #include <xnamath.h>
 
 // Other library header files.
-//
 #include <fbxsdk.h>
 
 // Current project's header files.
-//
-#include "uncopiable.h"
-#include "unconstructable.h"
-#include "constants.h"
-#include "macros.h"
-#include "timer.h"
-#include "fbx_loader.h"
+#include "Uncopiable.h"
+#include "Unconstructable.h"
+#include "Constants.h"
+#include "Macros.h"
+#include "Timer.h"
 
-#include "application.h"
+#include "d3dx11effect.h"
+#include "Effect.h"
+
+#include "FBXLoader.h"
+#include "Application.h"
