@@ -30,6 +30,7 @@
     <ClInclude Include="EffectWrapper.h" />
     <ClInclude Include="FBXLoader.h" />
     <ClInclude Include="FBXLoaderTester.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -45,6 +46,7 @@
     <ClCompile Include="ExampleCode.cpp" />
     <ClCompile Include="FBXLoader.cpp" />
     <ClCompile Include="FBXLoaderTester.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Timer.cpp" />

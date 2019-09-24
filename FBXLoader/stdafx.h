@@ -38,6 +38,7 @@
 #include "Constants.h"
 #include "Macros.h"
 #include "Timer.h"
+#include "Light.h"
 
 #include "d3dx11effect.h"
 #include "EffectWrapper.h"
