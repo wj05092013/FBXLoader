@@ -104,6 +104,7 @@
     <ClInclude Include="Light.h">
       <Filter>Includes\Common</Filter>
     </ClInclude>
+    <ClInclude Include="Effects.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -136,6 +137,7 @@
     <ClCompile Include="Light.cpp">
       <Filter>Sources\Common</Filter>
     </ClCompile>
+    <ClCompile Include="Effects.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FBXLoader.rc">

@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "BasicEffect.h"
 
 ba::BasicEffect::BasicEffect() :
 	techs_(nullptr),

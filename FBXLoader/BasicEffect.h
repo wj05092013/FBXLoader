@@ -1,7 +1,7 @@
 #pragma once
 
 /*
-PCH: No
+PCH: Yes
 */
 
 namespace ba

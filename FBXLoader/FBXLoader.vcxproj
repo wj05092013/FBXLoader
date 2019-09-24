@@ -27,6 +27,7 @@
     <ClInclude Include="BasicEffect.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="d3dx11effect.h" />
+    <ClInclude Include="Effects.h" />
     <ClInclude Include="EffectWrapper.h" />
     <ClInclude Include="FBXLoader.h" />
     <ClInclude Include="FBXLoaderTester.h" />
@@ -42,6 +43,7 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="BasicEffect.cpp" />
+    <ClCompile Include="Effects.cpp" />
     <ClCompile Include="EffectWrapper.cpp" />
     <ClCompile Include="ExampleCode.cpp" />
     <ClCompile Include="FBXLoader.cpp" />

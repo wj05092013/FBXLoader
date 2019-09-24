@@ -42,6 +42,8 @@
 
 #include "d3dx11effect.h"
 #include "EffectWrapper.h"
+#include "BasicEffect.h"
+#include "Effects.h"
 
 #include "FBXLoader.h"
 #include "Application.h"
