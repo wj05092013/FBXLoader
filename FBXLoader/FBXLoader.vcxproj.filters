@@ -65,9 +65,6 @@
     <ClInclude Include="Constants.h">
       <Filter>Includes\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Effect.h">
-      <Filter>Includes\DirectX\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="FBXLoader.h">
       <Filter>Includes\FBX</Filter>
     </ClInclude>
@@ -98,7 +95,12 @@
     <ClInclude Include="d3dx11effect.h">
       <Filter>Includes\DirectX\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="BasicEffect.h" />
+    <ClInclude Include="EffectWrapper.h">
+      <Filter>Includes\DirectX\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicEffect.h">
+      <Filter>Includes\DirectX\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -119,12 +121,14 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Sources\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Effect.cpp">
-      <Filter>Sources\DirectX\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="BasicEffect.cpp" />
     <ClCompile Include="ExampleCode.cpp">
       <Filter>Sources\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectWrapper.cpp">
+      <Filter>Sources\DirectX\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicEffect.cpp">
+      <Filter>Sources\DirectX\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
