@@ -7,36 +7,6 @@ PCH: Yes
 class Camera
 {
 public:
-	static const XMFLOAT3 kInitPosW;
-	static const XMFLOAT3 kInitRightW;
-	static const XMFLOAT3 kInitUpW;
-	static const XMFLOAT3 kInitLookW;
-
-	static const float kInitNearZ;
-	static const float kInitFarZ;
-	static const float kInitFovY;
-	static const float kInitAspectRatio;
-
-private:
-	// Camera coordinate system.
-	XMFLOAT3 pos_w_;
-	XMFLOAT3 right_w_;
-	XMFLOAT3 up_w_;
-	XMFLOAT3 look_w_;
-
-	// Cache frustum properties.
-	float near_z_;
-	float far_z_;
-	float near_window_height_;
-	float far_window_height_;
-	float fov_y_;
-	float aspect_ratio_;
-
-	// Cache view, proj matrices.
-	XMFLOAT4X4 view_;
-	XMFLOAT4X4 proj_;
-
-public:
 	Camera();
 	~Camera();
 
@@ -87,9 +57,41 @@ public:
 	void RotateWorldY(float radian);
 	void RotateWorldZ(float radian);
 
-	// After modifying camera transformation, rebuild the view matrix.
+	// Call on every frame.
+	//  After modifying camera transformation, rebuild the view matrix.
 	void UpdateViewMatrix();
 
-	// Set frustum.
+	// Call on resize.
+	//  Set frustum.
 	void SetLens(float fov_y, float aspect_ratio, float near_z, float far_z);
+
+public:
+	static const XMFLOAT3 kInitPosW;
+	static const XMFLOAT3 kInitRightW;
+	static const XMFLOAT3 kInitUpW;
+	static const XMFLOAT3 kInitLookW;
+
+	static const float kInitNearZ;
+	static const float kInitFarZ;
+	static const float kInitFovY;
+	static const float kInitAspectRatio;
+
+private:
+	// Camera coordinate system.
+	XMFLOAT3 pos_w_;
+	XMFLOAT3 right_w_;
+	XMFLOAT3 up_w_;
+	XMFLOAT3 look_w_;
+
+	// Cache frustum properties.
+	float near_z_;
+	float far_z_;
+	float near_window_height_;
+	float far_window_height_;
+	float fov_y_;
+	float aspect_ratio_;
+
+	// Cache view, proj matrices.
+	XMFLOAT4X4 view_;
+	XMFLOAT4X4 proj_;
 };

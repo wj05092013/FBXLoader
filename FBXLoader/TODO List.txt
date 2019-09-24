@@ -1,0 +1,12 @@
+TODO
+	impl
+		TextureManager
+		ShadowMap
+		SSAO
+		FBXLoader
+		Mesh
+		Animation
+	research
+		loading fbx file
+
+CHECK

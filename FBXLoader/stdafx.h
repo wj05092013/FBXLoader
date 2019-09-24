@@ -37,6 +37,7 @@
 #include "Unconstructable.h"
 #include "Constants.h"
 #include "Macros.h"
+#include "MathHelper.h"
 #include "Timer.h"
 #include "Light.h"
 #include "Camera.h"

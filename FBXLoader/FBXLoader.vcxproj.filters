@@ -49,6 +49,9 @@
     <Filter Include="Sources\DirectX\Effect">
       <UniqueIdentifier>{01879472-302d-486f-b79f-1032f6a06c5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Documents">
+      <UniqueIdentifier>{436957da-67b3-4927-806e-157a924bfc16}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FX\Basic.fx">
@@ -113,6 +116,9 @@
     <ClInclude Include="Camera.h">
       <Filter>Includes\Common</Filter>
     </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>Includes\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -154,6 +160,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Sources\Common</Filter>
     </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>Sources\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FBXLoader.rc">
@@ -167,5 +176,10 @@
     <Image Include="small.ico">
       <Filter>Resources</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CheckList.txt">
+      <Filter>Documents</Filter>
+    </Text>
   </ItemGroup>
 </Project>
