@@ -62,9 +62,6 @@
     <ClInclude Include="Application.h">
       <Filter>Includes\Application</Filter>
     </ClInclude>
-    <ClInclude Include="Constants.h">
-      <Filter>Includes\Common</Filter>
-    </ClInclude>
     <ClInclude Include="FBXLoader.h">
       <Filter>Includes\FBX</Filter>
     </ClInclude>
@@ -104,7 +101,18 @@
     <ClInclude Include="Light.h">
       <Filter>Includes\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Effects.h" />
+    <ClInclude Include="InputVertex.h">
+      <Filter>Includes\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Includes\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Effects.h">
+      <Filter>Includes\DirectX\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Includes\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -137,7 +145,15 @@
     <ClCompile Include="Light.cpp">
       <Filter>Sources\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Effects.cpp" />
+    <ClCompile Include="InputVertex.cpp">
+      <Filter>Sources\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Effects.cpp">
+      <Filter>Sources\DirectX\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Sources\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FBXLoader.rc">

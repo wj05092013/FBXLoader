@@ -39,11 +39,14 @@
 #include "Macros.h"
 #include "Timer.h"
 #include "Light.h"
+#include "Camera.h"
 
 #include "d3dx11effect.h"
 #include "EffectWrapper.h"
 #include "BasicEffect.h"
 #include "Effects.h"
+
+#include "InputVertex.h"
 
 #include "FBXLoader.h"
 #include "Application.h"
