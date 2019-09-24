@@ -40,7 +40,7 @@
 #include "Timer.h"
 
 #include "d3dx11effect.h"
-#include "Effect.h"
+#include "EffectWrapper.h"
 
 #include "FBXLoader.h"
 #include "Application.h"

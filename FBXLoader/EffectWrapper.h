@@ -16,10 +16,6 @@ namespace ba
 	*/
 	class EffectWrapper : private Uncopiable
 	{
-	private:
-		std::wstring file_name_;
-		ID3DX11Effect* effect_;
-
 	public:
 		EffectWrapper();
 		virtual ~EffectWrapper() = 0;
@@ -33,5 +29,9 @@ namespace ba
 	private:
 		bool CreateEffectFromFX(ID3D11Device* device);
 		bool CreateEffectFromFXO(ID3D11Device* device);
+
+	private:
+		std::wstring file_name_;
+		ID3DX11Effect* effect_;
 	};
 }
