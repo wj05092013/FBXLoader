@@ -10,6 +10,7 @@ namespace ba
 	{
 	public:
 		Uncopiable() {}
+		virtual ~Uncopiable() = 0 {};
 
 	private:
 		Uncopiable(const Uncopiable&) = delete;
