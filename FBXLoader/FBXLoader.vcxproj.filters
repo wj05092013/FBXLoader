@@ -37,20 +37,20 @@
     <Filter Include="PCH">
       <UniqueIdentifier>{7b677301-0938-4718-a1d5-acee52b7cac9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Includes\DirectX">
-      <UniqueIdentifier>{234f385d-ed71-447c-938a-9225a7a44f8a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\DirectX\Effect">
-      <UniqueIdentifier>{6ba38332-1fcf-477a-9200-74a4ec3fad21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\DirectX">
-      <UniqueIdentifier>{90cc539d-c24f-4d4d-918a-dc130b619cc4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\DirectX\Effect">
-      <UniqueIdentifier>{01879472-302d-486f-b79f-1032f6a06c5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Documents">
       <UniqueIdentifier>{436957da-67b3-4927-806e-157a924bfc16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\Graphics">
+      <UniqueIdentifier>{234f385d-ed71-447c-938a-9225a7a44f8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\Graphics\Effect">
+      <UniqueIdentifier>{6ba38332-1fcf-477a-9200-74a4ec3fad21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Graphics">
+      <UniqueIdentifier>{90cc539d-c24f-4d4d-918a-dc130b619cc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Graphics\Effect">
+      <UniqueIdentifier>{01879472-302d-486f-b79f-1032f6a06c5c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -93,31 +93,34 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="d3dx11effect.h">
-      <Filter>Includes\DirectX\Effect</Filter>
+      <Filter>Includes\Graphics\Effect</Filter>
     </ClInclude>
     <ClInclude Include="EffectWrapper.h">
-      <Filter>Includes\DirectX\Effect</Filter>
+      <Filter>Includes\Graphics\Effect</Filter>
     </ClInclude>
     <ClInclude Include="BasicEffect.h">
-      <Filter>Includes\DirectX\Effect</Filter>
+      <Filter>Includes\Graphics\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>Includes\Common</Filter>
     </ClInclude>
     <ClInclude Include="InputVertex.h">
-      <Filter>Includes\DirectX</Filter>
+      <Filter>Includes\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Constants.h">
       <Filter>Includes\Common</Filter>
     </ClInclude>
     <ClInclude Include="Effects.h">
-      <Filter>Includes\DirectX\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Includes\Common</Filter>
+      <Filter>Includes\Graphics\Effect</Filter>
     </ClInclude>
     <ClInclude Include="MathHelper.h">
       <Filter>Includes\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Includes\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Includes\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,25 +146,28 @@
       <Filter>Sources\Application</Filter>
     </ClCompile>
     <ClCompile Include="EffectWrapper.cpp">
-      <Filter>Sources\DirectX\Effect</Filter>
+      <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
     <ClCompile Include="BasicEffect.cpp">
-      <Filter>Sources\DirectX\Effect</Filter>
+      <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>Sources\Common</Filter>
     </ClCompile>
     <ClCompile Include="InputVertex.cpp">
-      <Filter>Sources\DirectX</Filter>
+      <Filter>Sources\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Effects.cpp">
-      <Filter>Sources\DirectX\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Sources\Common</Filter>
+      <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
     <ClCompile Include="MathHelper.cpp">
       <Filter>Sources\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Sources\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,7 +184,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="CheckList.txt">
+    <Text Include="TODO List.txt">
       <Filter>Documents</Filter>
     </Text>
   </ItemGroup>

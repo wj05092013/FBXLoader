@@ -1,6 +1,5 @@
 TODO
 	impl
-		TextureManager
 		ShadowMap
 		SSAO
 		FBXLoader
@@ -10,3 +9,8 @@ TODO
 		loading fbx file
 
 CHECK
+
+REFERENCE
+	Unreal Engine
+		SlateD3DRenderer
+		SlateD3DRenderingPolicy

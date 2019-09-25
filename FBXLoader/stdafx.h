@@ -20,6 +20,7 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <map>
 
 // Windows header files.
 #include <windows.h>
@@ -41,6 +42,7 @@
 #include "Timer.h"
 #include "Light.h"
 #include "Camera.h"
+#include "TextureManager.h"
 
 #include "d3dx11effect.h"
 #include "EffectWrapper.h"
