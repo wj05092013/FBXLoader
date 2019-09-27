@@ -34,7 +34,7 @@ void ba::FBXLoader::Release()
 	}
 }
 
-bool ba::FBXLoader::Load(const std::string& filename)
+bool ba::FBXLoader::Load(const std::string& filename, Mesh& out_mesh)
 {
 	// Create and initialize importer.
 	//
@@ -60,12 +60,12 @@ bool ba::FBXLoader::Load(const std::string& filename)
 	//__
 
 	FbxNode* root_node = scene->GetRootNode();
-	Load(root_node);
+	Load(root_node, out_mesh);
 
 	return true;
 }
 
-void ba::FBXLoader::Load(FbxNode* node)
+void ba::FBXLoader::Load(FbxNode* node, Mesh& out_mesh)
 {
 	if (node)
 	{
@@ -76,8 +76,10 @@ void ba::FBXLoader::Load(FbxNode* node)
 			switch (attribute_type)
 			{
 			case fbxsdk::FbxNodeAttribute::eMesh:
-				FbxMesh* mesh = node->GetMesh();
-				LoadMesh(mesh);
+				const FbxMesh* fbx_mesh = node->GetMesh();
+
+				LoadMesh(fbx_mesh, out_mesh);
+
 				break;
 
 			default:
@@ -87,33 +89,150 @@ void ba::FBXLoader::Load(FbxNode* node)
 
 		for (int i = 0; i < node->GetChildCount(); ++i)
 		{
-			Load(node->GetChild(i));
+			Load(node->GetChild(i), out_mesh);
 		}
 	}
 }
 
-void ba::FBXLoader::LoadMesh(FbxMesh* mesh)
+void ba::FBXLoader::LoadMesh(const FbxMesh* fbx_mesh, Mesh& out_mesh)
 {
-	// Output mesh data. These have to be replaced by real output data.
-	//
-	std::vector<inputvertex::PosNormalTex::Vertex> vertices;
-	std::vector<UINT> indices;
-	//__
+	FbxVector4* control_points = fbx_mesh->GetControlPoints();
 
-	FbxVector4* control_points = mesh->GetControlPoints();
-
-	int tri_count = mesh->GetPolygonCount();
-	vertices.resize(3 * tri_count);
+	int tri_count = fbx_mesh->GetPolygonCount();
+	out_mesh.vertices.resize(3 * tri_count);
 
 	for (int tri_idx = 0; tri_idx < tri_count; ++tri_idx)
 	{
-		inputvertex::PosNormalTex::Vertex vertex;
-
 		for (int i = 0; i < 3; ++i)
 		{
-			int control_point_idx = mesh->GetPolygonVertex(tri_idx, i);
+			int control_point_idx = fbx_mesh->GetPolygonVertex(tri_idx, i);
+			int vertex_idx = 3 * tri_idx + i;
 
+			ReadPosition(control_points[control_point_idx], out_mesh.vertices[vertex_idx].pos);
+			ReadNormal(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].normal);
+			ReadTangent(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].tangent);
+			
+			// Add some codes to read uv coordinates.
 		}
 	}
 
+}
+
+void ba::FBXLoader::ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_pos)
+{
+	out_pos.x = control_point[0];
+	out_pos.y = control_point[1];
+	out_pos.z = control_point[2];
+}
+
+void ba::FBXLoader::ReadNormal(const FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_normal)
+{
+	if (fbx_mesh->GetElementNormalCount() < 1)
+		return;
+
+	const FbxGeometryElementNormal* normal_element = fbx_mesh->GetElementNormal();
+
+	switch (normal_element->GetMappingMode())
+	{
+	case FbxGeometryElement::eByControlPoint:
+		switch (normal_element->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(control_point_idx).mData[0]);
+			out_normal.y = static_cast<float>(normal_element->GetDirectArray().GetAt(control_point_idx).mData[1]);
+			out_normal.z = static_cast<float>(normal_element->GetDirectArray().GetAt(control_point_idx).mData[2]);
+			break;
+
+		case FbxGeometryElement::eIndexToDirect:
+			int idx = normal_element->GetIndexArray().GetAt(control_point_idx);
+			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[0]);
+			out_normal.y = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[1]);
+			out_normal.z = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[2]);
+			break;
+
+		default:
+			break;
+		}
+		break;
+
+	case FbxGeometryElement::eByPolygonVertex:
+		switch (normal_element->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(vertex_idx).mData[0]);
+			out_normal.y = static_cast<float>(normal_element->GetDirectArray().GetAt(vertex_idx).mData[1]);
+			out_normal.z = static_cast<float>(normal_element->GetDirectArray().GetAt(vertex_idx).mData[2]);
+			break;
+
+		case FbxGeometryElement::eIndexToDirect:
+			int idx = normal_element->GetIndexArray().GetAt(vertex_idx);
+			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[0]);
+			out_normal.y = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[1]);
+			out_normal.z = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[2]);
+			break;
+
+		default:
+			break;
+		}
+		break;
+
+	default:
+		break;
+	}
+}
+
+void ba::FBXLoader::ReadTangent(const FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_tangent)
+{
+	if (fbx_mesh->GetElementTangentCount() < 1)
+		return;
+
+	const FbxGeometryElementTangent* tangent_element = fbx_mesh->GetElementTangent();
+
+	switch (tangent_element->GetMappingMode())
+	{
+	case FbxGeometryElement::eByControlPoint:
+		switch (tangent_element->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(control_point_idx).mData[0]);
+			out_tangent.y = static_cast<float>(tangent_element->GetDirectArray().GetAt(control_point_idx).mData[1]);
+			out_tangent.z = static_cast<float>(tangent_element->GetDirectArray().GetAt(control_point_idx).mData[2]);
+			break;
+
+		case FbxGeometryElement::eIndexToDirect:
+			int idx = tangent_element->GetIndexArray().GetAt(control_point_idx);
+			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[0]);
+			out_tangent.y = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[1]);
+			out_tangent.z = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[2]);
+			break;
+
+		default:
+			break;
+		}
+		break;
+
+	case FbxGeometryElement::eByPolygonVertex:
+		switch (tangent_element->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(vertex_idx).mData[0]);
+			out_tangent.y = static_cast<float>(tangent_element->GetDirectArray().GetAt(vertex_idx).mData[1]);
+			out_tangent.z = static_cast<float>(tangent_element->GetDirectArray().GetAt(vertex_idx).mData[2]);
+			break;
+
+		case FbxGeometryElement::eIndexToDirect:
+			int idx = tangent_element->GetIndexArray().GetAt(vertex_idx);
+			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[0]);
+			out_tangent.y = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[1]);
+			out_tangent.z = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[2]);
+			break;
+
+		default:
+			break;
+		}
+		break;
+
+	default:
+		break;
+	}
 }

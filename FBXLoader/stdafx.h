@@ -43,6 +43,8 @@
 #include "Light.h"
 #include "Camera.h"
 #include "TextureManager.h"
+#include "Mesh.h"
+#include "Model.h"
 
 #include "d3dx11effect.h"
 #include "EffectWrapper.h"
