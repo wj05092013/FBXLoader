@@ -23,10 +23,6 @@ namespace ba
 		void Load(FbxNode* node);
 
 		void LoadMesh(FbxMesh* mesh);
-		void LoadVertices(FbxMesh* mesh, std::vector<inputvertex::PosNormalTex::Vertex>& out_vertices);
-		void LoadIndices(FbxMesh* mesh, std::vector<UINT>& out_indices);
-
-
 
 	private:
 		FbxManager* manager_;

@@ -100,36 +100,20 @@ void ba::FBXLoader::LoadMesh(FbxMesh* mesh)
 	std::vector<UINT> indices;
 	//__
 
-	LoadVertices(mesh, vertices);
-	LoadIndices(mesh, indices);
-}
+	FbxVector4* control_points = mesh->GetControlPoints();
 
-void ba::FBXLoader::LoadVertices(FbxMesh* mesh, std::vector<ba::inputvertex::PosNormalTex::Vertex>& out_vertices)
-{
-	int control_point_count = mesh->GetControlPointsCount();
-
-	out_vertices.resize(control_point_count);
-
-	for (UINT i = 0; i < control_point_count; ++i)
-	{
-		out_vertices[i].pos.x = static_cast<float>(mesh->GetControlPointAt(i)[0]);
-		out_vertices[i].pos.y = static_cast<float>(mesh->GetControlPointAt(i)[1]);
-		out_vertices[i].pos.z = static_cast<float>(mesh->GetControlPointAt(i)[2]);
-	}
-}
-
-void ba::FBXLoader::LoadIndices(FbxMesh* mesh, std::vector<UINT>& out_indices)
-{
 	int tri_count = mesh->GetPolygonCount();
-	out_indices.resize(3 * tri_count);
+	vertices.resize(3 * tri_count);
 
-	UINT index_count = 0;
 	for (int tri_idx = 0; tri_idx < tri_count; ++tri_idx)
 	{
+		inputvertex::PosNormalTex::Vertex vertex;
+
 		for (int i = 0; i < 3; ++i)
 		{
-			out_indices[index_count] = mesh->GetPolygonVertex(tri_idx, i);
-			++index_count;
+			int control_point_idx = mesh->GetPolygonVertex(tri_idx, i);
+
 		}
 	}
+
 }
