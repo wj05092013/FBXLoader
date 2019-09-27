@@ -18,7 +18,7 @@ namespace ba
 			{
 				XMFLOAT3 pos;
 				XMFLOAT3 normal;
-				XMFLOAT2 tex;
+				XMFLOAT2 uv;
 			};
 			static const D3D11_INPUT_ELEMENT_DESC kInputElemDesc[3];
 
@@ -34,7 +34,7 @@ namespace ba
 			{
 				XMFLOAT3 pos;
 				XMFLOAT3 normal;
-				XMFLOAT2 tex;
+				XMFLOAT2 uv;
 				XMFLOAT3 tangent;
 				XMFLOAT3 blend_weights;
 				XMBYTE4 bone_indices;
