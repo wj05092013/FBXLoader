@@ -28,6 +28,23 @@ namespace ba
 			ID3D11InputLayout* input_layout = nullptr;
 		};
 
+		struct PosNormalTexTangent : public Uncopiable
+		{
+			struct Vertex
+			{
+				XMFLOAT3 pos;
+				XMFLOAT3 normal;
+				XMFLOAT2 uv;
+				XMFLOAT3 tangent;
+			};
+			static const D3D11_INPUT_ELEMENT_DESC kInputElemDesc[4];
+
+			bool Init(ID3D11Device* device);
+			void Release();
+
+			ID3D11InputLayout* input_layout = nullptr;
+		};
+
 		struct PosNormalTexTanSkinned : public Uncopiable
 		{
 			struct Vertex

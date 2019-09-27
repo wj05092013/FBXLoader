@@ -36,6 +36,42 @@ void ba::inputvertex::PosNormalTex::Release()
 
 
 //
+// PosNormalTexTangent
+//
+
+const D3D11_INPUT_ELEMENT_DESC ba::inputvertex::PosNormalTexTangent::kInputElemDesc[4] =
+{
+	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0}
+};
+
+bool ba::inputvertex::PosNormalTexTangent::Init(ID3D11Device* device)
+{
+	if (input_layout)
+		return false;
+
+	ID3DX11EffectTechnique* tech = effects::.tech();
+	D3DX11_PASS_DESC pass_desc;
+	tech->GetPassByIndex(0)->GetDesc(&pass_desc);
+
+	HRESULT res = device->CreateInputLayout(
+		kInputElemDesc, 6,
+		pass_desc.pIAInputSignature, pass_desc.IAInputSignatureSize, &input_layout
+	);
+	if (FAILED(res))
+		return false;
+	return true;
+}
+
+void ba::inputvertex::PosNormalTexTangent::Release()
+{
+	ReleaseCOM(input_layout);
+}
+
+
+//
 // PosNormalTexTanSkinned
 //
 
