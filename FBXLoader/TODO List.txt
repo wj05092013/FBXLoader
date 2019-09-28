@@ -1,10 +1,11 @@
 TODO
 	impl
+		FBXLoader
+			Load materials and textures.
+		Model
 		NormalMapping
 		ShadowMap
 		SSAO
-		FBXLoader
-		Mesh
 		Animation
 	research
 		loading fbx file

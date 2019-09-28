@@ -9,10 +9,30 @@ namespace ba
 	class Model
 	{
 	public:
+		Model();
+
+		bool Init(std::wstring file_name);
+		void Release();
+
+		void Draw();
 
 	private:
-		Mesh mesh_;
+		Mesh<inputvertex::PosNormalTexTangent::Vertex> mesh_;
 
-		// Add materials, diffuse maps, normal-displacement maps.
+		// Add diffuse maps, normal-displacement maps.
+	};
+
+	class ModelInstance
+	{
+	public:
+		ModelInstance(Model* model);
+
+		void Draw();
+
+		void set_world(const XMFLOAT4X4& world);
+
+	private:
+		Model* model_;
+		XMFLOAT4X4 world_;
 	};
 }

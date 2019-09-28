@@ -41,7 +41,11 @@ bool ba::FBXLoader::Load(const std::string& filename, Mesh& out_mesh)
 	FbxImporter* importer = FbxImporter::Create(manager_, "");
 
 	bool ret = importer->Initialize(filename.c_str(), -1, manager_->GetIOSettings());
-	if (!ret) { Release(); return false; }
+	if (!ret)
+	{
+		importer->Destroy();
+		return false;
+	}
 	//__
 
 	// Create a scene and import on it.
@@ -49,23 +53,38 @@ bool ba::FBXLoader::Load(const std::string& filename, Mesh& out_mesh)
 	FbxScene* scene = FbxScene::Create(manager_, "");
 
 	ret = importer->Import(scene);
-	if (!ret) { Release(); return false; }
+	if (!ret)
+	{
+		scene->Destroy();
+		importer->Destroy();
+		return false;
+	}
+	importer->Destroy();
 	
 	// Triangulate all nodes.
 	FbxGeometryConverter geometry_converter(manager_);
 	ret = geometry_converter.Triangulate(scene, true);
-	if (!ret) { Release(); return false; }
-
-	importer->Destroy();
+	if (!ret)
+	{
+		scene->Destroy();
+		return false;
+	}
 	//__
 
+	// Load scene.
 	FbxNode* root_node = scene->GetRootNode();
-	Load(root_node, out_mesh);
+	ret = Load(root_node, out_mesh);
+
+	scene->Destroy();
+	if (!ret)
+	{
+		return false;
+	}
 
 	return true;
 }
 
-void ba::FBXLoader::Load(FbxNode* node, Mesh& out_mesh)
+bool ba::FBXLoader::Load(FbxNode* node, Mesh& out_mesh)
 {
 	if (node)
 	{
@@ -78,8 +97,8 @@ void ba::FBXLoader::Load(FbxNode* node, Mesh& out_mesh)
 			case fbxsdk::FbxNodeAttribute::eMesh:
 				FbxMesh* fbx_mesh = node->GetMesh();
 
-				LoadMesh(fbx_mesh, out_mesh);
-
+				if (!LoadMesh(fbx_mesh, out_mesh))
+					return false;
 				break;
 
 			default:
@@ -89,13 +108,26 @@ void ba::FBXLoader::Load(FbxNode* node, Mesh& out_mesh)
 
 		for (int i = 0; i < node->GetChildCount(); ++i)
 		{
-			Load(node->GetChild(i), out_mesh);
+			if (!Load(node->GetChild(i), out_mesh))
+				return false;
 		}
 	}
+
+	return true;
 }
 
-void ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Mesh& out_mesh)
+bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Mesh& out_mesh)
 {
+	if (!fbx_mesh->IsTriangleMesh())
+		return false;
+
+	if (fbx_mesh->GetElementNormalCount() < 1)
+		return false;
+	if (fbx_mesh->GetElementTangentCount() < 1)
+		return false;
+	if (fbx_mesh->GetElementUVCount() < 1)
+		return false;
+
 	FbxVector4* control_points = fbx_mesh->GetControlPoints();
 
 	int tri_count = fbx_mesh->GetPolygonCount();
@@ -110,11 +142,13 @@ void ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Mesh& out_mesh)
 			int vertex_idx = 3 * tri_idx + i;
 
 			ReadPosition(control_points[control_point_idx], out_mesh.vertices[vertex_idx].pos);
-			ReadNormal(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].normal);
-			ReadTangent(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].tangent);
-			ReadUV(fbx_mesh, control_point_idx, uv_idx, out_mesh.vertices[vertex_idx].uv);
+			if (!ReadNormal(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].normal)) return false;
+			if (!ReadTangent(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].tangent)) return false;
+			if (!ReadUV(fbx_mesh, control_point_idx, uv_idx, out_mesh.vertices[vertex_idx].uv)) return false;
 		}
 	}
+
+	return true;
 }
 
 void ba::FBXLoader::ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_pos)
@@ -124,11 +158,8 @@ void ba::FBXLoader::ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_
 	out_pos.z = control_point[2];
 }
 
-void ba::FBXLoader::ReadNormal(FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_normal)
+bool ba::FBXLoader::ReadNormal(FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_normal)
 {
-	if (fbx_mesh->GetElementNormalCount() < 1)
-		return;
-
 	const FbxGeometryElementNormal* normal_element = fbx_mesh->GetElementNormal();
 
 	switch (normal_element->GetMappingMode())
@@ -150,7 +181,7 @@ void ba::FBXLoader::ReadNormal(FbxMesh* fbx_mesh, int control_point_idx, int ver
 			break;
 
 		default:
-			break;
+			return false;
 		}
 		break;
 
@@ -171,20 +202,19 @@ void ba::FBXLoader::ReadNormal(FbxMesh* fbx_mesh, int control_point_idx, int ver
 			break;
 
 		default:
-			break;
+			return false;
 		}
 		break;
 
 	default:
-		break;
+		return false;
 	}
+
+	return true;
 }
 
-void ba::FBXLoader::ReadTangent(FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_tangent)
+bool ba::FBXLoader::ReadTangent(FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_tangent)
 {
-	if (fbx_mesh->GetElementTangentCount() < 1)
-		return;
-
 	const FbxGeometryElementTangent* tangent_element = fbx_mesh->GetElementTangent();
 
 	switch (tangent_element->GetMappingMode())
@@ -206,7 +236,7 @@ void ba::FBXLoader::ReadTangent(FbxMesh* fbx_mesh, int control_point_idx, int ve
 			break;
 
 		default:
-			break;
+			return false;
 		}
 		break;
 
@@ -227,20 +257,19 @@ void ba::FBXLoader::ReadTangent(FbxMesh* fbx_mesh, int control_point_idx, int ve
 			break;
 
 		default:
-			break;
+			return false;
 		}
 		break;
 
 	default:
-		break;
+		return false;
 	}
+
+	return true;
 }
 
-void ba::FBXLoader::ReadUV(FbxMesh* fbx_mesh, int control_point_idx, int uv_idx, XMFLOAT2& out_uv)
+bool ba::FBXLoader::ReadUV(FbxMesh* fbx_mesh, int control_point_idx, int uv_idx, XMFLOAT2& out_uv)
 {
-	if (fbx_mesh->GetElementUVCount() < 1)
-		return;
-
 	const FbxGeometryElementUV* uv_element = fbx_mesh->GetElementUV();
 
 	switch (uv_element->GetMappingMode())
@@ -260,7 +289,7 @@ void ba::FBXLoader::ReadUV(FbxMesh* fbx_mesh, int control_point_idx, int uv_idx,
 			break;
 
 		default:
-			break;
+			return false;
 		}
 		break;
 
@@ -279,11 +308,13 @@ void ba::FBXLoader::ReadUV(FbxMesh* fbx_mesh, int control_point_idx, int uv_idx,
 			break;
 
 		default:
-			break;
+			return false;
 		}
 		break;
 
 	default:
-		break;
+		return false;
 	}
+
+	return true;
 }

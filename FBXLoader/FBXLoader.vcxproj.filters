@@ -168,12 +168,14 @@
     <ClCompile Include="TextureManager.cpp">
       <Filter>Sources\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="SampleCode.cpp">
       <Filter>Sources\Application</Filter>
     </ClCompile>
     <ClCompile Include="SampleCode2.cpp">
+      <Filter>Sources\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="SampleCode3.cpp">
       <Filter>Sources\Application</Filter>
     </ClCompile>
   </ItemGroup>

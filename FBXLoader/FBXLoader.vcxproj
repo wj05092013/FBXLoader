@@ -59,9 +59,9 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MathHelper.cpp" />
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="SampleCode2.cpp" />
+    <ClCompile Include="SampleCode3.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Timer.cpp" />
