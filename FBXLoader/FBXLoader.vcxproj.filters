@@ -144,9 +144,6 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Sources\Common</Filter>
     </ClCompile>
-    <ClCompile Include="ExampleCode.cpp">
-      <Filter>Sources\Application</Filter>
-    </ClCompile>
     <ClCompile Include="EffectWrapper.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
@@ -173,6 +170,12 @@
     </ClCompile>
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="SampleCode.cpp">
+      <Filter>Sources\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="SampleCode2.cpp">
+      <Filter>Sources\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FBXLoader.rc">

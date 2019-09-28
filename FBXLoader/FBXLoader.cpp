@@ -76,7 +76,7 @@ void ba::FBXLoader::Load(FbxNode* node, Mesh& out_mesh)
 			switch (attribute_type)
 			{
 			case fbxsdk::FbxNodeAttribute::eMesh:
-				const FbxMesh* fbx_mesh = node->GetMesh();
+				FbxMesh* fbx_mesh = node->GetMesh();
 
 				LoadMesh(fbx_mesh, out_mesh);
 
@@ -94,7 +94,7 @@ void ba::FBXLoader::Load(FbxNode* node, Mesh& out_mesh)
 	}
 }
 
-void ba::FBXLoader::LoadMesh(const FbxMesh* fbx_mesh, Mesh& out_mesh)
+void ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Mesh& out_mesh)
 {
 	FbxVector4* control_points = fbx_mesh->GetControlPoints();
 
@@ -106,16 +106,15 @@ void ba::FBXLoader::LoadMesh(const FbxMesh* fbx_mesh, Mesh& out_mesh)
 		for (int i = 0; i < 3; ++i)
 		{
 			int control_point_idx = fbx_mesh->GetPolygonVertex(tri_idx, i);
+			int uv_idx = fbx_mesh->GetTextureUVIndex(tri_idx, i);
 			int vertex_idx = 3 * tri_idx + i;
 
 			ReadPosition(control_points[control_point_idx], out_mesh.vertices[vertex_idx].pos);
 			ReadNormal(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].normal);
 			ReadTangent(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].tangent);
-			
-			// Add some codes to read uv coordinates.
+			ReadUV(fbx_mesh, control_point_idx, uv_idx, out_mesh.vertices[vertex_idx].uv);
 		}
 	}
-
 }
 
 void ba::FBXLoader::ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_pos)
@@ -125,7 +124,7 @@ void ba::FBXLoader::ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_
 	out_pos.z = control_point[2];
 }
 
-void ba::FBXLoader::ReadNormal(const FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_normal)
+void ba::FBXLoader::ReadNormal(FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_normal)
 {
 	if (fbx_mesh->GetElementNormalCount() < 1)
 		return;
@@ -181,7 +180,7 @@ void ba::FBXLoader::ReadNormal(const FbxMesh* fbx_mesh, int control_point_idx, i
 	}
 }
 
-void ba::FBXLoader::ReadTangent(const FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_tangent)
+void ba::FBXLoader::ReadTangent(FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_tangent)
 {
 	if (fbx_mesh->GetElementTangentCount() < 1)
 		return;
@@ -225,6 +224,58 @@ void ba::FBXLoader::ReadTangent(const FbxMesh* fbx_mesh, int control_point_idx, 
 			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[0]);
 			out_tangent.y = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[1]);
 			out_tangent.z = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[2]);
+			break;
+
+		default:
+			break;
+		}
+		break;
+
+	default:
+		break;
+	}
+}
+
+void ba::FBXLoader::ReadUV(FbxMesh* fbx_mesh, int control_point_idx, int uv_idx, XMFLOAT2& out_uv)
+{
+	if (fbx_mesh->GetElementUVCount() < 1)
+		return;
+
+	const FbxGeometryElementUV* uv_element = fbx_mesh->GetElementUV();
+
+	switch (uv_element->GetMappingMode())
+	{
+	case FbxGeometryElement::eByControlPoint:
+		switch (uv_element->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(control_point_idx).mData[0]);
+			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(control_point_idx).mData[1]);
+			break;
+
+		case FbxGeometryElement::eIndexToDirect:
+			int idx = uv_element->GetIndexArray().GetAt(control_point_idx);
+			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[0]);
+			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[1]);
+			break;
+
+		default:
+			break;
+		}
+		break;
+
+	case FbxGeometryElement::eByPolygonVertex:
+		switch (uv_element->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(uv_idx).mData[0]);
+			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(uv_idx).mData[1]);
+			break;
+
+		case FbxGeometryElement::eIndexToDirect:
+			int idx = uv_element->GetIndexArray().GetAt(uv_idx);
+			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[0]);
+			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[1]);
 			break;
 
 		default:
