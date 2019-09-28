@@ -122,8 +122,12 @@
     <ClInclude Include="Camera.h">
       <Filter>Includes\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Model.h" />
+    <ClInclude Include="Model.h">
+      <Filter>Includes\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Includes\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -168,7 +172,6 @@
     <ClCompile Include="TextureManager.cpp">
       <Filter>Sources\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp" />
     <ClCompile Include="SampleCode.cpp">
       <Filter>Sources\Application</Filter>
     </ClCompile>
@@ -177,6 +180,12 @@
     </ClCompile>
     <ClCompile Include="SampleCode3.cpp">
       <Filter>Sources\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Sources\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

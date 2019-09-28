@@ -34,7 +34,7 @@ void ba::FBXLoader::Release()
 	}
 }
 
-bool ba::FBXLoader::Load(const std::string& filename, Mesh& out_mesh)
+bool ba::FBXLoader::Load(const std::string& filename, Model::EffectType effect_type, Model& out_model)
 {
 	// Create and initialize importer.
 	//
@@ -73,7 +73,7 @@ bool ba::FBXLoader::Load(const std::string& filename, Mesh& out_mesh)
 
 	// Load scene.
 	FbxNode* root_node = scene->GetRootNode();
-	ret = Load(root_node, out_mesh);
+	ret = Load(root_node, out_model);
 
 	scene->Destroy();
 	if (!ret)
@@ -81,10 +81,13 @@ bool ba::FBXLoader::Load(const std::string& filename, Mesh& out_mesh)
 		return false;
 	}
 
+	// Set effect type.
+	out_model.effect_type_ = effect_type;
+
 	return true;
 }
 
-bool ba::FBXLoader::Load(FbxNode* node, Mesh& out_mesh)
+bool ba::FBXLoader::Load(FbxNode* node, Model& out_model)
 {
 	if (node)
 	{
@@ -97,7 +100,7 @@ bool ba::FBXLoader::Load(FbxNode* node, Mesh& out_mesh)
 			case fbxsdk::FbxNodeAttribute::eMesh:
 				FbxMesh* fbx_mesh = node->GetMesh();
 
-				if (!LoadMesh(fbx_mesh, out_mesh))
+				if (!LoadMesh(fbx_mesh, out_model))
 					return false;
 				break;
 
@@ -108,7 +111,7 @@ bool ba::FBXLoader::Load(FbxNode* node, Mesh& out_mesh)
 
 		for (int i = 0; i < node->GetChildCount(); ++i)
 		{
-			if (!Load(node->GetChild(i), out_mesh))
+			if (!Load(node->GetChild(i), out_model))
 				return false;
 		}
 	}
@@ -116,7 +119,7 @@ bool ba::FBXLoader::Load(FbxNode* node, Mesh& out_mesh)
 	return true;
 }
 
-bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Mesh& out_mesh)
+bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Model& out_model)
 {
 	if (!fbx_mesh->IsTriangleMesh())
 		return false;
@@ -131,7 +134,7 @@ bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Mesh& out_mesh)
 	FbxVector4* control_points = fbx_mesh->GetControlPoints();
 
 	int tri_count = fbx_mesh->GetPolygonCount();
-	out_mesh.vertices.resize(3 * tri_count);
+	out_model.mesh_.vertices_.resize(3 * tri_count);
 
 	for (int tri_idx = 0; tri_idx < tri_count; ++tri_idx)
 	{
@@ -141,10 +144,10 @@ bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Mesh& out_mesh)
 			int uv_idx = fbx_mesh->GetTextureUVIndex(tri_idx, i);
 			int vertex_idx = 3 * tri_idx + i;
 
-			ReadPosition(control_points[control_point_idx], out_mesh.vertices[vertex_idx].pos);
-			if (!ReadNormal(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].normal)) return false;
-			if (!ReadTangent(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].tangent)) return false;
-			if (!ReadUV(fbx_mesh, control_point_idx, uv_idx, out_mesh.vertices[vertex_idx].uv)) return false;
+			ReadPosition(control_points[control_point_idx], out_model.mesh_.vertices_[vertex_idx].pos);
+			if (!ReadNormal(fbx_mesh, control_point_idx, vertex_idx, out_model.mesh_.vertices_[vertex_idx].normal)) return false;
+			if (!ReadTangent(fbx_mesh, control_point_idx, vertex_idx, out_model.mesh_.vertices_[vertex_idx].tangent)) return false;
+			if (!ReadUV(fbx_mesh, control_point_idx, uv_idx, out_model.mesh_.vertices_[vertex_idx].uv)) return false;
 		}
 	}
 

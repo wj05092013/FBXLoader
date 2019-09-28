@@ -21,11 +21,10 @@ namespace ba
 				XMFLOAT2 uv;
 			};
 			static const D3D11_INPUT_ELEMENT_DESC kInputElemDesc[3];
+			static ID3D11InputLayout* kInputLayout;
 
 			bool Init(ID3D11Device* device);
 			void Release();
-
-			ID3D11InputLayout* input_layout = nullptr;
 		};
 
 		struct PosNormalTexTangent : public Uncopiable
@@ -38,11 +37,12 @@ namespace ba
 				XMFLOAT3 tangent;
 			};
 			static const D3D11_INPUT_ELEMENT_DESC kInputElemDesc[4];
+			static ID3D11InputLayout* kInputLayout;
 
 			bool Init(ID3D11Device* device);
 			void Release();
 
-			ID3D11InputLayout* input_layout = nullptr;
+			
 		};
 
 		struct PosNormalTexTanSkinned : public Uncopiable
@@ -57,11 +57,10 @@ namespace ba
 				XMBYTE4 bone_indices;
 			};
 			static const D3D11_INPUT_ELEMENT_DESC kInputElemDesc[6];
+			static ID3D11InputLayout* kInputLayout;
 
 			bool Init(ID3D11Device* device);
 			void Release();
-
-			ID3D11InputLayout* input_layout = nullptr;
 		};
 
 

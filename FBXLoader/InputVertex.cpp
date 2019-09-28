@@ -10,10 +10,11 @@ const D3D11_INPUT_ELEMENT_DESC ba::inputvertex::PosNormalTex::kInputElemDesc[3] 
 	{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
 };
+ID3D11InputLayout* ba::inputvertex::PosNormalTex::kInputLayout = nullptr;
 
 bool ba::inputvertex::PosNormalTex::Init(ID3D11Device* device)
 {
-	if (input_layout)
+	if (kInputLayout)
 		return false;
 
 	ID3DX11EffectTechnique* tech = effects::kBasicEffect.tech(BasicEffect::TechType::kLight1);
@@ -22,7 +23,7 @@ bool ba::inputvertex::PosNormalTex::Init(ID3D11Device* device)
 
 	HRESULT res = device->CreateInputLayout(
 		kInputElemDesc, 3,
-		pass_desc.pIAInputSignature, pass_desc.IAInputSignatureSize, &input_layout
+		pass_desc.pIAInputSignature, pass_desc.IAInputSignatureSize, &kInputLayout
 	);
 	if (FAILED(res))
 		return false;
@@ -31,7 +32,7 @@ bool ba::inputvertex::PosNormalTex::Init(ID3D11Device* device)
 
 void ba::inputvertex::PosNormalTex::Release()
 {
-	ReleaseCOM(input_layout);
+	ReleaseCOM(kInputLayout);
 }
 
 
@@ -46,10 +47,11 @@ const D3D11_INPUT_ELEMENT_DESC ba::inputvertex::PosNormalTexTangent::kInputElemD
 	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	{"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0}
 };
+ID3D11InputLayout* ba::inputvertex::PosNormalTexTangent::kInputLayout = nullptr;
 
 bool ba::inputvertex::PosNormalTexTangent::Init(ID3D11Device* device)
 {
-	if (input_layout)
+	if (kInputLayout)
 		return false;
 
 	ID3DX11EffectTechnique* tech = effects::.tech();
@@ -58,7 +60,7 @@ bool ba::inputvertex::PosNormalTexTangent::Init(ID3D11Device* device)
 
 	HRESULT res = device->CreateInputLayout(
 		kInputElemDesc, 6,
-		pass_desc.pIAInputSignature, pass_desc.IAInputSignatureSize, &input_layout
+		pass_desc.pIAInputSignature, pass_desc.IAInputSignatureSize, &kInputLayout
 	);
 	if (FAILED(res))
 		return false;
@@ -67,7 +69,7 @@ bool ba::inputvertex::PosNormalTexTangent::Init(ID3D11Device* device)
 
 void ba::inputvertex::PosNormalTexTangent::Release()
 {
-	ReleaseCOM(input_layout);
+	ReleaseCOM(kInputLayout);
 }
 
 
@@ -84,10 +86,11 @@ const D3D11_INPUT_ELEMENT_DESC ba::inputvertex::PosNormalTexTanSkinned::kInputEl
 	{"WEIGHTS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	{"BONEINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, 56, D3D11_INPUT_PER_VERTEX_DATA, 0}
 };
+ID3D11InputLayout* ba::inputvertex::PosNormalTexTanSkinned::kInputLayout = nullptr;
 
 bool ba::inputvertex::PosNormalTexTanSkinned::Init(ID3D11Device* device)
 {
-	if (input_layout)
+	if (kInputLayout)
 		return false;
 
 	ID3DX11EffectTechnique* tech = effects::kBasicEffect.tech(BasicEffect::TechType::kLight1Skinned);
@@ -96,7 +99,7 @@ bool ba::inputvertex::PosNormalTexTanSkinned::Init(ID3D11Device* device)
 
 	HRESULT res = device->CreateInputLayout(
 		kInputElemDesc, 6,
-		pass_desc.pIAInputSignature, pass_desc.IAInputSignatureSize, &input_layout
+		pass_desc.pIAInputSignature, pass_desc.IAInputSignatureSize, &kInputLayout
 	);
 	if (FAILED(res))
 		return false;
@@ -105,7 +108,7 @@ bool ba::inputvertex::PosNormalTexTanSkinned::Init(ID3D11Device* device)
 
 void ba::inputvertex::PosNormalTexTanSkinned::Release()
 {
-	ReleaseCOM(input_layout);
+	ReleaseCOM(kInputLayout);
 }
 
 

@@ -6,32 +6,36 @@ PCH: Yes
 
 namespace ba
 {
-	class Model
+	class Model : public Uncopiable
 	{
 	public:
+		enum EffectType
+		{
+			kBasic = 0,
+			kMax
+		};
+		
 		Model();
+	
+		void Draw(ID3D11DeviceContext* dc, const XMMATRIX& world);
 
-		bool Init(std::wstring file_name);
-		void Release();
+		EffectType effect_type_;
+		bool b_reflect_;
 
-		void Draw();
+		Mesh mesh_;
+		// Add diffuse maps, normal-displacement maps.
 
 	private:
-		Mesh<inputvertex::PosNormalTexTangent::Vertex> mesh_;
-
-		// Add diffuse maps, normal-displacement maps.
+		void DrawWithBasicEffect(ID3D11DeviceContext* dc, const XMMATRIX& world);
 	};
 
 	class ModelInstance
 	{
 	public:
-		ModelInstance(Model* model);
+		ModelInstance();
 
-		void Draw();
+		void Draw(ID3D11DeviceContext* dc);
 
-		void set_world(const XMFLOAT4X4& world);
-
-	private:
 		Model* model_;
 		XMFLOAT4X4 world_;
 	};

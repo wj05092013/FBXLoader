@@ -3,6 +3,7 @@ TODO
 		FBXLoader
 			Load materials and textures.
 		Model
+			DrawWithBasicEffect
 		NormalMapping
 		ShadowMap
 		SSAO

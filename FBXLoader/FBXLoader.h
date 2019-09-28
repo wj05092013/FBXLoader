@@ -17,12 +17,12 @@ namespace ba
 		void Init();
 		void Release();
 
-		bool Load(const std::string& filename, Mesh& out_mesh);
+		bool Load(const std::string& filename, Model::EffectType effect_type, Model& out_model);
 
 	private:
-		bool Load(FbxNode* node, Mesh& out_mesh);
+		bool Load(FbxNode* node, Model& out_model);
 
-		bool LoadMesh(FbxMesh* fbx_mesh, Mesh& out_mesh);
+		bool LoadMesh(FbxMesh* fbx_mesh, Model& out_model);
 
 		void ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_pos);
 		bool ReadNormal(FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_normal);

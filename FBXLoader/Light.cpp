@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-DirectionalLight::DirectionalLight() :
+ba::DirectionalLight::DirectionalLight() :
 	ambient(0.0f, 0.0f, 0.0f, 0.0f),
 	diffuse(0.0f, 0.0f, 0.0f, 0.0f),
 	specular(0.0f, 0.0f, 0.0f, 0.0f),
@@ -9,7 +9,7 @@ DirectionalLight::DirectionalLight() :
 {
 }
 
-PointLight::PointLight() :
+ba::PointLight::PointLight() :
 	ambient(0.0f, 0.0f, 0.0f, 0.0f),
 	diffuse(0.0f, 0.0f, 0.0f, 0.0f),
 	specular(0.0f, 0.0f, 0.0f, 0.0f),
@@ -20,7 +20,7 @@ PointLight::PointLight() :
 {
 }
 
-SpotLight::SpotLight() :
+ba::SpotLight::SpotLight() :
 	ambient(0.0f, 0.0f, 0.0f, 0.0f),
 	diffuse(0.0f, 0.0f, 0.0f, 0.0f),
 	specular(0.0f, 0.0f, 0.0f, 0.0f),
@@ -33,7 +33,7 @@ SpotLight::SpotLight() :
 {
 }
 
-Material::Material() :
+ba::Material::Material() :
 	ambient(0.0f, 0.0f, 0.0f, 0.0f),
 	diffuse(0.0f, 0.0f, 0.0f, 0.0f),
 	specular(0.0f, 0.0f, 0.0f, 0.0f),

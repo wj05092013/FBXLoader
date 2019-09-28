@@ -1,56 +1,59 @@
 #pragma once
 
-struct DirectionalLight
+namespace ba
 {
-	XMFLOAT4 ambient;
-	XMFLOAT4 diffuse;
-	XMFLOAT4 specular;
+	struct DirectionalLight
+	{
+		XMFLOAT4 ambient;
+		XMFLOAT4 diffuse;
+		XMFLOAT4 specular;
 
-	XMFLOAT3 direction;
-	float pad;
+		XMFLOAT3 direction;
+		float pad;
 
-	DirectionalLight();
-};
+		DirectionalLight();
+	};
 
-struct PointLight
-{
-	XMFLOAT4 ambient;
-	XMFLOAT4 diffuse;
-	XMFLOAT4 specular;
+	struct PointLight
+	{
+		XMFLOAT4 ambient;
+		XMFLOAT4 diffuse;
+		XMFLOAT4 specular;
 
-	XMFLOAT3 pos;
-	float range;
+		XMFLOAT3 pos;
+		float range;
 
-	XMFLOAT3 attenuation;
-	float pad;
+		XMFLOAT3 attenuation;
+		float pad;
 
-	PointLight();
-};
+		PointLight();
+	};
 
-struct SpotLight
-{
-	XMFLOAT4 ambient;
-	XMFLOAT4 diffuse;
-	XMFLOAT4 specular;
+	struct SpotLight
+	{
+		XMFLOAT4 ambient;
+		XMFLOAT4 diffuse;
+		XMFLOAT4 specular;
 
-	XMFLOAT3 pos;
-	float range;
+		XMFLOAT3 pos;
+		float range;
 
-	XMFLOAT3 direction;
-	float spot;
+		XMFLOAT3 direction;
+		float spot;
 
-	XMFLOAT3 attenuation;
-	float pad;
+		XMFLOAT3 attenuation;
+		float pad;
 
-	SpotLight();
-};
+		SpotLight();
+	};
 
-struct Material
-{
-	XMFLOAT4 ambient;
-	XMFLOAT4 diffuse;
-	XMFLOAT4 specular;
-	XMFLOAT4 reflection;
+	struct Material
+	{
+		XMFLOAT4 ambient;
+		XMFLOAT4 diffuse;
+		XMFLOAT4 specular;
+		XMFLOAT4 reflection;
 
-	Material();
-};
+		Material();
+	};
+}
