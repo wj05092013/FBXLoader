@@ -10,6 +10,7 @@ TODO
 		Animation
 	research
 		loading fbx file
+		reflection, cubemap
 
 CHECK
 

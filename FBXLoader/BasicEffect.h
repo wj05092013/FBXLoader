@@ -136,7 +136,7 @@ namespace ba
 		//
 		void SetEyePos(const XMFLOAT3& pos_w);
 		void SetView(const XMMATRIX& matrix);
-		void SetShadeowTransform(const XMMATRIX& matrix);
+		void SetShadowTransform(const XMMATRIX& matrix);
 		void SetShadowMap(ID3D11ShaderResourceView* srv);
 		void SetSSAOMap(ID3D11ShaderResourceView* srv);
 		//__

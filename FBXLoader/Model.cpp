@@ -1,5 +1,9 @@
 #include "stdafx.h"
 
+//
+// Model class
+//
+
 ba::Model::Model() :
 	effect_type_(kBasic),
 	b_reflect_(false)
@@ -41,12 +45,12 @@ void ba::Model::DrawWithBasicEffect(ID3D11DeviceContext* dc, const XMMATRIX& wor
 	//__
 
 	// Update effect variables.
-	//
 	XMMATRIX world_inv_trans = mathhelper::InverseTranspose(world);
 	effects::kBasicEffect.SetWorld(world);
 	effects::kBasicEffect.SetWorldInvTrans(world_inv_trans);
 	effects::kBasicEffect.SetTexMapping(XMMatrixIdentity());
 	effects::kBasicEffect.SetMaterial(material);
+	//effects::kBasicEffect.SetDiffuseMap();
 
 	D3DX11_TECHNIQUE_DESC tech_desc;
 	tech->GetDesc(&tech_desc);
@@ -56,6 +60,11 @@ void ba::Model::DrawWithBasicEffect(ID3D11DeviceContext* dc, const XMMATRIX& wor
 		mesh_.Draw(dc);
 	}
 }
+
+
+//
+// ModelInstance class
+//
 
 ba::ModelInstance::ModelInstance() :
 	model_(nullptr)

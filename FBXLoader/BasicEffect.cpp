@@ -218,7 +218,7 @@ void ba::BasicEffect::SetView(const XMMATRIX& matrix)
 	view_->SetMatrix(reinterpret_cast<const float*>(&matrix));
 }
 
-void ba::BasicEffect::SetShadeowTransform(const XMMATRIX& matrix)
+void ba::BasicEffect::SetShadowTransform(const XMMATRIX& matrix)
 {
 	shadow_transform_->SetMatrix(reinterpret_cast<const float*>(&matrix));
 }
