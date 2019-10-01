@@ -1,3 +1,6 @@
+REMEMBER
+	SRP(Single Responsibility Principle)
+
 TODO
 	impl
 		FBXLoader
@@ -8,6 +11,8 @@ TODO
 		ShadowMap
 		SSAO
 		Animation
+		Application(Window), Renderer(DirectX) 분리
+		FBXLoader::Load 매개변수를 포인터형식으로 변경
 	research
 		loading fbx file
 		reflection, cubemap

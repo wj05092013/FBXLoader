@@ -54,7 +54,7 @@ bool ba::inputvertex::PosNormalTexTangent::Init(ID3D11Device* device)
 	if (kInputLayout)
 		return false;
 
-	ID3DX11EffectTechnique* tech = effects::.tech();
+	ID3DX11EffectTechnique* tech = effects::kNormalMappingEffect.tech(NormalMappingEffect::kLight1);
 	D3DX11_PASS_DESC pass_desc;
 	tech->GetPassByIndex(0)->GetDesc(&pass_desc);
 
@@ -116,9 +116,14 @@ void ba::inputvertex::PosNormalTexTanSkinned::Release()
 // Integrated management of all input layouts.
 //
 
+ba::inputvertex::PosNormalTex ba::inputvertex::kPosNormalTex;
+ba::inputvertex::PosNormalTexTangent ba::inputvertex::kPosNormalTexTangent;
+ba::inputvertex::PosNormalTexTanSkinned ba::inputvertex::kPosNormalTexTanSkinned;
+
 bool ba::inputvertex::InitAll(ID3D11Device* device)
 {
 	if (!kPosNormalTex.Init(device)) return false;
+	if (!kPosNormalTexTangent.Init(device)) { ReleaseAll(); return false; }
 	if (!kPosNormalTexTanSkinned.Init(device)) { ReleaseAll(); return false; }
 
 	return true;
@@ -127,5 +132,6 @@ bool ba::inputvertex::InitAll(ID3D11Device* device)
 void ba::inputvertex::ReleaseAll()
 {
 	kPosNormalTex.Release();
+	kPosNormalTexTangent.Release();
 	kPosNormalTexTanSkinned.Release();
 }

@@ -86,7 +86,7 @@ namespace ba
 
 	protected:
 		// Compute aspect ratio and return it.
-		float GetAspectRatio() const;
+		float aspect_ratio() const;
 		DXGI_SAMPLE_DESC GetSampleDesc() const;
 
 		// Window properties.

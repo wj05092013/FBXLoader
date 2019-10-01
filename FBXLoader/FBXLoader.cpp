@@ -34,7 +34,7 @@ void ba::FBXLoader::Release()
 	}
 }
 
-bool ba::FBXLoader::Load(const std::string& filename, Model::EffectType effect_type, Model& out_model)
+bool ba::FBXLoader::Load(const std::string& filename, ba::Model& out_model)
 {
 	// Create and initialize importer.
 	//
@@ -73,7 +73,7 @@ bool ba::FBXLoader::Load(const std::string& filename, Model::EffectType effect_t
 
 	// Load scene.
 	FbxNode* root_node = scene->GetRootNode();
-	ret = Load(root_node, out_model);
+	ret = LoadNode(root_node, out_model);
 
 	scene->Destroy();
 	if (!ret)
@@ -81,29 +81,27 @@ bool ba::FBXLoader::Load(const std::string& filename, Model::EffectType effect_t
 		return false;
 	}
 
-	// Set effect type.
-	out_model.effect_type_ = effect_type;
-
 	return true;
 }
 
-bool ba::FBXLoader::Load(FbxNode* node, Model& out_model)
+bool ba::FBXLoader::LoadNode(FbxNode* node, Model& out_model)
 {
 	if (node)
 	{
-		if (node->GetNodeAttribute())
+		for (int i = 0; i < node->GetNodeAttributeCount(); ++i)
 		{
-			FbxNodeAttribute::EType attribute_type = node->GetNodeAttribute()->GetAttributeType();
+			FbxNodeAttribute::EType attribute_type = node->GetNodeAttributeByIndex(i)->GetAttributeType();
 
 			switch (attribute_type)
 			{
 			case fbxsdk::FbxNodeAttribute::eMesh:
+			{
 				FbxMesh* fbx_mesh = node->GetMesh();
 
 				if (!LoadMesh(fbx_mesh, out_model))
 					return false;
 				break;
-
+			}
 			default:
 				break;
 			}
@@ -111,7 +109,7 @@ bool ba::FBXLoader::Load(FbxNode* node, Model& out_model)
 
 		for (int i = 0; i < node->GetChildCount(); ++i)
 		{
-			if (!Load(node->GetChild(i), out_model))
+			if (!LoadNode(node->GetChild(i), out_model))
 				return false;
 		}
 	}
@@ -156,9 +154,9 @@ bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Model& out_model)
 
 void ba::FBXLoader::ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_pos)
 {
-	out_pos.x = control_point[0];
-	out_pos.y = control_point[1];
-	out_pos.z = control_point[2];
+	out_pos.x = static_cast<float>(control_point[0]);
+	out_pos.y = static_cast<float>(control_point[1]);
+	out_pos.z = static_cast<float>(control_point[2]);
 }
 
 bool ba::FBXLoader::ReadNormal(FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_normal)
@@ -171,18 +169,20 @@ bool ba::FBXLoader::ReadNormal(FbxMesh* fbx_mesh, int control_point_idx, int ver
 		switch (normal_element->GetReferenceMode())
 		{
 		case FbxGeometryElement::eDirect:
+		{
 			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(control_point_idx).mData[0]);
 			out_normal.y = static_cast<float>(normal_element->GetDirectArray().GetAt(control_point_idx).mData[1]);
 			out_normal.z = static_cast<float>(normal_element->GetDirectArray().GetAt(control_point_idx).mData[2]);
 			break;
-
+		}
 		case FbxGeometryElement::eIndexToDirect:
+		{
 			int idx = normal_element->GetIndexArray().GetAt(control_point_idx);
 			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[0]);
 			out_normal.y = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[1]);
 			out_normal.z = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[2]);
 			break;
-
+		}
 		default:
 			return false;
 		}
@@ -192,18 +192,20 @@ bool ba::FBXLoader::ReadNormal(FbxMesh* fbx_mesh, int control_point_idx, int ver
 		switch (normal_element->GetReferenceMode())
 		{
 		case FbxGeometryElement::eDirect:
+		{
 			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(vertex_idx).mData[0]);
 			out_normal.y = static_cast<float>(normal_element->GetDirectArray().GetAt(vertex_idx).mData[1]);
 			out_normal.z = static_cast<float>(normal_element->GetDirectArray().GetAt(vertex_idx).mData[2]);
 			break;
-
+		}
 		case FbxGeometryElement::eIndexToDirect:
+		{
 			int idx = normal_element->GetIndexArray().GetAt(vertex_idx);
 			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[0]);
 			out_normal.y = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[1]);
 			out_normal.z = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[2]);
 			break;
-
+		}
 		default:
 			return false;
 		}
@@ -226,18 +228,20 @@ bool ba::FBXLoader::ReadTangent(FbxMesh* fbx_mesh, int control_point_idx, int ve
 		switch (tangent_element->GetReferenceMode())
 		{
 		case FbxGeometryElement::eDirect:
+		{
 			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(control_point_idx).mData[0]);
 			out_tangent.y = static_cast<float>(tangent_element->GetDirectArray().GetAt(control_point_idx).mData[1]);
 			out_tangent.z = static_cast<float>(tangent_element->GetDirectArray().GetAt(control_point_idx).mData[2]);
 			break;
-
+		}
 		case FbxGeometryElement::eIndexToDirect:
+		{
 			int idx = tangent_element->GetIndexArray().GetAt(control_point_idx);
 			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[0]);
 			out_tangent.y = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[1]);
 			out_tangent.z = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[2]);
 			break;
-
+		}
 		default:
 			return false;
 		}
@@ -247,18 +251,20 @@ bool ba::FBXLoader::ReadTangent(FbxMesh* fbx_mesh, int control_point_idx, int ve
 		switch (tangent_element->GetReferenceMode())
 		{
 		case FbxGeometryElement::eDirect:
+		{
 			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(vertex_idx).mData[0]);
 			out_tangent.y = static_cast<float>(tangent_element->GetDirectArray().GetAt(vertex_idx).mData[1]);
 			out_tangent.z = static_cast<float>(tangent_element->GetDirectArray().GetAt(vertex_idx).mData[2]);
 			break;
-
+		}
 		case FbxGeometryElement::eIndexToDirect:
+		{
 			int idx = tangent_element->GetIndexArray().GetAt(vertex_idx);
 			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[0]);
 			out_tangent.y = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[1]);
 			out_tangent.z = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[2]);
 			break;
-
+		}
 		default:
 			return false;
 		}
@@ -281,16 +287,18 @@ bool ba::FBXLoader::ReadUV(FbxMesh* fbx_mesh, int control_point_idx, int uv_idx,
 		switch (uv_element->GetReferenceMode())
 		{
 		case FbxGeometryElement::eDirect:
+		{
 			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(control_point_idx).mData[0]);
 			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(control_point_idx).mData[1]);
 			break;
-
+		}
 		case FbxGeometryElement::eIndexToDirect:
+		{
 			int idx = uv_element->GetIndexArray().GetAt(control_point_idx);
 			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[0]);
 			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[1]);
 			break;
-
+		}
 		default:
 			return false;
 		}
@@ -300,16 +308,18 @@ bool ba::FBXLoader::ReadUV(FbxMesh* fbx_mesh, int control_point_idx, int uv_idx,
 		switch (uv_element->GetReferenceMode())
 		{
 		case FbxGeometryElement::eDirect:
+		{
 			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(uv_idx).mData[0]);
 			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(uv_idx).mData[1]);
 			break;
-
+		}
 		case FbxGeometryElement::eIndexToDirect:
+		{
 			int idx = uv_element->GetIndexArray().GetAt(uv_idx);
 			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[0]);
 			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[1]);
 			break;
-
+		}
 		default:
 			return false;
 		}

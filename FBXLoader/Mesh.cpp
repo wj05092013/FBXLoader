@@ -6,15 +6,24 @@ ba::Mesh::Mesh() :
 {
 }
 
-void ba::Mesh::Draw(ID3D11DeviceContext* dc)
+void ba::Mesh::Draw(ID3D11DeviceContext* dc) const
 {
-	dc->IASetInputLayout(inputvertex::PosNormalTexTangent::kInputLayout);
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	UINT offset = 0;
 	dc->IASetVertexBuffers(0, 1, &vb_, &vertex_stride_, &offset);
 
 	dc->Draw(vertices_.size(), 0);
+}
+
+void ba::Mesh::set_material(const Material& material)
+{
+	material_ = material;
+}
+
+const ba::Material& ba::Mesh::material() const
+{
+	return material_;
 }
 
 bool ba::Mesh::Init(ID3D11Device* device)

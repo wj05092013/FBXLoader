@@ -6,7 +6,7 @@ PCH: No
 
 namespace ba
 {
-	class FBXLoaderTester : public Application
+	class FBXLoaderTester final : public Application
 	{
 	public:
 		FBXLoaderTester();
@@ -21,7 +21,11 @@ namespace ba
 		bool InitDirectX() override;
 		void ReleaseDirectX() override;
 
+		void InitSceneBounds();
 		void InitLights();
+
+		bool InitModels();
+		void ReleaseModels();
 
 		void SetEffectVariablesPerFrame();
 		void SetEffectVariablesPerResize();
@@ -37,10 +41,22 @@ namespace ba
 		void OnMouseRBtnUp(WPARAM w_par, int x, int y) override;
 
 	private:
-		Model* model_;
-		ModelInstance model_inst_;
+		Renderer renderer_;
+
+		static const UINT kShadowMapSize;
+		ShadowMap::BoundingSphere scene_bounds_;
+		ShadowMap shadow_map_;
+
+		SSAOMap ssao_map_;
+
+		// Scene objects.
+		//
+		Model* wolf_model_;
+		Model* floor_model_;
+		std::vector<ModelInstance> model_instances_;
 
 		DirectionalLight lights_[3];
+		//__
 
 		// Properties related to camera contorl.
 		//

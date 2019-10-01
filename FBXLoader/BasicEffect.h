@@ -6,7 +6,7 @@ PCH: Yes
 
 namespace ba
 {
-	class BasicEffect : public EffectWrapper
+	class BasicEffect final : public EffectWrapper
 	{
 	public:
 		enum TechType
@@ -107,16 +107,16 @@ namespace ba
 
 	public:
 		BasicEffect();
-		virtual ~BasicEffect() override;
+		~BasicEffect() override;
 
-		virtual bool Init(ID3D11Device* device, const std::wstring& file_name) override;
-		virtual void Release();
+		bool Init(ID3D11Device* device, const std::wstring& file_name) override;
+		void Release() override;
 
 		ID3DX11EffectTechnique* tech(TechType type);
 
 
 		//
-		// Set constant buffers.
+		// Set Effect Variables
 		//
 
 		// Per object.
@@ -137,8 +137,6 @@ namespace ba
 		void SetEyePos(const XMFLOAT3& pos_w);
 		void SetView(const XMMATRIX& matrix);
 		void SetShadowTransform(const XMMATRIX& matrix);
-		void SetShadowMap(ID3D11ShaderResourceView* srv);
-		void SetSSAOMap(ID3D11ShaderResourceView* srv);
 		//__
 
 		// Per resize.
@@ -155,6 +153,8 @@ namespace ba
 		void SetFogColor(const XMVECTOR& color);
 		void SetShadowMapSize(float size);
 		void SetToTex(const XMMATRIX& matrix);
+		void SetShadowMap(ID3D11ShaderResourceView* srv);
+		void SetSSAOMap(ID3D11ShaderResourceView* srv);
 		void SetCubeMap(ID3D11ShaderResourceView* srv);
 		//__
 

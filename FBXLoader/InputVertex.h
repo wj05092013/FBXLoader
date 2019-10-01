@@ -54,7 +54,7 @@ namespace ba
 				XMFLOAT2 uv;
 				XMFLOAT3 tangent;
 				XMFLOAT3 blend_weights;
-				XMBYTE4 bone_indices;
+				UCHAR bone_indices[4];
 			};
 			static const D3D11_INPUT_ELEMENT_DESC kInputElemDesc[6];
 			static ID3D11InputLayout* kInputLayout;
@@ -69,8 +69,9 @@ namespace ba
 		bool InitAll(ID3D11Device* device);
 		void ReleaseAll();
 
-		PosNormalTex kPosNormalTex;
-		PosNormalTexTanSkinned kPosNormalTexTanSkinned;
+		extern PosNormalTex kPosNormalTex;
+		extern PosNormalTexTangent kPosNormalTexTangent;
+		extern PosNormalTexTanSkinned kPosNormalTexTanSkinned;
 		//__
 	}
 }

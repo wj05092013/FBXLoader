@@ -17,12 +17,22 @@ namespace ba
 
 		// .fxo file names to create effect interfaces with.
 		//
-		const std::wstring kBasicEffectFileName = L"Basic.fxo";
+		const std::wstring kBasicEffectFileName = L"FX/Basic.fxo";
+		const std::wstring kNormalMappingEffectFileName = L"FX/NormalMapping.fxo";
+		const std::wstring kShadowMapEffectFileName = L"FX/ShadowMap.fxo";
+		const std::wstring kNormalDepthMapEffectFileName = L"FX/NormalDepthMap.fxo";
+		const std::wstring kSSAOMapEffectFileName = L"FX/SSAOMap.fxo";
+		const std::wstring kBlurSSAOMapEffectFileName = L"FX/BlurSSAOMap.fxo";
 		//__
 
 		// Instances.
 		//
-		BasicEffect kBasicEffect;
+		extern BasicEffect kBasicEffect;
+		extern NormalMappingEffect kNormalMappingEffect;
+		extern ShadowMapEffect kShadowMapEffect;
+		extern NormalDepthMapEffect kNormalDepthMapEffect;
+		extern SSAOMapEffect kSSAOMapEffect;
+		extern BlurSSAOEffect kBlurSSAOEffect;
 		//__
 	}
 }

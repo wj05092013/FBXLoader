@@ -14,7 +14,10 @@ namespace ba
 		bool Init(ID3D11Device* device);
 		void Release();
 
-		void Draw(ID3D11DeviceContext* dc);
+		void Draw(ID3D11DeviceContext* dc) const;
+
+		void set_material(const Material& material);
+		const Material& material() const;
 
 	private:
 		bool BuildGeometryBuffer(ID3D11Device* device);
@@ -26,6 +29,6 @@ namespace ba
 		ID3D11Buffer* vb_;
 		UINT vertex_stride_;
 
-		// Add materials.
+		Material material_;
 	};
 }

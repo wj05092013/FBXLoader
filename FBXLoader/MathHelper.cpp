@@ -21,7 +21,7 @@ float ba::mathhelper::AngleFromXY(float x, float y)
 	return theta;
 }
 
-XMMATRIX ba::mathhelper::InverseTranspose(CXMMATRIX m)
+DirectX::XMMATRIX ba::mathhelper::InverseTranspose(DirectX::CXMMATRIX m)
 {
 	// Inverse-transpose is just applied to normals.
 	//  So zero out translation row so that it doesn't get into our inverse-transpose
@@ -33,7 +33,7 @@ XMMATRIX ba::mathhelper::InverseTranspose(CXMMATRIX m)
 	return XMMatrixTranspose(XMMatrixInverse(&det, a));
 }
 
-XMVECTOR ba::mathhelper::RandUnitVec3()
+DirectX::XMVECTOR ba::mathhelper::RandUnitVec3()
 {
 	XMVECTOR one = XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
 	XMVECTOR zero = XMVectorZero();
@@ -54,7 +54,7 @@ XMVECTOR ba::mathhelper::RandUnitVec3()
 	}
 }
 
-XMVECTOR ba::mathhelper::RandHemisphereUnitVec3(XMVECTOR n)
+DirectX::XMVECTOR ba::mathhelper::RandHemisphereUnitVec3(DirectX::XMVECTOR n)
 {
 	XMVECTOR one = XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
 	XMVECTOR zero = XMVectorZero();

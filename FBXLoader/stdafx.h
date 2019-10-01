@@ -23,17 +23,19 @@
 #include <map>
 
 // Windows header files.
-#include <windows.h>
+#include <Windows.h>
 #include <windowsx.h>
 
 // DirectX11 header files.
+#include <D3D11.h>
 #include <D3DX11.h>
-#include <xnamath.h>
+#include <DirectXMath.h>
 
 // Other library header files.
 #include <fbxsdk.h>
 
 // Current project's header files.
+#include "UsingNamespace.h"
 #include "Uncopiable.h"
 #include "Unconstructable.h"
 #include "Constants.h"
@@ -41,17 +43,25 @@
 #include "MathHelper.h"
 #include "Timer.h"
 #include "Light.h"
-#include "Camera.h"
-#include "TextureManager.h"
 
 #include "d3dx11effect.h"
 #include "EffectWrapper.h"
 #include "BasicEffect.h"
+#include "NormalMappingEffect.h"
+#include "ShadowMapEffect.h"
+#include "NormalDepthMapEffect.h"
+#include "SSAOMapEffect.h"
+#include "BlurSSAOEffect.h"
 #include "Effects.h"
 
 #include "InputVertex.h"
+#include "Camera.h"
 #include "Mesh.h"
 #include "Model.h"
+#include "TextureManager.h"
+#include "ShadowMap.h"
+#include "SSAOMap.h"
+#include "Renderer.h"
 
 #include "FBXLoader.h"
 #include "Application.h"

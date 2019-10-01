@@ -4,11 +4,11 @@ namespace ba
 {
 	struct DirectionalLight
 	{
-		XMFLOAT4 ambient;
-		XMFLOAT4 diffuse;
-		XMFLOAT4 specular;
+		DirectX::XMFLOAT4 ambient;
+		DirectX::XMFLOAT4 diffuse;
+		DirectX::XMFLOAT4 specular;
 
-		XMFLOAT3 direction;
+		DirectX::XMFLOAT3 direction;
 		float pad;
 
 		DirectionalLight();
@@ -16,14 +16,14 @@ namespace ba
 
 	struct PointLight
 	{
-		XMFLOAT4 ambient;
-		XMFLOAT4 diffuse;
-		XMFLOAT4 specular;
+		DirectX::XMFLOAT4 ambient;
+		DirectX::XMFLOAT4 diffuse;
+		DirectX::XMFLOAT4 specular;
 
-		XMFLOAT3 pos;
+		DirectX::XMFLOAT3 pos;
 		float range;
 
-		XMFLOAT3 attenuation;
+		DirectX::XMFLOAT3 attenuation;
 		float pad;
 
 		PointLight();
@@ -31,17 +31,17 @@ namespace ba
 
 	struct SpotLight
 	{
-		XMFLOAT4 ambient;
-		XMFLOAT4 diffuse;
-		XMFLOAT4 specular;
+		DirectX::XMFLOAT4 ambient;
+		DirectX::XMFLOAT4 diffuse;
+		DirectX::XMFLOAT4 specular;
 
-		XMFLOAT3 pos;
+		DirectX::XMFLOAT3 pos;
 		float range;
 
-		XMFLOAT3 direction;
+		DirectX::XMFLOAT3 direction;
 		float spot;
 
-		XMFLOAT3 attenuation;
+		DirectX::XMFLOAT3 attenuation;
 		float pad;
 
 		SpotLight();
@@ -49,10 +49,10 @@ namespace ba
 
 	struct Material
 	{
-		XMFLOAT4 ambient;
-		XMFLOAT4 diffuse;
-		XMFLOAT4 specular;
-		XMFLOAT4 reflection;
+		DirectX::XMFLOAT4 ambient;
+		DirectX::XMFLOAT4 diffuse;
+		DirectX::XMFLOAT4 specular;
+		DirectX::XMFLOAT4 reflection;
 
 		Material();
 	};

@@ -475,7 +475,7 @@ void ba::Application::BindMainRenderTargetsAndViewport()
 	dc_->RSSetViewports(1, &viewport_);
 }
 
-float ba::Application::GetAspectRatio() const
+float ba::Application::aspect_ratio() const
 {
 	return float(client_width_) / float(client_height_);
 }

@@ -17,10 +17,10 @@ namespace ba
 		void Init();
 		void Release();
 
-		bool Load(const std::string& filename, Model::EffectType effect_type, Model& out_model);
+		bool Load(const std::string& filename, Model& out_model);
 
 	private:
-		bool Load(FbxNode* node, Model& out_model);
+		bool LoadNode(FbxNode* node, Model& out_model);
 
 		bool LoadMesh(FbxMesh* fbx_mesh, Model& out_model);
 

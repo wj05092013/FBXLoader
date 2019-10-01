@@ -52,12 +52,30 @@
     <Filter Include="Sources\Graphics\Effect">
       <UniqueIdentifier>{01879472-302d-486f-b79f-1032f6a06c5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{80173e56-29e8-472c-a5d8-6416c5320520}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FX\Basic.fx">
       <Filter>FX</Filter>
     </FxCompile>
     <FxCompile Include="FX\LightingHelper.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="FX\ShadowMap.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="FX\NormalDepthMap.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="FX\BlurSSAOMap.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="FX\SSAOMap.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="FX\NormalMapping.fx">
       <Filter>FX</Filter>
     </FxCompile>
   </ItemGroup>
@@ -128,6 +146,33 @@
     <ClInclude Include="Mesh.h">
       <Filter>Includes\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>Includes\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMapEffect.h">
+      <Filter>Includes\Graphics\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Includes\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalDepthMapEffect.h">
+      <Filter>Includes\Graphics\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="SSAOMapEffect.h">
+      <Filter>Includes\Graphics\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="BlurSSAOEffect.h">
+      <Filter>Includes\Graphics\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="SSAOMap.h">
+      <Filter>Includes\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="UsingNamespace.h">
+      <Filter>Includes\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMappingEffect.h">
+      <Filter>Includes\Graphics\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -172,20 +217,35 @@
     <ClCompile Include="TextureManager.cpp">
       <Filter>Sources\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="SampleCode.cpp">
-      <Filter>Sources\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="SampleCode2.cpp">
-      <Filter>Sources\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="SampleCode3.cpp">
-      <Filter>Sources\Application</Filter>
-    </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Sources\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>Sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMapEffect.cpp">
+      <Filter>Sources\Graphics\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalDepthMapEffect.cpp">
+      <Filter>Sources\Graphics\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="SSAOMapEffect.cpp">
+      <Filter>Sources\Graphics\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="BlurSSAOEffect.cpp">
+      <Filter>Sources\Graphics\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="SSAOMap.cpp">
+      <Filter>Sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalMappingEffect.cpp">
+      <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,5 +265,16 @@
     <Text Include="TODO List.txt">
       <Filter>Documents</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Model\Wolf.fbx">
+      <Filter>Model</Filter>
+    </None>
+    <None Include="Model\Wolf_fbx.fbx">
+      <Filter>Model</Filter>
+    </None>
+    <None Include="Model\Wolf_with_Animations.fbx">
+      <Filter>Model</Filter>
+    </None>
   </ItemGroup>
 </Project>

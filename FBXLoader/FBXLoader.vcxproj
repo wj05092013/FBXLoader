@@ -20,11 +20,20 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FX\Basic.fx" />
+    <FxCompile Include="FX\BlurSSAOMap.fx" />
+    <FxCompile Include="FX\NormalMapping.fx" />
+    <FxCompile Include="FX\ShadowMap.fx" />
     <FxCompile Include="FX\LightingHelper.fx" />
+    <FxCompile Include="FX\NormalDepthMap.fx" />
+    <FxCompile Include="FX\SSAOMap.fx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="BasicEffect.h" />
+    <ClInclude Include="BlurSSAOEffect.h" />
+    <ClInclude Include="NormalDepthMapEffect.h" />
+    <ClInclude Include="NormalMappingEffect.h" />
+    <ClInclude Include="ShadowMapEffect.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="d3dx11effect.h" />
@@ -38,22 +47,31 @@
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ShadowMap.h" />
+    <ClInclude Include="SSAOMap.h" />
+    <ClInclude Include="SSAOMapEffect.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Unconstructable.h" />
     <ClInclude Include="Uncopiable.h" />
+    <ClInclude Include="UsingNamespace.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="BasicEffect.cpp" />
+    <ClCompile Include="BlurSSAOEffect.cpp" />
+    <ClCompile Include="NormalDepthMapEffect.cpp" />
+    <ClCompile Include="NormalMappingEffect.cpp" />
+    <ClCompile Include="ShadowMapEffect.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Effects.cpp" />
     <ClCompile Include="EffectWrapper.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="SampleCode.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="FBXLoader.cpp" />
     <ClCompile Include="FBXLoaderTester.cpp" />
     <ClCompile Include="InputVertex.cpp" />
@@ -61,9 +79,13 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="SampleCode2.cpp" />
-    <ClCompile Include="SampleCode3.cpp" />
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="ShadowMap.cpp" />
+    <ClCompile Include="SSAOMap.cpp" />
+    <ClCompile Include="SSAOMapEffect.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
@@ -76,6 +98,11 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO List.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Model\Wolf.fbx" />
+    <None Include="Model\Wolf_fbx.fbx" />
+    <None Include="Model\Wolf_with_Animations.fbx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

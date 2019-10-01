@@ -170,7 +170,7 @@ void ba::BasicEffect::Release()
 		techs_ = nullptr;
 	}
 
-	Release();
+	EffectWrapper::Release();
 }
 
 ID3DX11EffectTechnique* ba::BasicEffect::tech(TechType type)
@@ -223,16 +223,6 @@ void ba::BasicEffect::SetShadowTransform(const XMMATRIX& matrix)
 	shadow_transform_->SetMatrix(reinterpret_cast<const float*>(&matrix));
 }
 
-void ba::BasicEffect::SetShadowMap(ID3D11ShaderResourceView* srv)
-{
-	shadow_map_->SetResource(srv);
-}
-
-void ba::BasicEffect::SetSSAOMap(ID3D11ShaderResourceView* srv)
-{
-	ssao_map_->SetResource(srv);
-}
-
 void ba::BasicEffect::SetProj(const XMMATRIX& matrix)
 {
 	proj_->SetMatrix(reinterpret_cast<const float*>(&matrix));
@@ -266,6 +256,16 @@ void ba::BasicEffect::SetShadowMapSize(float size)
 void ba::BasicEffect::SetToTex(const XMMATRIX& matrix)
 {
 	to_tex_->SetMatrix(reinterpret_cast<const float*>(&matrix));
+}
+
+void ba::BasicEffect::SetShadowMap(ID3D11ShaderResourceView* srv)
+{
+	shadow_map_->SetResource(srv);
+}
+
+void ba::BasicEffect::SetSSAOMap(ID3D11ShaderResourceView* srv)
+{
+	ssao_map_->SetResource(srv);
 }
 
 void ba::BasicEffect::SetCubeMap(ID3D11ShaderResourceView* srv)

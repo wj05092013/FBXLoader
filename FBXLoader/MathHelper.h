@@ -8,6 +8,8 @@ namespace ba
 {
 	namespace mathhelper
 	{
+		using namespace DirectX;
+
 		static float RandF()
 		{
 			return (float)(rand()) / (float)RAND_MAX;
