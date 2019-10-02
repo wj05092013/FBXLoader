@@ -20,8 +20,15 @@ void ba::Renderer::Release()
 {
 }
 
-void ba::Renderer::RenderNormaly(const std::vector<ModelInstance>& model_instances)
+void ba::Renderer::RenderNormaly(const std::vector<ModelInstance>& model_instances, ID3D11RenderTargetView* rtv, ID3D11DepthStencilView* dsv, const D3D11_VIEWPORT* viewport)
 {
+	ID3D11RenderTargetView* rtvs_[1] = { rtv };
+	dc_->OMSetRenderTargets(1, rtvs_, dsv);
+	dc_->RSSetViewports(1, viewport);
+
+	dc_->ClearRenderTargetView(rtv, reinterpret_cast<const float*>(&color::kMagenta));
+	dc_->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0U);
+
 	dc_->IASetInputLayout(inputvertex::PosNormalTex::kInputLayout);
 
 	ID3DX11EffectTechnique* tech = nullptr;

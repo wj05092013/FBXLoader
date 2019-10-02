@@ -81,7 +81,6 @@ namespace ba
 		bool CreateRenderTargetView();
 		bool CreateDepthStencilView();
 		void InitViewport();
-		void BindMainRenderTargetsAndViewport();
 		//__
 
 	protected:

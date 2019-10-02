@@ -280,8 +280,6 @@ bool ba::Application::InitDirectX()
 
 	InitViewport();
 
-	BindMainRenderTargetsAndViewport();
-
 	return true;
 }
 
@@ -323,7 +321,6 @@ bool ba::Application::OnResize()
 		return false;
 
 	InitViewport();
-	BindMainRenderTargetsAndViewport();
 
 	return true;
 }
@@ -465,14 +462,6 @@ void ba::Application::InitViewport()
 	viewport_.Height = static_cast<float>(client_height_);
 	viewport_.MinDepth = 0.0f;
 	viewport_.MaxDepth = 1.0f;
-}
-
-void ba::Application::BindMainRenderTargetsAndViewport()
-{
-	ID3D11RenderTargetView* rtvs[1] = { rtv_ };
-	dc_->OMSetRenderTargets(1, rtvs, dsv_);
-
-	dc_->RSSetViewports(1, &viewport_);
 }
 
 float ba::Application::aspect_ratio() const

@@ -31,9 +31,6 @@ ba::FBXLoaderTester::~FBXLoaderTester()
 
 void ba::FBXLoaderTester::Render()
 {
-	dc_->ClearRenderTargetView(rtv_, reinterpret_cast<const float*>(&ba::color::kMagenta));
-	dc_->ClearDepthStencilView(dsv_, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0U);
-
 	SetEffectVariablesPerFrame();
 
 	renderer_.RenderShadowMap(model_instances_, shadow_map_);
@@ -42,7 +39,7 @@ void ba::FBXLoaderTester::Render()
 	ssao_map_.BuildSSAOMap(cam_);
 	ssao_map_.BlurSSAOMap(4);
 
-	renderer_.RenderNormaly(model_instances_);
+	renderer_.RenderNormaly(model_instances_, rtv_, dsv_, &viewport_);
 
 	swap_chain_->Present(0U, 0U);
 }
