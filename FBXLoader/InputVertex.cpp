@@ -59,7 +59,7 @@ bool ba::inputvertex::PosNormalTexTangent::Init(ID3D11Device* device)
 	tech->GetPassByIndex(0)->GetDesc(&pass_desc);
 
 	HRESULT res = device->CreateInputLayout(
-		kInputElemDesc, 6,
+		kInputElemDesc, 4,
 		pass_desc.pIAInputSignature, pass_desc.IAInputSignatureSize, &kInputLayout
 	);
 	if (FAILED(res))

@@ -14,6 +14,7 @@ bool ba::EffectWrapper::Init(ID3D11Device* device, const std::wstring& file_name
 	if (effect_)
 		return false;
 
+	file_name_ = file_name;
 	std::wstring const& substr = file_name_.substr(file_name_.find_last_of(L".") + 1);
 
 	if (substr == L"fx")

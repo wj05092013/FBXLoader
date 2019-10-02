@@ -22,7 +22,7 @@ void ba::Renderer::Release()
 
 void ba::Renderer::RenderNormaly(const std::vector<ModelInstance>& model_instances)
 {
-	dc_->IASetInputLayout(inputvertex::PosNormalTexTangent::kInputLayout);
+	dc_->IASetInputLayout(inputvertex::PosNormalTex::kInputLayout);
 
 	ID3DX11EffectTechnique* tech = nullptr;
 
@@ -62,7 +62,7 @@ void ba::Renderer::RenderShadowMap(const std::vector<ModelInstance>& model_insta
 	dc_->ClearDepthStencilView(shadow_map.dsv(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	dc_->RSSetViewports(1, &shadow_map.viewport());
 
-	dc_->IASetInputLayout(inputvertex::PosNormalTexTangent::kInputLayout);
+	dc_->IASetInputLayout(inputvertex::PosNormalTex::kInputLayout);
 
 	ID3DX11EffectTechnique* tech = nullptr;
 
@@ -103,7 +103,7 @@ void ba::Renderer::RenderNormalDepthMap(const std::vector<ModelInstance>& model_
 	dc_->ClearRenderTargetView(rtvs_[0], clear_color);
 	dc_->ClearDepthStencilView(ssao_map.dsv(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	dc_->IASetInputLayout(inputvertex::PosNormalTexTangent::kInputLayout);
+	dc_->IASetInputLayout(inputvertex::PosNormalTex::kInputLayout);
 
 	ID3DX11EffectTechnique* tech = nullptr;
 

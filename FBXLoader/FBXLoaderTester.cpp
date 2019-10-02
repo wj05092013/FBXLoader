@@ -82,10 +82,11 @@ bool ba::FBXLoaderTester::InitDirectX()
 		return false;
 	if (!ssao_map_.Init(device_, dc_, client_width_, client_height_, kFovY, kFarZ))
 		return false;
-	if (!InitModels())
-		return false;
 
 	FBXLoader::GetInstance().Init();
+
+	if (!InitModels())
+		return false;
 
 	InitSceneBounds();
 	InitLights();
@@ -151,6 +152,7 @@ bool ba::FBXLoaderTester::InitModels()
 	if (!FBXLoader::GetInstance().Load(file_name, *wolf_model_))
 		return false;
 
+	wolf_model_->mesh_.Init(device_);
 	wolf_model_->mesh_.set_material(material);
 	//__
 
@@ -189,15 +191,18 @@ bool ba::FBXLoaderTester::InitModels()
 	floor_model_->mesh_.vertices_[5].uv = XMFLOAT2(1.0f, 1.0f);
 	floor_model_->mesh_.vertices_[5].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
+	floor_model_->mesh_.Init(device_);
 	floor_model_->mesh_.set_material(material);
 	//__
 
 	ModelInstance model_inst;
 
 	model_inst.model_ = wolf_model_;
+	XMStoreFloat4x4(&model_inst.world_, XMMatrixIdentity());
 	model_instances_.push_back(model_inst);
 
 	model_inst.model_ = floor_model_;
+	XMStoreFloat4x4(&model_inst.world_, XMMatrixIdentity());
 	model_instances_.push_back(model_inst);
 
 	return true;

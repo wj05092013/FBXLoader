@@ -41,8 +41,6 @@ namespace ba
 
 			bool Init(ID3D11Device* device);
 			void Release();
-
-			
 		};
 
 		struct PosNormalTexTanSkinned : public Uncopiable

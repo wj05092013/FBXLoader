@@ -121,11 +121,16 @@ bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Model& out_model)
 {
 	if (!fbx_mesh->IsTriangleMesh())
 		return false;
-
+	
 	if (fbx_mesh->GetElementNormalCount() < 1)
+	{
 		return false;
+	}
 	if (fbx_mesh->GetElementTangentCount() < 1)
-		return false;
+	{
+		if (!fbx_mesh->GenerateTangentsDataForAllUVSets())
+			return false;
+	}
 	if (fbx_mesh->GetElementUVCount() < 1)
 		return false;
 

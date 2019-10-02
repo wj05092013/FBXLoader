@@ -48,7 +48,7 @@ bool ba::Mesh::BuildGeometryBuffer(ID3D11Device* device)
 		return false;
 	}
 
-	vertex_stride_ = sizeof(inputvertex::PosNormalTexTangent);
+	vertex_stride_ = sizeof(inputvertex::PosNormalTexTangent::Vertex);
 
 	D3D11_BUFFER_DESC vb_desc{};
 	vb_desc.ByteWidth = vertices_.size() * vertex_stride_;

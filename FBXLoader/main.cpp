@@ -10,9 +10,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	ba::FBXLoaderTester tester;
 
-	tester.Init(hInstance);
-
-	tester.Run();
-
-	tester.Release();
+	if (tester.Init(hInstance))
+	{
+		tester.Run();
+		tester.Release();
+	}
 }
