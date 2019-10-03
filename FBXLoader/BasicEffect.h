@@ -137,6 +137,8 @@ namespace ba
 		void SetEyePos(const XMFLOAT3& pos_w);
 		void SetView(const XMMATRIX& matrix);
 		void SetShadowTransform(const XMMATRIX& matrix);
+		void SetShadowMap(ID3D11ShaderResourceView* srv);
+		void SetSSAOMap(ID3D11ShaderResourceView* srv);
 		//__
 
 		// Per resize.
@@ -153,8 +155,6 @@ namespace ba
 		void SetFogColor(const XMVECTOR& color);
 		void SetShadowMapSize(float size);
 		void SetToTex(const XMMATRIX& matrix);
-		void SetShadowMap(ID3D11ShaderResourceView* srv);
-		void SetSSAOMap(ID3D11ShaderResourceView* srv);
 		void SetCubeMap(ID3D11ShaderResourceView* srv);
 		//__
 

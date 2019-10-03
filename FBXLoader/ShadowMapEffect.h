@@ -46,7 +46,8 @@ namespace ba
 
 		// Per frame.
 		//
-		void SetLightViewProj(const XMMATRIX& matrix);
+		void SetLightView(const XMMATRIX& matrix);
+		void SetLightProj(const XMMATRIX& matrix);
 		//__
 
 	private:
@@ -58,6 +59,7 @@ namespace ba
 		ID3DX11EffectShaderResourceVariable* diffuse_map_;
 		ID3DX11EffectMatrixVariable* bone_transforms_;
 		
-		ID3DX11EffectMatrixVariable* light_view_proj_;
+		ID3DX11EffectMatrixVariable* light_view_;
+		ID3DX11EffectMatrixVariable* light_proj_;
 	};
 }

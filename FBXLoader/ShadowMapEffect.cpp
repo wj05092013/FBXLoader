@@ -8,7 +8,8 @@ ba::ShadowMapEffect::ShadowMapEffect() :
 	diffuse_map_(nullptr),
 	bone_transforms_(nullptr),
 
-	light_view_proj_(nullptr)
+	light_view_(nullptr),
+	light_proj_(nullptr)
 {
 }
 
@@ -39,7 +40,8 @@ bool ba::ShadowMapEffect::Init(ID3D11Device* device, const std::wstring& file_na
 	diffuse_map_ = e->GetVariableByName("diffuse_map")->AsShaderResource();
 	bone_transforms_ = e->GetVariableByName("bone_transforms")->AsMatrix();
 
-	light_view_proj_ = e->GetVariableByName("light_view_proj")->AsMatrix();
+	light_view_ = e->GetVariableByName("light_view")->AsMatrix();
+	light_proj_ = e->GetVariableByName("light_proj")->AsMatrix();
 
 	return true;
 }
@@ -85,7 +87,12 @@ void ba::ShadowMapEffect::SetBoneTransforms(const XMFLOAT4X4* matrices, UINT cou
 	bone_transforms_->SetMatrixArray(reinterpret_cast<const float*>(matrices), 0, count);
 }
 
-void ba::ShadowMapEffect::SetLightViewProj(const XMMATRIX& matrix)
+void ba::ShadowMapEffect::SetLightView(const XMMATRIX& matrix)
 {
-	light_view_proj_->SetMatrix(reinterpret_cast<const float*>(&matrix));
+	light_view_->SetMatrix(reinterpret_cast<const float*>(&matrix));
+}
+
+void ba::ShadowMapEffect::SetLightProj(const XMMATRIX& matrix)
+{
+	light_proj_->SetMatrix(reinterpret_cast<const float*>(&matrix));
 }

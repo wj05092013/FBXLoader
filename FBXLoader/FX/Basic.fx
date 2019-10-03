@@ -24,6 +24,8 @@ cbuffer CBPerFrame
     float4x4 view;
     float4x4 shadow_transform;
 };
+Texture2D shadow_map;
+Texture2D ssao_map;
 
 cbuffer CBPerResize
 {
@@ -42,8 +44,6 @@ cbuffer CBChangeRarely
 
     float4x4 to_tex;
 };
-Texture2D shadow_map;
-Texture2D ssao_map;
 TextureCube cube_map;
 
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FBXLoaderTester.h"
 
-const UINT ba::FBXLoaderTester::kShadowMapSize = 2048;
+const float ba::FBXLoaderTester::kShadowMapSize = 2048.0f;
 
 const DirectX::XMVECTOR ba::FBXLoaderTester::kInitCamPos = XMVectorSet(0.0f, 1.0f, -15.0f, 1.0f);
 const DirectX::XMVECTOR ba::FBXLoaderTester::kInitCamTarget = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
@@ -31,15 +31,19 @@ ba::FBXLoaderTester::~FBXLoaderTester()
 
 void ba::FBXLoaderTester::Render()
 {
-	SetEffectVariablesPerFrame();
+	Renderer::EffectVariableBundlePerFrame bundle;
 
-	renderer_.RenderShadowMap(model_instances_, shadow_map_);
+	// Render on shadow map.
+	renderer_.RenderShadowMap(model_instances_, bundle);
 
-	renderer_.RenderNormalDepthMap(model_instances_, ssao_map_);
+	// Render on normal-depth map;
+	renderer_.RenderNormalDepthMap(model_instances_, bundle);
+	// Build ssao map with the normal-depth map and blur it.
 	ssao_map_.BuildSSAOMap(cam_);
 	ssao_map_.BlurSSAOMap(4);
 
-	renderer_.RenderNormaly(model_instances_, rtv_, dsv_, &viewport_);
+	// Render on normal render targets.
+	renderer_.RenderScene(model_instances_, bundle);
 
 	swap_chain_->Present(0U, 0U);
 }
@@ -58,7 +62,8 @@ bool ba::FBXLoaderTester::OnResize()
 	cam_.SetLens(kFovY, aspect_ratio(), kNearZ, kFarZ);
 	ssao_map_.OnResize(client_width_, client_height_, kFovY, kFarZ);
 
-	SetEffectVariablesPerResize();
+	Renderer::EffectVariableBundlePerResize bundle;
+	renderer_.SetEffectVariablesOnResize(bundle);
 
 	return true;
 }
@@ -73,9 +78,9 @@ bool ba::FBXLoaderTester::InitDirectX()
 	if (!inputvertex::InitAll(device_))
 		return false;
 
-	if (!renderer_.Init(device_, dc_))
+	if (!renderer_.Init(dc_))
 		return false;
-	if (!shadow_map_.Init(device_, kShadowMapSize, kShadowMapSize))
+	if (!shadow_map_.Init(device_, static_cast<float>(kShadowMapSize), static_cast<float>(kShadowMapSize)))
 		return false;
 	if (!ssao_map_.Init(device_, dc_, client_width_, client_height_, kFovY, kFarZ))
 		return false;
@@ -88,7 +93,31 @@ bool ba::FBXLoaderTester::InitDirectX()
 	InitSceneBounds();
 	InitLights();
 
-	SetEffectVariablesChangeRarely();
+
+	Renderer::RenderingComponent rendering_component;
+	rendering_component.rtv = rtv_;
+	rendering_component.dsv = dsv_;
+	rendering_component.viewport = &viewport_;
+	rendering_component.cam = &cam_;
+	rendering_component.shadow_map = &shadow_map_;
+	rendering_component.ssao_map = &ssao_map_;
+
+	renderer_.set_rendering_component(rendering_component);
+
+	Renderer::EffectVariableBundleChangeRarely bundle;
+	bundle.directional_lights = lights_;
+	bundle.fog_start = 15.0f;
+	bundle.fog_range = 175.0f;
+	bundle.fog_color = color::kSilver;
+	bundle.shadow_map_size = kShadowMapSize;
+	bundle.to_tex = XMMATRIX(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f
+	);
+
+	renderer_.SetEffectVariablesChangeRarely(bundle);
 
 	return true;
 }
@@ -219,46 +248,6 @@ void ba::FBXLoaderTester::ReleaseModels()
 	}
 
 	model_instances_.clear();
-}
-
-void ba::FBXLoaderTester::SetEffectVariablesPerFrame()
-{
-	effects::kBasicEffect.SetEyePos(cam_.position_w_xf());
-	effects::kBasicEffect.SetView(cam_.view());
-	effects::kBasicEffect.SetShadowTransform(shadow_map_.world_to_tex());
-
-	effects::kShadowMapEffect.SetLightViewProj(shadow_map_.view() * shadow_map_.proj());
-
-	effects::kNormalDepthMapEffect.SetView(cam_.view());
-}
-
-void ba::FBXLoaderTester::SetEffectVariablesPerResize()
-{
-	effects::kBasicEffect.SetProj(cam_.proj());
-
-	effects::kNormalDepthMapEffect.SetProj(cam_.proj());
-}
-
-void ba::FBXLoaderTester::SetEffectVariablesChangeRarely()
-{
-	XMMATRIX to_tex(
-		0.5f, 0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.0f, 1.0f
-	);
-
-	effects::kBasicEffect.SetDirectionalLights(lights_);
-	effects::kBasicEffect.SetFogStart(15.0f);
-	effects::kBasicEffect.SetFogRange(175.0f);
-	effects::kBasicEffect.SetFogColor(ba::color::kSilver);
-	effects::kBasicEffect.SetShadowMapSize(kShadowMapSize);
-	effects::kBasicEffect.SetToTex(to_tex);
-	effects::kBasicEffect.SetShadowMap(shadow_map_.srv());
-	effects::kBasicEffect.SetSSAOMap(ssao_map_.ssao_map_srv());
-
-	// For object reflection.
-	//effects::kBasicEffect.SetCubeMap();
 }
 
 void ba::FBXLoaderTester::UpdateOnKeyInput()

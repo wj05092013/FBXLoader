@@ -230,6 +230,16 @@ void ba::NormalMappingEffect::SetShadowTransform(const XMMATRIX& matrix)
 	shadow_transform_->SetMatrix(reinterpret_cast<const float*>(&matrix));
 }
 
+void ba::NormalMappingEffect::SetShadowMap(ID3D11ShaderResourceView* srv)
+{
+	shadow_map_->SetResource(srv);
+}
+
+void ba::NormalMappingEffect::SetSSAOMap(ID3D11ShaderResourceView* srv)
+{
+	ssao_map_->SetResource(srv);
+}
+
 void ba::NormalMappingEffect::SetProj(const XMMATRIX& matrix)
 {
 	proj_->SetMatrix(reinterpret_cast<const float*>(&matrix));
@@ -263,16 +273,6 @@ void ba::NormalMappingEffect::SetShadowMapSize(float size)
 void ba::NormalMappingEffect::SetToTex(const XMMATRIX& matrix)
 {
 	to_tex_->SetMatrix(reinterpret_cast<const float*>(&matrix));
-}
-
-void ba::NormalMappingEffect::SetShadowMap(ID3D11ShaderResourceView* srv)
-{
-	shadow_map_->SetResource(srv);
-}
-
-void ba::NormalMappingEffect::SetSSAOMap(ID3D11ShaderResourceView* srv)
-{
-	ssao_map_->SetResource(srv);
 }
 
 void ba::NormalMappingEffect::SetCubeMap(ID3D11ShaderResourceView* srv)

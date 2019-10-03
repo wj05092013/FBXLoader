@@ -27,10 +27,6 @@ namespace ba
 		bool InitModels();
 		void ReleaseModels();
 
-		void SetEffectVariablesPerFrame();
-		void SetEffectVariablesPerResize();
-		void SetEffectVariablesChangeRarely();
-
 	private:
 		void UpdateOnKeyInput() override;
 
@@ -43,7 +39,7 @@ namespace ba
 	private:
 		Renderer renderer_;
 
-		static const UINT kShadowMapSize;
+		static const float kShadowMapSize;
 		ShadowMap::BoundingSphere scene_bounds_;
 		ShadowMap shadow_map_;
 

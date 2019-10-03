@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
 ba::Renderer::Renderer() :
-	dc_(nullptr)
+	dc_(nullptr),
+	rendering_component_{}
 {
 }
 
@@ -9,7 +10,7 @@ ba::Renderer::~Renderer()
 {
 }
 
-bool ba::Renderer::Init(ID3D11Device* device, ID3D11DeviceContext* dc)
+bool ba::Renderer::Init(ID3D11DeviceContext* dc)
 {
 	dc_ = dc;
 
@@ -20,14 +21,14 @@ void ba::Renderer::Release()
 {
 }
 
-void ba::Renderer::RenderNormaly(const std::vector<ModelInstance>& model_instances, ID3D11RenderTargetView* rtv, ID3D11DepthStencilView* dsv, const D3D11_VIEWPORT* viewport)
+void ba::Renderer::RenderScene(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle)
 {
-	ID3D11RenderTargetView* rtvs_[1] = { rtv };
-	dc_->OMSetRenderTargets(1, rtvs_, dsv);
-	dc_->RSSetViewports(1, viewport);
+	ID3D11RenderTargetView* rtvs_[1] = { rendering_component_.rtv };
+	dc_->OMSetRenderTargets(1, rtvs_, rendering_component_.dsv);
+	dc_->RSSetViewports(1, rendering_component_.viewport);
 
-	dc_->ClearRenderTargetView(rtv, reinterpret_cast<const float*>(&color::kMagenta));
-	dc_->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0U);
+	dc_->ClearRenderTargetView(rendering_component_.rtv, reinterpret_cast<const float*>(&color::kMagenta));
+	dc_->ClearDepthStencilView(rendering_component_.dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0U);
 
 	dc_->IASetInputLayout(inputvertex::PosNormalTex::kInputLayout);
 
@@ -38,6 +39,13 @@ void ba::Renderer::RenderNormaly(const std::vector<ModelInstance>& model_instanc
 
 	// Delete this line later.
 	tech = effects::kBasicEffect.tech(BasicEffect::kLight3Fog);
+
+	// Set effect variables.
+	effects::kBasicEffect.SetEyePos(rendering_component_.cam->position_w_xf());
+	effects::kBasicEffect.SetView(rendering_component_.cam->view());
+	effects::kBasicEffect.SetShadowTransform(rendering_component_.shadow_map->world_to_tex());
+	effects::kBasicEffect.SetShadowMap(rendering_component_.shadow_map->srv());
+	effects::kBasicEffect.SetSSAOMap(rendering_component_.ssao_map->ssao_map_srv());
 
 	XMMATRIX world, world_inv_trans;
 
@@ -59,15 +67,20 @@ void ba::Renderer::RenderNormaly(const std::vector<ModelInstance>& model_instanc
 			tech->GetPassByIndex(p)->Apply(0, dc_);
 			model_instances[i].model_->mesh_.Draw(dc_);
 		}
+
+		// Unbind the SRVs in case the resources are bound as render targets.
+		effects::kBasicEffect.SetShadowMap(nullptr);
+		effects::kBasicEffect.SetSSAOMap(nullptr);
+		tech->GetPassByIndex(p)->Apply(0, dc_);
 	}
 }
 
-void ba::Renderer::RenderShadowMap(const std::vector<ModelInstance>& model_instances, ShadowMap& shadow_map)
+void ba::Renderer::RenderShadowMap(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle)
 {
 	ID3D11RenderTargetView* rtvs_[1] = { nullptr };
-	dc_->OMSetRenderTargets(1, rtvs_, shadow_map.dsv());
-	dc_->ClearDepthStencilView(shadow_map.dsv(), D3D11_CLEAR_DEPTH, 1.0f, 0);
-	dc_->RSSetViewports(1, &shadow_map.viewport());
+	dc_->OMSetRenderTargets(1, rtvs_, rendering_component_.shadow_map->dsv());
+	dc_->ClearDepthStencilView(rendering_component_.shadow_map->dsv(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+	dc_->RSSetViewports(1, &rendering_component_.shadow_map->viewport());
 
 	dc_->IASetInputLayout(inputvertex::PosNormalTex::kInputLayout);
 
@@ -78,6 +91,10 @@ void ba::Renderer::RenderShadowMap(const std::vector<ModelInstance>& model_insta
 
 	// Delete this line later.
 	tech = effects::kShadowMapEffect.tech(ShadowMapEffect::kBuildShadowMap);
+
+	// Set effect variables.
+	effects::kShadowMapEffect.SetLightView(rendering_component_.shadow_map->view());
+	effects::kShadowMapEffect.SetLightProj(rendering_component_.shadow_map->proj());
 
 	XMMATRIX world, world_inv_trans;
 
@@ -101,14 +118,15 @@ void ba::Renderer::RenderShadowMap(const std::vector<ModelInstance>& model_insta
 	dc_->RSSetState(nullptr);
 }
 
-void ba::Renderer::RenderNormalDepthMap(const std::vector<ModelInstance>& model_instances, SSAOMap& ssao_map)
+void ba::Renderer::RenderNormalDepthMap(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle)
 {
-	ID3D11RenderTargetView* rtvs_[1] = { ssao_map.normal_depth_map_rtv() };
-	dc_->OMSetRenderTargets(1, rtvs_, ssao_map.dsv());
+	ID3D11RenderTargetView* rtvs_[1] = { rendering_component_.ssao_map->normal_depth_map_rtv() };
+	dc_->OMSetRenderTargets(1, rtvs_, rendering_component_.ssao_map->dsv());
+	dc_->RSSetViewports(1, rendering_component_.viewport);
 
 	float clear_color[4] = { 0.0f, 0.0f, -1.0f, 1e5f };
 	dc_->ClearRenderTargetView(rtvs_[0], clear_color);
-	dc_->ClearDepthStencilView(ssao_map.dsv(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	dc_->ClearDepthStencilView(rendering_component_.ssao_map->dsv(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	dc_->IASetInputLayout(inputvertex::PosNormalTex::kInputLayout);
 
@@ -119,6 +137,9 @@ void ba::Renderer::RenderNormalDepthMap(const std::vector<ModelInstance>& model_
 
 	// Delete this line later.
 	tech = effects::kNormalDepthMapEffect.tech(NormalDepthMapEffect::kNormalDepthMap);
+
+	// Set effect variables.
+	effects::kNormalDepthMapEffect.SetView(rendering_component_.cam->view());
 
 	XMMATRIX world, world_inv_trans;
 
@@ -139,4 +160,35 @@ void ba::Renderer::RenderNormalDepthMap(const std::vector<ModelInstance>& model_
 			model_instances[i].model_->mesh_.Draw(dc_);
 		}
 	}
+}
+
+void ba::Renderer::SetEffectVariablesOnResize(const EffectVariableBundlePerResize& bundle)
+{
+	// BasicEffect
+	effects::kBasicEffect.SetProj(rendering_component_.cam->proj());
+
+	// ShadowMapEffect
+
+	// NormalDepthMapEffect
+	effects::kNormalDepthMapEffect.SetProj(rendering_component_.cam->proj());
+}
+
+void ba::Renderer::SetEffectVariablesChangeRarely(const EffectVariableBundleChangeRarely& bundle)
+{
+	// BasicEffect
+	effects::kBasicEffect.SetDirectionalLights(bundle.directional_lights);
+	effects::kBasicEffect.SetFogStart(bundle.fog_start);
+	effects::kBasicEffect.SetFogRange(bundle.fog_range);
+	effects::kBasicEffect.SetFogColor(bundle.fog_color);
+	effects::kBasicEffect.SetShadowMapSize(bundle.shadow_map_size);
+	effects::kBasicEffect.SetToTex(bundle.to_tex);
+
+	// ShadowMapEffect
+
+	// NormalDepthMapEffect
+}
+
+void ba::Renderer::set_rendering_component(RenderingComponent& rendering_component)
+{
+	rendering_component_ = rendering_component;
 }
