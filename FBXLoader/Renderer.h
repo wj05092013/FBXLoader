@@ -9,7 +9,7 @@ namespace ba
 	class Renderer : public Uncopiable
 	{
 	public:
-		struct RenderingComponent
+		struct RenderingComponents
 		{
 			ID3D11RenderTargetView* rtv;
 			ID3D11DepthStencilView* dsv;
@@ -24,7 +24,7 @@ namespace ba
 			// Empty now.
 		};
 
-		struct EffectVariableBundlePerResize
+		struct EffectVariableBundleOnStartAndResize
 		{
 			// Empty now.
 		};
@@ -50,14 +50,14 @@ namespace ba
 		void RenderShadowMap(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle);
 		void RenderNormalDepthMap(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle);
 
-		void SetEffectVariablesOnResize(const EffectVariableBundlePerResize& bundle);
+		void SetEffectVariablesOnStartAndResize(const EffectVariableBundleOnStartAndResize& bundle);
 
 		void SetEffectVariablesChangeRarely(const EffectVariableBundleChangeRarely& bundle);
 
-		void set_rendering_component(RenderingComponent& rendering_component);
+		void set_rendering_components(RenderingComponents& rendering_component);
 
 	private:
 		ID3D11DeviceContext* dc_;
-		RenderingComponent rendering_component_;
+		RenderingComponents rendering_components_;
 	};
 }

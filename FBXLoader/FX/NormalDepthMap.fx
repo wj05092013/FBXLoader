@@ -62,12 +62,12 @@ VSOut VS(VSIn vs_in)
 {
     VSOut vs_out;
 
-    float4x4 world_view = world * view;
-    float4x4 world_view_proj = world_view * proj;
+    float4x4 world_view = mul(world, view);
+    float4x4 world_view_proj = mul(world_view, proj);
 
     vs_out.pos_h = mul(float4(vs_in.pos_l, 1.0f), world_view_proj);
     vs_out.pos_v = mul(float4(vs_in.pos_l, 1.0f), world_view).xyz;
-    vs_out.normal_v = mul(vs_in.normal_l, (float3x3) (world_inv_trans * view));
+    vs_out.normal_v = mul(vs_in.normal_l, (float3x3) mul(world_inv_trans, view));
     vs_out.tex = mul(float4(vs_in.tex, 0.0f, 1.0f), tex_mapping).xy;
 
     return vs_out;

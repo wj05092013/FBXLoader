@@ -77,7 +77,7 @@ VSOut VS(VSIn vs_in)
 {
     VSOut vs_out;
 
-    vs_out.pos_h = mul(float4(vs_in.pos_l, 1.0f), world * light_view * light_proj);
+    vs_out.pos_h = mul(float4(vs_in.pos_l, 1.0f), mul(mul(world, light_view), light_proj));
     vs_out.tex = mul(float4(vs_in.tex, 0.0f, 1.0f), tex_mapping).xy;
 
     return vs_out;
@@ -100,7 +100,7 @@ VSOut SkinnedVS(SkinnedVSIn vs_in)
 
     VSOut vs_out;
 
-    vs_out.pos_h = mul(float4(pos_l, 1.0f), world * light_view * light_proj);
+    vs_out.pos_h = mul(float4(pos_l, 1.0f), mul(mul(world, light_view), light_proj));
     vs_out.tex = mul(float4(vs_in.tex, 0.0f, 1.0f), tex_mapping).xy;
 
     return vs_out;

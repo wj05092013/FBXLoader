@@ -126,7 +126,7 @@ float4 PS(VSOut ps_in, uniform int sample_count) : SV_Target
 
         float3 q = p + flip * kOcclusionRadius * offset;
 
-        float4 tex_q = mul(float4(q, 1.0f), proj * to_tex);
+        float4 tex_q = mul(float4(q, 1.0f), mul(proj, to_tex));
         tex_q /= tex_q.w;
 
         float r_z = normal_depth_map.Sample(SSNormalDepthMap, tex_q.xy).w;

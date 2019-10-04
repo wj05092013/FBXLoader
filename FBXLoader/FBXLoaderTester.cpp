@@ -31,19 +31,17 @@ ba::FBXLoaderTester::~FBXLoaderTester()
 
 void ba::FBXLoaderTester::Render()
 {
-	Renderer::EffectVariableBundlePerFrame bundle;
-
 	// Render on shadow map.
-	renderer_.RenderShadowMap(model_instances_, bundle);
+	renderer_.RenderShadowMap(model_instances_, evb_per_frame_);
 
 	// Render on normal-depth map;
-	renderer_.RenderNormalDepthMap(model_instances_, bundle);
+	renderer_.RenderNormalDepthMap(model_instances_, evb_per_frame_);
 	// Build ssao map with the normal-depth map and blur it.
 	ssao_map_.BuildSSAOMap(cam_);
 	ssao_map_.BlurSSAOMap(4);
 
 	// Render on normal render targets.
-	renderer_.RenderScene(model_instances_, bundle);
+	renderer_.RenderScene(model_instances_, evb_per_frame_);
 
 	swap_chain_->Present(0U, 0U);
 }
@@ -62,8 +60,7 @@ bool ba::FBXLoaderTester::OnResize()
 	cam_.SetLens(kFovY, aspect_ratio(), kNearZ, kFarZ);
 	ssao_map_.OnResize(client_width_, client_height_, kFovY, kFarZ);
 
-	Renderer::EffectVariableBundlePerResize bundle;
-	renderer_.SetEffectVariablesOnResize(bundle);
+	renderer_.SetEffectVariablesOnStartAndResize(evb_on_start_and_resize_);
 
 	return true;
 }
@@ -82,6 +79,9 @@ bool ba::FBXLoaderTester::InitDirectX()
 	if (!ssao_map_.Init(device_, dc_, client_width_, client_height_, kFovY, kFarZ))
 		return false;
 
+	cam_.LookAt(XMFLOAT3(0.0f, 5.0f, -10.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
+	cam_.SetLens(kFovY, aspect_ratio(), kNearZ, kFarZ);
+
 	FBXLoader::GetInstance().Init();
 
 	if (!InitModels())
@@ -90,8 +90,8 @@ bool ba::FBXLoaderTester::InitDirectX()
 	InitSceneBounds();
 	InitLights();
 
-
-	Renderer::RenderingComponent rendering_component;
+	// Set rendering components participating on all kind of rendering.
+	Renderer::RenderingComponents rendering_component;
 	rendering_component.rtv = rtv_;
 	rendering_component.dsv = dsv_;
 	rendering_component.viewport = &viewport_;
@@ -99,22 +99,25 @@ bool ba::FBXLoaderTester::InitDirectX()
 	rendering_component.shadow_map = &shadow_map_;
 	rendering_component.ssao_map = &ssao_map_;
 
-	renderer_.set_rendering_component(rendering_component);
-
-	Renderer::EffectVariableBundleChangeRarely bundle;
-	bundle.directional_lights = lights_;
-	bundle.fog_start = 15.0f;
-	bundle.fog_range = 175.0f;
-	bundle.fog_color = color::kSilver;
-	bundle.shadow_map_size = kShadowMapSize;
-	bundle.to_tex = XMMATRIX(
+	// Set effect variables' values to be used for all time.
+	evb_change_rarely_.directional_lights = lights_;
+	evb_change_rarely_.fog_start = 15.0f;
+	evb_change_rarely_.fog_range = 175.0f;
+	evb_change_rarely_.fog_color = color::kSilver;
+	evb_change_rarely_.shadow_map_size = kShadowMapSize;
+	evb_change_rarely_.to_tex = XMMATRIX(
 		0.5f, 0.0f, 0.0f, 0.0f,
 		0.0f, -0.5f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f
 	);
 
-	renderer_.SetEffectVariablesChangeRarely(bundle);
+	// Set effect variables' values to be used on application start and resize.
+	//  Now, the structure has no members.
+
+	renderer_.set_rendering_components(rendering_component);
+	renderer_.SetEffectVariablesChangeRarely(evb_change_rarely_);
+	renderer_.SetEffectVariablesOnStartAndResize(evb_on_start_and_resize_);
 
 	return true;
 }
@@ -183,32 +186,32 @@ bool ba::FBXLoaderTester::InitModels()
 	floor_model_ = new Model;
 	floor_model_->mesh_.vertices_.resize(6);
 
-	floor_model_->mesh_.vertices_[0].pos = XMFLOAT3(-25.0f, 0.0f, 25.0f);
+	floor_model_->mesh_.vertices_[0].pos = XMFLOAT3(-5.0f, 0.0f, 5.0f);
 	floor_model_->mesh_.vertices_[0].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	floor_model_->mesh_.vertices_[0].uv = XMFLOAT2(0.0f, 0.0f);
 	floor_model_->mesh_.vertices_[0].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
-	floor_model_->mesh_.vertices_[1].pos = XMFLOAT3(25.0f, 0.0f, 25.0f);
+	floor_model_->mesh_.vertices_[1].pos = XMFLOAT3(5.0f, 0.0f, 5.0f);
 	floor_model_->mesh_.vertices_[1].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	floor_model_->mesh_.vertices_[1].uv = XMFLOAT2(1.0f, 0.0f);
 	floor_model_->mesh_.vertices_[1].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
-	floor_model_->mesh_.vertices_[2].pos = XMFLOAT3(-25.0f, 0.0f, -25.0f);
+	floor_model_->mesh_.vertices_[2].pos = XMFLOAT3(-5.0f, 0.0f, -5.0f);
 	floor_model_->mesh_.vertices_[2].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	floor_model_->mesh_.vertices_[2].uv = XMFLOAT2(0.0f, 1.0f);
 	floor_model_->mesh_.vertices_[2].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
-	floor_model_->mesh_.vertices_[3].pos = XMFLOAT3(-25.0f, 0.0f, -25.0f);
+	floor_model_->mesh_.vertices_[3].pos = XMFLOAT3(-5.0f, 0.0f, -5.0f);
 	floor_model_->mesh_.vertices_[3].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	floor_model_->mesh_.vertices_[3].uv = XMFLOAT2(0.0f, 1.0f);
 	floor_model_->mesh_.vertices_[3].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
-	floor_model_->mesh_.vertices_[4].pos = XMFLOAT3(25.0f, 0.0f, 25.0f);
+	floor_model_->mesh_.vertices_[4].pos = XMFLOAT3(5.0f, 0.0f, 5.0f);
 	floor_model_->mesh_.vertices_[4].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	floor_model_->mesh_.vertices_[4].uv = XMFLOAT2(1.0f, 0.0f);
 	floor_model_->mesh_.vertices_[4].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
-	floor_model_->mesh_.vertices_[5].pos = XMFLOAT3(25.0f, 0.0f, -25.0f);
+	floor_model_->mesh_.vertices_[5].pos = XMFLOAT3(5.0f, 0.0f, -5.0f);
 	floor_model_->mesh_.vertices_[5].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	floor_model_->mesh_.vertices_[5].uv = XMFLOAT2(1.0f, 1.0f);
 	floor_model_->mesh_.vertices_[5].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);

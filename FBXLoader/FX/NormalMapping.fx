@@ -114,16 +114,16 @@ VSOut VS(VSIn vs_in)
 {
     VSOut vs_out;
 	
-    float4x4 view_proj = view * proj;
+    float4x4 view_proj = mul(view, proj);
 
-    vs_out.pos_h = mul(float4(vs_in.pos_l, 1.0f), world * view_proj);
+    vs_out.pos_h = mul(float4(vs_in.pos_l, 1.0f), mul(world, view_proj));
 
     vs_out.pos_w = mul(float4(vs_in.pos_l, 1.0f), world).xyz;
     vs_out.normal_w = mul(vs_in.normal_l, (float3x3) world_inv_trans);
     vs_out.tangent_w = mul(vs_in.tangent_l, (float3x3) world);
     vs_out.tex = mul(float4(vs_in.tex, 0.0f, 1.0f), tex_mapping).xy;
     vs_out.shadow_pos_h = mul(float4(vs_out.pos_w, 1.0f), shadow_transform);
-    vs_out.screen_tex_h = mul(float4(vs_out.pos_w, 1.0f), view_proj * to_tex);
+    vs_out.screen_tex_h = mul(float4(vs_out.pos_w, 1.0f), mul(view_proj, to_tex));
 
     return vs_out;
 }
@@ -149,16 +149,16 @@ VSOut SkinnedVS(SkinnedVSIn vs_in)
 
     VSOut vs_out;
 
-    float4x4 view_proj = view * proj;
+    float4x4 view_proj = mul(view, proj);
 
-    vs_out.pos_h = mul(float4(pos_l, 1.0f), world * view_proj);
+    vs_out.pos_h = mul(float4(pos_l, 1.0f), mul(world, view_proj));
 
     vs_out.pos_w = mul(float4(pos_l, 1.0f), world).xyz;
     vs_out.normal_w = mul(normal_l, (float3x3) world_inv_trans);
     vs_out.tangent_w = mul(tangent_l, (float3x3) world);
     vs_out.tex = mul(float4(vs_in.tex, 0.0f, 1.0f), tex_mapping).xy;
     vs_out.shadow_pos_h = mul(float4(vs_out.pos_w, 1.0f), shadow_transform);
-    vs_out.screen_tex_h = mul(float4(vs_out.pos_w, 1.0f), view_proj * to_tex);
+    vs_out.screen_tex_h = mul(float4(vs_out.pos_w, 1.0f), mul(view_proj, to_tex));
 
     return vs_out;
 }

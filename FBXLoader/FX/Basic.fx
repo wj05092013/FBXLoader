@@ -125,8 +125,8 @@ VSOut VS(VSIn vs_in)
 {
     VSOut vs_out;
 
-    float4x4 world_view_proj = world * view * proj;
-    float4x4 world_view_proj_tex = world_view_proj * to_tex;
+    float4x4 world_view_proj = mul(mul(world, view), proj);
+    float4x4 world_view_proj_tex = mul(world_view_proj, to_tex);
 
     vs_out.pos_w = mul(float4(vs_in.pos_l, 1.0f), world).xyz;
     vs_out.normal_w = mul(vs_in.normal_l, (float3x3) world_inv_trans);
@@ -164,8 +164,8 @@ VSOut SkinnedVS(SkinnedVSIn vs_in)
 
     VSOut vs_out;
 
-    float4x4 world_view_proj = world * view * proj;
-    float4x4 world_view_proj_tex = world_view_proj * to_tex;
+    float4x4 world_view_proj = mul(mul(world, view), proj);
+    float4x4 world_view_proj_tex = mul(world_view_proj, to_tex);
 
     vs_out.pos_w = mul(float4(pos_l, 1.0f), world).xyz;
     vs_out.normal_w = mul(normal_l, (float3x3) world_inv_trans);

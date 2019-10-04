@@ -38,6 +38,9 @@ namespace ba
 
 	private:
 		Renderer renderer_;
+		Renderer::EffectVariableBundleChangeRarely evb_change_rarely_;
+		Renderer::EffectVariableBundleOnStartAndResize evb_on_start_and_resize_;
+		Renderer::EffectVariableBundlePerFrame evb_per_frame_;
 
 		static const float kShadowMapSize;
 		ShadowMap::BoundingSphere scene_bounds_;
