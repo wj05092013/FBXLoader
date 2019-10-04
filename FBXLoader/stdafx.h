@@ -55,6 +55,7 @@
 #include "Effects.h"
 
 #include "InputVertex.h"
+#include "RenderStates.h"
 #include "Camera.h"
 #include "Mesh.h"
 #include "Model.h"

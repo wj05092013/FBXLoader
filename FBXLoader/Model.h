@@ -16,9 +16,7 @@ namespace ba
 	class ModelInstance
 	{
 	public:
-		ModelInstance();
-
-		Model* model_;
+		Model* model_ = nullptr;
 		XMFLOAT4X4 world_;
 	};
 }

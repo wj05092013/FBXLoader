@@ -173,6 +173,9 @@
     <ClInclude Include="NormalMappingEffect.h">
       <Filter>Includes\Graphics\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="RenderStates.h">
+      <Filter>Includes\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -246,6 +249,9 @@
     </ClCompile>
     <ClCompile Include="NormalMappingEffect.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderStates.cpp">
+      <Filter>Sources\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

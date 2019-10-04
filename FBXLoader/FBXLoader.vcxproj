@@ -33,6 +33,7 @@
     <ClInclude Include="BlurSSAOEffect.h" />
     <ClInclude Include="NormalDepthMapEffect.h" />
     <ClInclude Include="NormalMappingEffect.h" />
+    <ClInclude Include="RenderStates.h" />
     <ClInclude Include="ShadowMapEffect.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
@@ -66,6 +67,7 @@
     <ClCompile Include="BlurSSAOEffect.cpp" />
     <ClCompile Include="NormalDepthMapEffect.cpp" />
     <ClCompile Include="NormalMappingEffect.cpp" />
+    <ClCompile Include="RenderStates.cpp" />
     <ClCompile Include="ShadowMapEffect.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Effects.cpp" />

@@ -73,12 +73,9 @@ bool ba::FBXLoaderTester::InitDirectX()
 	if (!Application::InitDirectX())
 		return false;
 
-	if (!effects::InitAll(device_))
+	if (!renderer_.Init(device_, dc_))
 		return false;
 	if (!inputvertex::InitAll(device_))
-		return false;
-
-	if (!renderer_.Init(dc_))
 		return false;
 	if (!shadow_map_.Init(device_, static_cast<float>(kShadowMapSize), static_cast<float>(kShadowMapSize)))
 		return false;
@@ -131,7 +128,6 @@ void ba::FBXLoaderTester::ReleaseDirectX()
 
 	FBXLoader::GetInstance().Release();
 
-	effects::ReleaseAll();
 	inputvertex::ReleaseAll();
 
 	Application::ReleaseDirectX();

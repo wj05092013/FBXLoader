@@ -1,5 +1,12 @@
 #include "stdafx.h"
 
+const DirectX::XMMATRIX ba::mathhelper::kRhToLh = DirectX::XMMATRIX(
+	1.0f, 0.0f, 0.0f, 0.0f,
+	0.0f, 0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 0.0f, 0.0f, 1.0f
+);
+
 float ba::mathhelper::AngleFromXY(float x, float y)
 {
 	float theta = 0.0f;

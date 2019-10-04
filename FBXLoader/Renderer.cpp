@@ -10,19 +10,26 @@ ba::Renderer::~Renderer()
 {
 }
 
-bool ba::Renderer::Init(ID3D11DeviceContext* dc)
+bool ba::Renderer::Init(ID3D11Device* device, ID3D11DeviceContext* dc)
 {
 	dc_ = dc;
+
+	if (!effects::InitAll(device)) { Release(); return false; }
+	if(!renderstates::InitAll(device)) { Release(); return false; }
 
 	return true;
 }
 
 void ba::Renderer::Release()
 {
+	effects::ReleaseAll();
+	renderstates::ReleaseAll();
 }
 
 void ba::Renderer::RenderScene(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle)
 {
+	dc_->RSSetState(renderstates::rasterizer::kExample);
+
 	ID3D11RenderTargetView* rtvs_[1] = { rendering_component_.rtv };
 	dc_->OMSetRenderTargets(1, rtvs_, rendering_component_.dsv);
 	dc_->RSSetViewports(1, rendering_component_.viewport);
@@ -57,6 +64,7 @@ void ba::Renderer::RenderScene(const std::vector<ModelInstance>& model_instances
 		{
 			// Update effect variables.
 			world = XMLoadFloat4x4(&model_instances[i].world_);
+			world = mathhelper::kRhToLh * world;
 			world_inv_trans = mathhelper::InverseTranspose(world);
 			effects::kBasicEffect.SetWorld(world);
 			effects::kBasicEffect.SetWorldInvTrans(world_inv_trans);
@@ -73,10 +81,13 @@ void ba::Renderer::RenderScene(const std::vector<ModelInstance>& model_instances
 		effects::kBasicEffect.SetSSAOMap(nullptr);
 		tech->GetPassByIndex(p)->Apply(0, dc_);
 	}
+	dc_->RSSetState(nullptr);
 }
 
 void ba::Renderer::RenderShadowMap(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle)
 {
+	dc_->RSSetState(renderstates::rasterizer::kExample);
+
 	ID3D11RenderTargetView* rtvs_[1] = { nullptr };
 	dc_->OMSetRenderTargets(1, rtvs_, rendering_component_.shadow_map->dsv());
 	dc_->ClearDepthStencilView(rendering_component_.shadow_map->dsv(), D3D11_CLEAR_DEPTH, 1.0f, 0);
@@ -105,6 +116,7 @@ void ba::Renderer::RenderShadowMap(const std::vector<ModelInstance>& model_insta
 		for (UINT i = 0; i < model_instances.size(); ++i)
 		{
 			world = XMLoadFloat4x4(&model_instances[i].world_);
+			world = mathhelper::kRhToLh * world;
 			world_inv_trans = mathhelper::InverseTranspose(world);
 			effects::kShadowMapEffect.SetWorld(world);
 			effects::kShadowMapEffect.SetWorldInvTrans(world_inv_trans);
@@ -120,6 +132,8 @@ void ba::Renderer::RenderShadowMap(const std::vector<ModelInstance>& model_insta
 
 void ba::Renderer::RenderNormalDepthMap(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle)
 {
+	dc_->RSSetState(renderstates::rasterizer::kExample);
+
 	ID3D11RenderTargetView* rtvs_[1] = { rendering_component_.ssao_map->normal_depth_map_rtv() };
 	dc_->OMSetRenderTargets(1, rtvs_, rendering_component_.ssao_map->dsv());
 	dc_->RSSetViewports(1, rendering_component_.viewport);
@@ -150,6 +164,7 @@ void ba::Renderer::RenderNormalDepthMap(const std::vector<ModelInstance>& model_
 		for (UINT i = 0; i < model_instances.size(); ++i)
 		{
 			world = XMLoadFloat4x4(&model_instances[i].world_);
+			world = mathhelper::kRhToLh * world;
 			world_inv_trans = mathhelper::InverseTranspose(world);
 			effects::kNormalDepthMapEffect.SetWorld(world);
 			effects::kNormalDepthMapEffect.SetWorldInvTrans(world_inv_trans);
@@ -160,6 +175,7 @@ void ba::Renderer::RenderNormalDepthMap(const std::vector<ModelInstance>& model_
 			model_instances[i].model_->mesh_.Draw(dc_);
 		}
 	}
+	dc_->RSSetState(nullptr);
 }
 
 void ba::Renderer::SetEffectVariablesOnResize(const EffectVariableBundlePerResize& bundle)

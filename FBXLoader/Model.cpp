@@ -8,8 +8,3 @@
 //
 // ModelInstance class
 //
-
-ba::ModelInstance::ModelInstance() :
-	model_(nullptr)
-{
-}

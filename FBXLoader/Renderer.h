@@ -43,7 +43,7 @@ namespace ba
 		Renderer();
 		~Renderer();
 
-		bool Init(ID3D11DeviceContext* dc);
+		bool Init(ID3D11Device* device, ID3D11DeviceContext* dc);
 		void Release();
 			
 		void RenderScene(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle);

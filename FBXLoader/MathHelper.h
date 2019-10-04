@@ -8,7 +8,7 @@ namespace ba
 {
 	namespace mathhelper
 	{
-		using namespace DirectX;
+		extern const XMMATRIX kRhToLh;
 
 		static float RandF()
 		{
