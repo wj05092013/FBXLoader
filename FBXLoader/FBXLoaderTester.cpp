@@ -11,9 +11,9 @@ const float ba::FBXLoaderTester::kFovY = 0.25f * XM_PI;
 const float ba::FBXLoaderTester::kNearZ = 0.1f;
 const float ba::FBXLoaderTester::kFarZ = 1000.0f;
 
-const float ba::FBXLoaderTester::kForwardMovingRate = 10.0f;
-const float ba::FBXLoaderTester::kRightMovingRate = 10.0f;
-const float ba::FBXLoaderTester::kUpperMovingRate = 10.0f;
+const float ba::FBXLoaderTester::kForwardMovingRate = 100.0f;
+const float ba::FBXLoaderTester::kRightMovingRate = 100.0f;
+const float ba::FBXLoaderTester::kUpperMovingRate = 100.0f;
 const float ba::FBXLoaderTester::kRotationRate = 0.15f;
 
 ba::FBXLoaderTester::FBXLoaderTester() :
@@ -101,8 +101,8 @@ bool ba::FBXLoaderTester::InitDirectX()
 
 	// Set effect variables' values to be used for all time.
 	evb_change_rarely_.directional_lights = lights_;
-	evb_change_rarely_.fog_start = 15.0f;
-	evb_change_rarely_.fog_range = 175.0f;
+	evb_change_rarely_.fog_start = 5.0f;
+	evb_change_rarely_.fog_range = 20.0f;
 	evb_change_rarely_.fog_color = color::kSilver;
 	evb_change_rarely_.shadow_map_size = kShadowMapSize;
 	evb_change_rarely_.to_tex = XMMATRIX(
@@ -163,6 +163,7 @@ void ba::FBXLoaderTester::InitLights()
 bool ba::FBXLoaderTester::InitModels()
 {
 	// Simple material.
+	//  (Delete these lines later)
 	Material material;
 	material.ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	material.diffuse = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
@@ -172,62 +173,70 @@ bool ba::FBXLoaderTester::InitModels()
 	// Create an wolf model.
 	//
 	std::string file_name = "Model/Wolf.fbx";
-	wolf_model_ = new Model;
 
-	if (!FBXLoader::GetInstance().Load(file_name, *wolf_model_))
+	FBXLoader::FBXLoaderModel fbx_model;
+	if (!FBXLoader::GetInstance().Load(file_name, fbx_model))
 		return false;
 
-	wolf_model_->mesh_.Init(device_);
-	wolf_model_->mesh_.set_material(material);
+	wolf_model_ = new Model;
+	wolf_model_->Init(device_, fbx_model);
+
+	// (Delete these lines later)
+	for (UINT i = 0; i < wolf_model_->meshes.size(); ++i)
+	{
+		wolf_model_->meshes[i].set_material(material);
+	}
 	//__
 
 	// Createa floor model.
+	// (Delete these lines later)
 	//
+	std::vector<inputvertex::PosNormalTexTangent::Vertex> floor_vertices(6);
+
+	floor_vertices[0].pos = XMFLOAT3(-50.0f, 0.0f, 50.0f);
+	floor_vertices[0].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	floor_vertices[0].uv = XMFLOAT2(0.0f, 0.0f);
+	floor_vertices[0].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+	floor_vertices[1].pos = XMFLOAT3(50.0f, 0.0f, 50.0f);
+	floor_vertices[1].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	floor_vertices[1].uv = XMFLOAT2(1.0f, 0.0f);
+	floor_vertices[1].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+	floor_vertices[2].pos = XMFLOAT3(-50.0f, 0.0f, -50.0f);
+	floor_vertices[2].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	floor_vertices[2].uv = XMFLOAT2(0.0f, 1.0f);
+	floor_vertices[2].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	
+	floor_vertices[3].pos = XMFLOAT3(-50.0f, 0.0f, -50.0f);
+	floor_vertices[3].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	floor_vertices[3].uv = XMFLOAT2(0.0f, 1.0f);
+	floor_vertices[3].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+	floor_vertices[4].pos = XMFLOAT3(50.0f, 0.0f, 50.0f);
+	floor_vertices[4].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	floor_vertices[4].uv = XMFLOAT2(1.0f, 0.0f);
+	floor_vertices[4].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+	floor_vertices[5].pos = XMFLOAT3(50.0f, 0.0f, -50.0f);
+	floor_vertices[5].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	floor_vertices[5].uv = XMFLOAT2(1.0f, 1.0f);
+	floor_vertices[5].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	
 	floor_model_ = new Model;
-	floor_model_->mesh_.vertices_.resize(6);
-
-	floor_model_->mesh_.vertices_[0].pos = XMFLOAT3(-5.0f, 0.0f, 5.0f);
-	floor_model_->mesh_.vertices_[0].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	floor_model_->mesh_.vertices_[0].uv = XMFLOAT2(0.0f, 0.0f);
-	floor_model_->mesh_.vertices_[0].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-	floor_model_->mesh_.vertices_[1].pos = XMFLOAT3(5.0f, 0.0f, 5.0f);
-	floor_model_->mesh_.vertices_[1].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	floor_model_->mesh_.vertices_[1].uv = XMFLOAT2(1.0f, 0.0f);
-	floor_model_->mesh_.vertices_[1].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-	floor_model_->mesh_.vertices_[2].pos = XMFLOAT3(-5.0f, 0.0f, -5.0f);
-	floor_model_->mesh_.vertices_[2].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	floor_model_->mesh_.vertices_[2].uv = XMFLOAT2(0.0f, 1.0f);
-	floor_model_->mesh_.vertices_[2].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-	floor_model_->mesh_.vertices_[3].pos = XMFLOAT3(-5.0f, 0.0f, -5.0f);
-	floor_model_->mesh_.vertices_[3].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	floor_model_->mesh_.vertices_[3].uv = XMFLOAT2(0.0f, 1.0f);
-	floor_model_->mesh_.vertices_[3].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-	floor_model_->mesh_.vertices_[4].pos = XMFLOAT3(5.0f, 0.0f, 5.0f);
-	floor_model_->mesh_.vertices_[4].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	floor_model_->mesh_.vertices_[4].uv = XMFLOAT2(1.0f, 0.0f);
-	floor_model_->mesh_.vertices_[4].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-	floor_model_->mesh_.vertices_[5].pos = XMFLOAT3(5.0f, 0.0f, -5.0f);
-	floor_model_->mesh_.vertices_[5].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	floor_model_->mesh_.vertices_[5].uv = XMFLOAT2(1.0f, 1.0f);
-	floor_model_->mesh_.vertices_[5].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-	floor_model_->mesh_.Init(device_);
-	floor_model_->mesh_.set_material(material);
+	floor_model_->meshes.resize(1);
+	floor_model_->meshes[0].set_vertices(device_, floor_vertices);
+	floor_model_->meshes[0].set_material(material);
 	//__
 
 	ModelInstance model_inst;
 
-	model_inst.model_ = wolf_model_;
-	XMStoreFloat4x4(&model_inst.world_, XMMatrixIdentity());
+	model_inst.model = wolf_model_;
+	model_inst.scale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
 	model_instances_.push_back(model_inst);
 
-	model_inst.model_ = floor_model_;
-	XMStoreFloat4x4(&model_inst.world_, XMMatrixIdentity());
+	model_inst.model = floor_model_;
+	model_inst.scale = XMMatrixIdentity();
 	model_instances_.push_back(model_inst);
 
 	return true;

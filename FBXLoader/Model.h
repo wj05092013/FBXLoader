@@ -6,17 +6,25 @@ PCH: Yes
 
 namespace ba
 {
-	class Model : public Uncopiable
+	class Model
 	{
 	public:
-		Mesh mesh_;
+		bool Init(ID3D11Device* device, const FBXLoader::FBXLoaderModel& fbx_model);
+
+		std::vector<Mesh> meshes;
+
 		// Add diffuse maps, normal-displacement maps.
 	};
 
 	class ModelInstance
 	{
 	public:
-		Model* model_ = nullptr;
-		XMFLOAT4X4 world_;
+		ModelInstance();
+
+		Model* model;
+
+		XMMATRIX scale;
+		XMMATRIX rotation;
+		XMMATRIX translation;
 	};
 }

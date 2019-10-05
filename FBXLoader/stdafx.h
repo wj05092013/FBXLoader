@@ -55,14 +55,14 @@
 #include "Effects.h"
 
 #include "InputVertex.h"
-#include "RenderStates.h"
-#include "Camera.h"
+#include "FBXLoader.h"
 #include "Mesh.h"
 #include "Model.h"
 #include "TextureManager.h"
+#include "Camera.h"
+#include "RenderStates.h"
 #include "ShadowMap.h"
 #include "SSAOMap.h"
 #include "Renderer.h"
 
-#include "FBXLoader.h"
 #include "Application.h"

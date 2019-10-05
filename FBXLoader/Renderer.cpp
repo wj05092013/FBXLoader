@@ -32,7 +32,7 @@ void ba::Renderer::RenderScene(const std::vector<ModelInstance>& model_instances
 	dc_->OMSetRenderTargets(1, rtvs_, rendering_components_.dsv);
 	dc_->RSSetViewports(1, rendering_components_.viewport);
 
-	dc_->ClearRenderTargetView(rendering_components_.rtv, reinterpret_cast<const float*>(&color::kMagenta));
+	dc_->ClearRenderTargetView(rendering_components_.rtv, reinterpret_cast<const float*>(&color::kSilver));
 	dc_->ClearDepthStencilView(rendering_components_.dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0U);
 
 	dc_->IASetInputLayout(inputvertex::PosNormalTex::kInputLayout);
@@ -43,7 +43,7 @@ void ba::Renderer::RenderScene(const std::vector<ModelInstance>& model_instances
 	//tech = effects::kBasicEffect.tech(BasicEffect::kLight3TexAlphaClipFog);
 
 	// Delete this line later.
-	tech = effects::kBasicEffect.tech(BasicEffect::kLight3Fog);
+	tech = effects::kBasicEffect.tech(BasicEffect::kLight3);
 
 	// Set effect variables.
 	effects::kBasicEffect.SetEyePos(rendering_components_.cam->position_w_xf());
@@ -58,19 +58,27 @@ void ba::Renderer::RenderScene(const std::vector<ModelInstance>& model_instances
 	tech->GetDesc(&tech_desc);
 	for (UINT p = 0; p < tech_desc.Passes; ++p)
 	{
-		for (UINT i = 0; i < model_instances.size(); ++i)
+		for (UINT model_idx = 0; model_idx < model_instances.size(); ++model_idx)
 		{
-			// Update effect variables.
-			world = XMLoadFloat4x4(&model_instances[i].world_);
-			world_inv_trans = mathhelper::InverseTranspose(world);
-			effects::kBasicEffect.SetWorld(world);
-			effects::kBasicEffect.SetWorldInvTrans(world_inv_trans);
-			effects::kBasicEffect.SetTexMapping(XMMatrixIdentity());
-			effects::kBasicEffect.SetMaterial(model_instances[i].model_->mesh_.material());
-			//effects::kBasicEffect.SetDiffuseMap();
+			std::vector<Mesh>& meshes = model_instances[model_idx].model->meshes;
 
-			tech->GetPassByIndex(p)->Apply(0, dc_);
-			model_instances[i].model_->mesh_.Draw(dc_);
+			for (UINT mesh_idx = 0; mesh_idx < meshes.size(); ++mesh_idx)
+			{
+				// Update effect variables.
+				world = meshes[mesh_idx].transform()
+					* model_instances[model_idx].scale
+					* model_instances[model_idx].rotation
+					* model_instances[model_idx].translation;
+				world_inv_trans = mathhelper::InverseTranspose(world);
+				effects::kBasicEffect.SetWorld(world);
+				effects::kBasicEffect.SetWorldInvTrans(world_inv_trans);
+				effects::kBasicEffect.SetTexMapping(XMMatrixIdentity());
+				effects::kBasicEffect.SetMaterial(meshes[mesh_idx].material());
+				//effects::kBasicEffect.SetDiffuseMap();
+
+				tech->GetPassByIndex(p)->Apply(0, dc_);
+				meshes[mesh_idx].Draw(dc_);
+			}
 		}
 
 		// Unbind the SRVs in case the resources are bound as render targets.
@@ -107,17 +115,25 @@ void ba::Renderer::RenderShadowMap(const std::vector<ModelInstance>& model_insta
 	tech->GetDesc(&tech_desc);
 	for (UINT p = 0; p < tech_desc.Passes; ++p)
 	{
-		for (UINT i = 0; i < model_instances.size(); ++i)
+		for (UINT model_idx = 0; model_idx < model_instances.size(); ++model_idx)
 		{
-			world = XMLoadFloat4x4(&model_instances[i].world_);
-			world_inv_trans = mathhelper::InverseTranspose(world);
-			effects::kShadowMapEffect.SetWorld(world);
-			effects::kShadowMapEffect.SetWorldInvTrans(world_inv_trans);
-			effects::kShadowMapEffect.SetTexMapping(XMMatrixIdentity());
-			//effects::kShadowMapEffect.SetDiffuseMap();
+			std::vector<Mesh>& meshes = model_instances[model_idx].model->meshes;
 
-			tech->GetPassByIndex(p)->Apply(0, dc_);
-			model_instances[i].model_->mesh_.Draw(dc_);
+			for (UINT mesh_idx = 0; mesh_idx < meshes.size(); ++mesh_idx)
+			{
+				world = meshes[mesh_idx].transform()
+					* model_instances[model_idx].scale
+					* model_instances[model_idx].rotation
+					* model_instances[model_idx].translation;
+				world_inv_trans = mathhelper::InverseTranspose(world);
+				effects::kShadowMapEffect.SetWorld(world);
+				effects::kShadowMapEffect.SetWorldInvTrans(world_inv_trans);
+				effects::kShadowMapEffect.SetTexMapping(XMMatrixIdentity());
+				//effects::kShadowMapEffect.SetDiffuseMap();
+
+				tech->GetPassByIndex(p)->Apply(0, dc_);
+				meshes[mesh_idx].Draw(dc_);
+			}
 		}
 	}
 	dc_->RSSetState(nullptr);
@@ -152,17 +168,25 @@ void ba::Renderer::RenderNormalDepthMap(const std::vector<ModelInstance>& model_
 	tech->GetDesc(&tech_desc);
 	for (UINT p = 0; p < tech_desc.Passes; ++p)
 	{
-		for (UINT i = 0; i < model_instances.size(); ++i)
+		for (UINT model_idx = 0; model_idx < model_instances.size(); ++model_idx)
 		{
-			world = XMLoadFloat4x4(&model_instances[i].world_);
-			world_inv_trans = mathhelper::InverseTranspose(world);
-			effects::kNormalDepthMapEffect.SetWorld(world);
-			effects::kNormalDepthMapEffect.SetWorldInvTrans(world_inv_trans);
-			effects::kNormalDepthMapEffect.SetTexMapping(XMMatrixIdentity());
-			//effects::kNormalDepthMapEffect.SetDiffuseMap();
+			std::vector<Mesh>& meshes = model_instances[model_idx].model->meshes;
 
-			tech->GetPassByIndex(p)->Apply(0, dc_);
-			model_instances[i].model_->mesh_.Draw(dc_);
+			for (UINT mesh_idx = 0; mesh_idx < meshes.size(); ++mesh_idx)
+			{
+				world = meshes[mesh_idx].transform()
+					* model_instances[model_idx].scale
+					* model_instances[model_idx].rotation
+					* model_instances[model_idx].translation;
+				world_inv_trans = mathhelper::InverseTranspose(world);
+				effects::kNormalDepthMapEffect.SetWorld(world);
+				effects::kNormalDepthMapEffect.SetWorldInvTrans(world_inv_trans);
+				effects::kNormalDepthMapEffect.SetTexMapping(XMMatrixIdentity());
+				//effects::kNormalDepthMapEffect.SetDiffuseMap();
+
+				tech->GetPassByIndex(p)->Apply(0, dc_);
+				meshes[mesh_idx].Draw(dc_);
+			}
 		}
 	}
 }

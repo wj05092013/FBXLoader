@@ -34,7 +34,7 @@ void ba::FBXLoader::Release()
 	}
 }
 
-bool ba::FBXLoader::Load(const std::string& filename, ba::Model& out_model)
+bool ba::FBXLoader::Load(const std::string& filename, FBXLoaderModel& out_model)
 {
 	// Create and initialize importer.
 	//
@@ -73,6 +73,8 @@ bool ba::FBXLoader::Load(const std::string& filename, ba::Model& out_model)
 
 	// Load scene.
 	FbxNode* root_node = scene->GetRootNode();
+
+	out_model.meshes.resize(0);
 	ret = LoadNode(root_node, out_model);
 
 	scene->Destroy();
@@ -84,7 +86,7 @@ bool ba::FBXLoader::Load(const std::string& filename, ba::Model& out_model)
 	return true;
 }
 
-bool ba::FBXLoader::LoadNode(FbxNode* node, Model& out_model)
+bool ba::FBXLoader::LoadNode(FbxNode* node, FBXLoaderModel& out_model)
 {
 	if (node)
 	{
@@ -97,9 +99,35 @@ bool ba::FBXLoader::LoadNode(FbxNode* node, Model& out_model)
 			case fbxsdk::FbxNodeAttribute::eMesh:
 			{
 				FbxMesh* fbx_mesh = node->GetMesh();
-
-				if (!LoadMesh(fbx_mesh, out_model))
+				FBXLoaderMesh out_mesh;
+				
+				// Load mesh.
+				if (!LoadMesh(fbx_mesh, out_mesh))
 					return false;
+
+				// Get transform.
+				//
+				FbxAMatrix scale, rotation, translation;
+				
+				FbxVector4 vec = node->LclScaling.Get();
+				scale.SetS(vec);
+				//scale = scale.Transpose();
+
+				vec = node->LclRotation.Get();
+				rotation.SetR(vec);
+				//rotation = rotation.Transpose();
+
+				vec = node->LclTranslation.Get();
+				translation.SetT(vec);
+				//translation = translation.Transpose();
+				
+				FbxAMatrix transform = scale * rotation * translation;
+
+				FbxAMatrixToXMFLOAT4x4(transform, out_mesh.transform);
+				//__
+
+				out_model.meshes.push_back(out_mesh);
+
 				break;
 			}
 			default:
@@ -117,7 +145,7 @@ bool ba::FBXLoader::LoadNode(FbxNode* node, Model& out_model)
 	return true;
 }
 
-bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Model& out_model)
+bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, FBXLoaderMesh& out_mesh)
 {
 	if (!fbx_mesh->IsTriangleMesh())
 		return false;
@@ -137,7 +165,7 @@ bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Model& out_model)
 	FbxVector4* control_points = fbx_mesh->GetControlPoints();
 
 	int tri_count = fbx_mesh->GetPolygonCount();
-	out_model.mesh_.vertices_.resize(3 * tri_count);
+	out_mesh.vertices.resize(3 * tri_count);
 
 	for (int tri_idx = 0; tri_idx < tri_count; ++tri_idx)
 	{
@@ -147,10 +175,10 @@ bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, Model& out_model)
 			int uv_idx = fbx_mesh->GetTextureUVIndex(tri_idx, i);
 			int vertex_idx = 3 * tri_idx + i;
 
-			ReadPosition(control_points[control_point_idx], out_model.mesh_.vertices_[vertex_idx].pos);
-			if (!ReadNormal(fbx_mesh, control_point_idx, vertex_idx, out_model.mesh_.vertices_[vertex_idx].normal)) return false;
-			if (!ReadTangent(fbx_mesh, control_point_idx, vertex_idx, out_model.mesh_.vertices_[vertex_idx].tangent)) return false;
-			if (!ReadUV(fbx_mesh, control_point_idx, uv_idx, out_model.mesh_.vertices_[vertex_idx].uv)) return false;
+			ReadPosition(control_points[control_point_idx], out_mesh.vertices[vertex_idx].pos);
+			if (!ReadNormal(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].normal)) return false;
+			if (!ReadTangent(fbx_mesh, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].tangent)) return false;
+			if (!ReadUV(fbx_mesh, control_point_idx, uv_idx, out_mesh.vertices[vertex_idx].uv)) return false;
 		}
 	}
 
@@ -335,4 +363,27 @@ bool ba::FBXLoader::ReadUV(FbxMesh* fbx_mesh, int control_point_idx, int uv_idx,
 	}
 
 	return true;
+}
+
+void ba::FBXLoader::FbxAMatrixToXMFLOAT4x4(const FbxAMatrix& fbx_m, XMFLOAT4X4& out_m)
+{
+	out_m.m[0][0] = static_cast<float>(fbx_m.Get(0, 0));
+	out_m.m[0][1] = static_cast<float>(fbx_m.Get(0, 1));
+	out_m.m[0][2] = static_cast<float>(fbx_m.Get(0, 2));
+	out_m.m[0][3] = static_cast<float>(fbx_m.Get(0, 3));
+
+	out_m.m[1][0] = static_cast<float>(fbx_m.Get(1, 0));
+	out_m.m[1][1] = static_cast<float>(fbx_m.Get(1, 1));
+	out_m.m[1][2] = static_cast<float>(fbx_m.Get(1, 2));
+	out_m.m[1][3] = static_cast<float>(fbx_m.Get(1, 3));
+
+	out_m.m[2][0] = static_cast<float>(fbx_m.Get(2, 0));
+	out_m.m[2][1] = static_cast<float>(fbx_m.Get(2, 1));
+	out_m.m[2][2] = static_cast<float>(fbx_m.Get(2, 2));
+	out_m.m[2][3] = static_cast<float>(fbx_m.Get(2, 3));
+
+	out_m.m[3][0] = static_cast<float>(fbx_m.Get(3, 0));
+	out_m.m[3][1] = static_cast<float>(fbx_m.Get(3, 1));
+	out_m.m[3][2] = static_cast<float>(fbx_m.Get(3, 2));
+	out_m.m[3][3] = static_cast<float>(fbx_m.Get(3, 3));
 }

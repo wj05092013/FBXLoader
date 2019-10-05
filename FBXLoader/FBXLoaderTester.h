@@ -37,15 +37,18 @@ namespace ba
 		void OnMouseRBtnUp(WPARAM w_par, int x, int y) override;
 
 	private:
+		// Renderer.
 		Renderer renderer_;
 		Renderer::EffectVariableBundleChangeRarely evb_change_rarely_;
 		Renderer::EffectVariableBundleOnStartAndResize evb_on_start_and_resize_;
 		Renderer::EffectVariableBundlePerFrame evb_per_frame_;
 
+		// Shadow map.
 		static const float kShadowMapSize;
 		ShadowMap::BoundingSphere scene_bounds_;
 		ShadowMap shadow_map_;
 
+		// SSAO map.
 		SSAOMap ssao_map_;
 
 		// Scene objects.
