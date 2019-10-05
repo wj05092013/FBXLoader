@@ -274,6 +274,7 @@
     <ClCompile Include="DebugScreenEffect.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="SampleCode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FBXLoader.rc">

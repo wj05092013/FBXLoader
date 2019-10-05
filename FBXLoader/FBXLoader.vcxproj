@@ -75,6 +75,7 @@
     <ClCompile Include="NormalDepthMapEffect.cpp" />
     <ClCompile Include="NormalMappingEffect.cpp" />
     <ClCompile Include="RenderStates.cpp" />
+    <ClCompile Include="SampleCode.cpp" />
     <ClCompile Include="ShadowMapEffect.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Effects.cpp" />

@@ -132,8 +132,8 @@ float4 PS(VSOut ps_in, uniform int sample_count) : SV_Target
         float r_z = normal_depth_map.Sample(SSNormalDepthMap, tex_q.xy).w;
         float3 r = (r_z / q.z) * q;
 
-        float dist = length(p - r);
-        //float dist = p.z - r.z;
+        //float dist = length(p - r);
+        float dist = p.z - r.z;
         float scale = max(dot(normalize(r - p), normal), 0.0f);
 
         occlusion_sum += scale * CalcOcclusion(dist);

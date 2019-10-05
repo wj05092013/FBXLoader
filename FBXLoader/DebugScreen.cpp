@@ -39,7 +39,7 @@ void ba::DebugScreen::Render(ID3D11DeviceContext* dc)
 	dc->IASetVertexBuffers(0, 1, &vb_, &strides, &offsets);
 	dc->IASetIndexBuffer(ib_, DXGI_FORMAT_R32_UINT, 0);
 
-	ID3DX11EffectTechnique* tech = effects::kDebugScreenEffect.tech(DebugScreenEffect::kViewRed);
+	ID3DX11EffectTechnique* tech = effects::kDebugScreenEffect.tech(DebugScreenEffect::kViewAlpha);
 	D3DX11_TECHNIQUE_DESC tech_desc;
 	tech->GetDesc(&tech_desc);
 
@@ -50,6 +50,9 @@ void ba::DebugScreen::Render(ID3D11DeviceContext* dc)
 	{
 		tech->GetPassByIndex(p)->Apply(0, dc);
 		dc->DrawIndexed(6, 0, 0);
+
+		effects::kDebugScreenEffect.SetDebugTex(nullptr);
+		tech->GetPassByIndex(p)->Apply(0, dc);
 	}
 }
 

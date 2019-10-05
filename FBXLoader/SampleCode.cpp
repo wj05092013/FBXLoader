@@ -1,75 +1,81 @@
-#include <vector>
-
-#include <D3DX11.h>
 #include <fbxsdk.h>
 
-struct MyVertex
+BOOL FbxLoader::_loadFbxMaterials()
 {
-	float pos[3];
-};
+	Int32 numberOfMaterials = mFbxScene->GetMaterialCount();
 
-FbxManager* g_pFbxSdkManager = nullptr;
-
-HRESULT LoadFBX(std::vector<MyVertex>* pOutVertexVector)
-{
-	if (g_pFbxSdkManager == nullptr)
+	for (Int32 m = 0; m < numberOfMaterials; ++m)
 	{
-		g_pFbxSdkManager = FbxManager::Create();
+		KFbxSurfaceMaterial* fbxMaterial = mFbxScene->GetMaterial(m);
 
-		FbxIOSettings* pIOsettings = FbxIOSettings::Create(g_pFbxSdkManager, IOSROOT);
-		g_pFbxSdkManager->SetIOSettings(pIOsettings);
-	}
+		KFbxProperty prop;
+		_FBX_MATERIAL_INFO* info = new _FBX_MATERIAL_INFO;
+		info->materialIndex = m;
 
-	FbxImporter* pImporter = FbxImporter::Create(g_pFbxSdkManager, "");
-	FbxScene* pFbxScene = FbxScene::Create(g_pFbxSdkManager, "");
+		//----- if it phong shading.
 
-	bool bSuccess = pImporter->Initialize("C:\\MyPath\\MyModel.fbx", -1, g_pFbxSdkManager->GetIOSettings());
-	if (!bSuccess) return E_FAIL;
-
-	bSuccess = pImporter->Import(pFbxScene);
-	if (!bSuccess) return E_FAIL;
-
-	pImporter->Destroy();
-
-	FbxNode* pFbxRootNode = pFbxScene->GetRootNode();
-
-	if (pFbxRootNode)
-	{
-		for (int i = 0; i < pFbxRootNode->GetChildCount(); i++)
+		if (fbxMaterial->GetClassId().Is(KFbxSurfacePhong::ClassId))
 		{
-			FbxNode* pFbxChildNode = pFbxRootNode->GetChild(i);
+			KFbxSurfacePhong* phongMaterial = dynamic_cast<KFbxSurfacePhong*>(fbxMaterial);
 
-			if (pFbxChildNode->GetNodeAttribute() == NULL)
-				continue;
-
-			FbxNodeAttribute::EType AttributeType = pFbxChildNode->GetNodeAttribute()->GetAttributeType();
-
-			if (AttributeType != FbxNodeAttribute::eMesh)
-				continue;
-
-			FbxMesh* pMesh = (FbxMesh*)pFbxChildNode->GetNodeAttribute();
-
-			FbxVector4* pVertices = pMesh->GetControlPoints();
-
-			for (int j = 0; j < pMesh->GetPolygonCount(); j++)
-			{
-				int iNumVertices = pMesh->GetPolygonSize(j);
-				if (iNumVertices != 3)
-					return E_FAIL;
-
-				for (int k = 0; k < iNumVertices; k++) {
-					int iControlPointIndex = pMesh->GetPolygonVertex(j, k);
-
-					MyVertex vertex;
-					vertex.pos[0] = (float)pVertices[iControlPointIndex].mData[0];
-					vertex.pos[1] = (float)pVertices[iControlPointIndex].mData[1];
-					vertex.pos[2] = (float)pVertices[iControlPointIndex].mData[2];
-					pOutVertexVector->push_back(vertex);
-				}
-			}
+			info->emissiveColor = _toD3DXVECTOR3(phongMaterial->GetEmissiveColor());
+			info->emissiveFactor = _toSingle(phongMaterial->GetEmissiveFactor());
+			info->ambientColor = _toD3DXVECTOR3(phongMaterial->GetAmbientColor());
+			info->ambientFactor = _toSingle(phongMaterial->GetAmbientFactor());
+			info->diffuseColor = _toD3DXVECTOR3(phongMaterial->GetDiffuseColor());
+			info->diffuseFactor = _toSingle(phongMaterial->GetDiffuseFactor());
+			info->bump = _toD3DXVECTOR3(phongMaterial->GetBump());
+			info->bumpFactor = _toSingle(phongMaterial->GetBumpFactor());
+			info->transparentColor = _toD3DXVECTOR3(phongMaterial->GetTransparentColor());
+			info->transparencyFactor = _toSingle(phongMaterial->GetTransparencyFactor());
+			info->displacementColor = _toD3DXVECTOR3(phongMaterial->GetDisplacementColor());
+			info->displacementFactor = _toSingle(phongMaterial->GetDisplacementFactor());
+		}
+		else
+		{
 
 		}
 
+		//----- load texture file path.
+
+		prop = fbxMaterial->FindProperty(KFbxSurfaceMaterial::sEmissive);
+		_loadFbxTexturePropety(info, prop);
+
+		prop = fbxMaterial->FindProperty(KFbxSurfaceMaterial::sDiffuse);
+		_loadFbxTexturePropety(info, prop);
+
+		prop = fbxMaterial->FindProperty(KFbxSurfaceMaterial::sSpecular);
+		_loadFbxTexturePropety(info, prop);
+
+		prop = fbxMaterial->FindProperty(KFbxSurfaceMaterial::sSpecularFactor);
+		_loadFbxTexturePropety(info, prop);
+
+		prop = fbxMaterial->FindProperty(KFbxSurfaceMaterial::sShininess);
+		_loadFbxTexturePropety(info, prop);
+
+		prop = fbxMaterial->FindProperty(KFbxSurfaceMaterial::sBump);
+		_loadFbxTexturePropety(info, prop);
+
+		prop = fbxMaterial->FindProperty(KFbxSurfaceMaterial::sBumpFactor);
+		_loadFbxTexturePropety(info, prop);
+
+		prop = fbxMaterial->FindProperty(KFbxSurfaceMaterial::sTransparentColor);
+		_loadFbxTexturePropety(info, prop);
+
+		prop = fbxMaterial->FindProperty(KFbxSurfaceMaterial::sReflection);
+		_loadFbxTexturePropety(info, prop);
+
+		prop = fbxMaterial->FindProperty(KFbxSurfaceMaterial::sDisplacementColor);
+		_loadFbxTexturePropety(info, prop);
+
+		//----- add material info.
+
+		info->name = fbxMaterial->GetName();
+
+		mMaterialInfoArray.push_back(info);
 	}
-	return S_OK;
+
+	return TRUE;
 }
+
+[출처] FBX file 에서 Mesh loading 하기 - 3. 구현(material) | 작성자 라이푸

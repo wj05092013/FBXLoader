@@ -43,7 +43,7 @@ void ba::FBXLoaderTester::Render()
 	// Render on normal render targets.
 	renderer_.RenderScene(model_instances_, evb_per_frame_);
 
-	debug_screen_.set_srv(ssao_map_.ssao_map_srv());
+	debug_screen_.set_srv(ssao_map_.normal_depth_map_srv());
 	debug_screen_.Render(dc_);
 
 	swap_chain_->Present(0U, 0U);
