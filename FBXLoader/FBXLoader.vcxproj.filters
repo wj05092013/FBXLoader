@@ -78,6 +78,9 @@
     <FxCompile Include="FX\NormalMapping.fx">
       <Filter>FX</Filter>
     </FxCompile>
+    <FxCompile Include="FX\DebugScreen.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -176,6 +179,15 @@
     <ClInclude Include="RenderStates.h">
       <Filter>Includes\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="DebugScreen.h">
+      <Filter>Includes\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>Includes\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugScreenEffect.h">
+      <Filter>Includes\Graphics\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -252,6 +264,15 @@
     </ClCompile>
     <ClCompile Include="RenderStates.cpp">
       <Filter>Sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>Sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugScreen.cpp">
+      <Filter>Sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugScreenEffect.cpp">
+      <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

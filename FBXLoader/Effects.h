@@ -23,6 +23,7 @@ namespace ba
 		const std::wstring kNormalDepthMapEffectFileName = L"FX/NormalDepthMap.fxo";
 		const std::wstring kSSAOMapEffectFileName = L"FX/SSAOMap.fxo";
 		const std::wstring kBlurSSAOMapEffectFileName = L"FX/BlurSSAOMap.fxo";
+		const std::wstring kDebugScreenEffectFileName = L"FX/DebugScreen.fxo";
 		//__
 
 		// Instances.
@@ -33,6 +34,7 @@ namespace ba
 		extern NormalDepthMapEffect kNormalDepthMapEffect;
 		extern SSAOMapEffect kSSAOMapEffect;
 		extern BlurSSAOEffect kBlurSSAOEffect;
+		extern DebugScreenEffect kDebugScreenEffect;
 		//__
 	}
 }

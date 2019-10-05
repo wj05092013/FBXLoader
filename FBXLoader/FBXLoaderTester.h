@@ -51,6 +51,9 @@ namespace ba
 		// SSAO map.
 		SSAOMap ssao_map_;
 
+		// Debug screen.
+		DebugScreen debug_screen_;
+
 		// Scene objects.
 		//
 		Model* wolf_model_;

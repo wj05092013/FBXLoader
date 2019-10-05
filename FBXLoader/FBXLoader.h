@@ -51,6 +51,7 @@ namespace ba
 		bool LoadNode(FbxNode* node, FBXLoaderModel& out_model);
 
 		bool LoadMesh(FbxMesh* fbx_mesh, FBXLoaderMesh& out_mesh);
+		void LoadTransform(FbxNode* node, XMFLOAT4X4& out_transform);
 
 		void ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_pos);
 		bool ReadNormal(FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_normal);

@@ -43,6 +43,9 @@ void ba::FBXLoaderTester::Render()
 	// Render on normal render targets.
 	renderer_.RenderScene(model_instances_, evb_per_frame_);
 
+	debug_screen_.set_srv(ssao_map_.ssao_map_srv());
+	debug_screen_.Render(dc_);
+
 	swap_chain_->Present(0U, 0U);
 }
 
@@ -78,6 +81,9 @@ bool ba::FBXLoaderTester::InitDirectX()
 		return false;
 	if (!ssao_map_.Init(device_, dc_, client_width_, client_height_, kFovY, kFarZ))
 		return false;
+	if (!debug_screen_.Init(device_))
+		return false;
+	debug_screen_.set_ndc_position_size(0.4f, -0.4f, 0.6f, 0.6f);
 
 	cam_.LookAt(XMFLOAT3(0.0f, 5.0f, -10.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 	cam_.SetLens(kFovY, aspect_ratio(), kNearZ, kFarZ);

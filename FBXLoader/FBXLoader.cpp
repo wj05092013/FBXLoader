@@ -106,25 +106,7 @@ bool ba::FBXLoader::LoadNode(FbxNode* node, FBXLoaderModel& out_model)
 					return false;
 
 				// Get transform.
-				//
-				FbxAMatrix scale, rotation, translation;
-				
-				FbxVector4 vec = node->LclScaling.Get();
-				scale.SetS(vec);
-				//scale = scale.Transpose();
-
-				vec = node->LclRotation.Get();
-				rotation.SetR(vec);
-				//rotation = rotation.Transpose();
-
-				vec = node->LclTranslation.Get();
-				translation.SetT(vec);
-				//translation = translation.Transpose();
-				
-				FbxAMatrix transform = scale * rotation * translation;
-
-				FbxAMatrixToXMFLOAT4x4(transform, out_mesh.transform);
-				//__
+				LoadTransform(node, out_mesh.transform);
 
 				out_model.meshes.push_back(out_mesh);
 
@@ -183,6 +165,24 @@ bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, FBXLoaderMesh& out_mesh)
 	}
 
 	return true;
+}
+
+void ba::FBXLoader::LoadTransform(FbxNode* node, XMFLOAT4X4& out_transform)
+{
+	FbxAMatrix scale, rotation, translation;
+
+	FbxVector4 vec = node->LclScaling.Get();
+	scale.SetS(vec);
+
+	vec = node->LclRotation.Get();
+	rotation.SetR(vec);
+
+	vec = node->LclTranslation.Get();
+	translation.SetT(vec);
+
+	FbxAMatrix transform = scale * rotation * translation;
+
+	FbxAMatrixToXMFLOAT4x4(transform, out_transform);
 }
 
 void ba::FBXLoader::ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_pos)
