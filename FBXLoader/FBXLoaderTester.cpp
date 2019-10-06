@@ -168,15 +168,7 @@ void ba::FBXLoaderTester::InitLights()
 
 bool ba::FBXLoaderTester::InitModels()
 {
-	// Simple material.
-	//  (Delete these lines later)
-	Material material;
-	material.ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-	material.diffuse = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	material.specular = XMFLOAT4(0.9f, 0.9f, 0.9f, 16.0f);
-	material.reflection = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-
-	// Create an wolf model.
+	// Create an wolf model and insert it into the 'model_instances'.
 	//
 	std::string file_name = "Model/Wolf.fbx";
 
@@ -187,15 +179,13 @@ bool ba::FBXLoaderTester::InitModels()
 	wolf_model_ = new Model;
 	wolf_model_->Init(device_, fbx_model);
 
-	// (Delete these lines later)
-	for (UINT i = 0; i < wolf_model_->meshes.size(); ++i)
-	{
-		wolf_model_->meshes[i].set_material(material);
-	}
+	ModelInstance wolf_instance;
+	wolf_instance.model = wolf_model_;
+	//wolf_instance.scale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	model_instances_.push_back(wolf_instance);
 	//__
 
 	// Createa floor model.
-	// (Delete these lines later)
 	//
 	std::vector<inputvertex::PosNormalTexTangent::Vertex> floor_vertices(6);
 
@@ -228,22 +218,23 @@ bool ba::FBXLoaderTester::InitModels()
 	floor_vertices[5].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	floor_vertices[5].uv = XMFLOAT2(1.0f, 1.0f);
 	floor_vertices[5].tangent = XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+	// Simple material for the floor.
+	light::Material material;
+	material.ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+	material.diffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	material.specular = XMFLOAT4(0.6f, 0.6f, 0.6f, 4.0f);
+	material.reflection = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 	
 	floor_model_ = new Model;
 	floor_model_->meshes.resize(1);
 	floor_model_->meshes[0].set_vertices(device_, floor_vertices);
 	floor_model_->meshes[0].set_material(material);
+
+	ModelInstance floor_instance;
+	floor_instance.model = floor_model_;
+	model_instances_.push_back(floor_instance);
 	//__
-
-	ModelInstance model_inst;
-
-	model_inst.model = wolf_model_;
-	model_inst.scale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	model_instances_.push_back(model_inst);
-
-	model_inst.model = floor_model_;
-	model_inst.scale = XMMatrixIdentity();
-	model_instances_.push_back(model_inst);
 
 	return true;
 }

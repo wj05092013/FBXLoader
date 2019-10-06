@@ -50,7 +50,7 @@ struct Material
 {
     float4 ambient;
     float4 diffuse;
-    float4 specular;
+    float4 specular;		// 'w' is shininess.
     float4 reflection;
 };
 

@@ -256,7 +256,6 @@ float4 PS(
     }
 
 	// Apply fog effect.
-	//
     if (fog_enabled)
     {
         float fog_lerp = saturate((distance_to_eye - fog_start) / fog_range);

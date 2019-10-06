@@ -20,17 +20,17 @@ namespace ba
 		void set_transform(const XMMATRIX& matrix);
 		const XMMATRIX& transform() const;
 
-		void set_material(const Material& material);
-		const Material& material() const;
+		void set_material(const light::Material& material);
+		const light::Material& material() const;
 
 	protected:
-		ID3D11Buffer* vb_;
-		UINT vertex_stride_;
+		ID3D11Buffer*	vb_;
+		UINT			vertex_stride_;
 
 	private:
-		UINT vertex_count_;
-		XMMATRIX transform_;
-		Material material_;
+		UINT			vertex_count_;
+		XMMATRIX		transform_;
+		light::Material	material_;
 	};
 
 	class IndexedMesh : public Mesh
@@ -44,8 +44,8 @@ namespace ba
 		bool set_indices(ID3D11Device* device, const std::vector<UINT> indices);
 
 	private:
-		ID3D11Buffer* ib_;
-		UINT idx_count_;
+		ID3D11Buffer*	ib_;
+		UINT			idx_count_;
 	};
 }
 

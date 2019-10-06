@@ -22,7 +22,7 @@ namespace ba
 		bool Init(ID3D11Device* device, UINT width, UINT height);
 		void Release();
 
-		void BuildShadowTransform(const ba::DirectionalLight& lit, const BoundingSphere& scene_bounds);
+		void BuildShadowTransform(const ba::light::DirectionalLight& lit, const BoundingSphere& scene_bounds);
 
 		XMMATRIX view() const;
 		XMMATRIX proj() const;

@@ -31,12 +31,12 @@ namespace ba
 
 		struct EffectVariableBundleChangeRarely
 		{
-			DirectionalLight*	directional_lights;
-			float				fog_start;
-			float				fog_range;
-			XMVECTOR			fog_color;
-			float				shadow_map_size;
-			XMMATRIX			to_tex;
+			light::DirectionalLight*	directional_lights;
+			float						fog_start;
+			float						fog_range;
+			XMVECTOR					fog_color;
+			float						shadow_map_size;
+			XMMATRIX					to_tex;
 		};
 
 	public:

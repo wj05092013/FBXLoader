@@ -35,7 +35,7 @@ void ba::ShadowMap::Release()
 	ReleaseCOM(dsv_);
 }
 
-void ba::ShadowMap::BuildShadowTransform(const ba::DirectionalLight& lit, const ba::ShadowMap::BoundingSphere& scene_bounds)
+void ba::ShadowMap::BuildShadowTransform(const ba::light::DirectionalLight& lit, const ba::ShadowMap::BoundingSphere& scene_bounds)
 {
 	// Build view matrix of the directional light.
 	//

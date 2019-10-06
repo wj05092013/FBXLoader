@@ -193,9 +193,9 @@ void ba::BasicEffect::SetTexMapping(const XMMATRIX& matrix)
 	tex_mapping_->SetMatrix(reinterpret_cast<const float*>(&matrix));
 }
 
-void ba::BasicEffect::SetMaterial(const Material& material)
+void ba::BasicEffect::SetMaterial(const light::Material& material)
 {
-	material_->SetRawValue(&material, 0, sizeof(Material));
+	material_->SetRawValue(&material, 0, sizeof(light::Material));
 }
 
 void ba::BasicEffect::SetDiffuseMap(ID3D11ShaderResourceView* srv)
@@ -238,9 +238,9 @@ void ba::BasicEffect::SetProj(const XMMATRIX& matrix)
 	proj_->SetMatrix(reinterpret_cast<const float*>(&matrix));
 }
 
-void ba::BasicEffect::SetDirectionalLights(const DirectionalLight* lits)
+void ba::BasicEffect::SetDirectionalLights(const light::DirectionalLight* lits)
 {
-	directional_lights_->SetRawValue(lits, 0, 3 * sizeof(DirectionalLight));
+	directional_lights_->SetRawValue(lits, 0, 3 * sizeof(light::DirectionalLight));
 }
 
 void ba::BasicEffect::SetFogStart(float distance)

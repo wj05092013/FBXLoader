@@ -1,5 +1,21 @@
 #include "stdafx.h"
 
+//
+// Helper functions declaration
+//
+
+namespace ba
+{
+	static void FbxAMatrixToXMFLOAT4x4(const FbxAMatrix& fbx_m, XMFLOAT4X4& out_m);
+}
+
+
+//
+// FBXLoader class
+//
+
+const int ba::FBXLoader::kMaterialCountMax = 16;
+
 ba::FBXLoader::FBXLoader() :
 	manager_(nullptr),
 	io_settings_(nullptr)
@@ -72,9 +88,12 @@ bool ba::FBXLoader::Load(const std::string& filename, FBXLoaderModel& out_model)
 	//__
 
 	// Load scene.
+	//
 	FbxNode* root_node = scene->GetRootNode();
 
 	out_model.meshes.resize(0);
+
+	//  Load all nodes recursively.
 	ret = LoadNode(root_node, out_model);
 
 	scene->Destroy();
@@ -82,6 +101,7 @@ bool ba::FBXLoader::Load(const std::string& filename, FBXLoaderModel& out_model)
 	{
 		return false;
 	}
+	//__
 
 	return true;
 }
@@ -102,14 +122,16 @@ bool ba::FBXLoader::LoadNode(FbxNode* node, FBXLoaderModel& out_model)
 				FbxMesh* fbx_mesh = node->GetMesh();
 				FBXLoaderMesh out_mesh;
 
-				// Load mesh.
+				// Load geometry data.
 				if (!LoadGeometry(fbx_mesh, out_mesh))
 					return false;
 
 				// Get transform.
 				LoadTransform(node, out_mesh.transform);
 
-				LoadMaterial(node, out_mesh.material);
+				int mat_count = node->GetMaterialCount();
+
+				LoadMaterial(node, out_mesh.material, 0);
 
 				out_model.meshes.push_back(out_mesh);
 
@@ -189,9 +211,9 @@ void ba::FBXLoader::LoadTransform(FbxNode* node, XMFLOAT4X4& out_transform)
 	FbxAMatrixToXMFLOAT4x4(transform, out_transform);
 }
 
-void ba::FBXLoader::LoadMaterial(FbxNode* node, FBXLoaderMaterial& out_material)
+void ba::FBXLoader::LoadMaterial(FbxNode* node, FBXLoaderMaterial& out_material, int material_idx)
 {
-	FbxSurfaceMaterial* fbx_material = node->GetMaterial(0);
+	FbxSurfaceMaterial* fbx_material = node->GetMaterial(material_idx);
 
 	FbxProperty prop;
 	FbxDouble3 color;
@@ -251,6 +273,13 @@ void ba::FBXLoader::LoadMaterial(FbxNode* node, FBXLoaderMaterial& out_material)
 	out_material.reflection.z = static_cast<float>(color.mData[2]);
 
 	out_material.reflection_factor = static_cast<float>(factor);
+	//__
+
+	// Get shininess.
+	prop = fbx_material->FindProperty(FbxSurfaceMaterial::sShininess);
+	FbxDouble shininess = prop.Get<FbxDouble>();
+
+	out_material.shininess = static_cast<float>(shininess);
 	//__
 }
 
@@ -434,7 +463,12 @@ bool ba::FBXLoader::ReadUV(FbxMesh* fbx_mesh, int control_point_idx, int uv_idx,
 	return true;
 }
 
-void ba::FBXLoader::FbxAMatrixToXMFLOAT4x4(const FbxAMatrix& fbx_m, XMFLOAT4X4& out_m)
+
+//
+// Helper functions definitions
+//
+
+void ba::FbxAMatrixToXMFLOAT4x4(const FbxAMatrix& fbx_m, XMFLOAT4X4& out_m)
 {
 	out_m.m[0][0] = static_cast<float>(fbx_m.Get(0, 0));
 	out_m.m[0][1] = static_cast<float>(fbx_m.Get(0, 1));

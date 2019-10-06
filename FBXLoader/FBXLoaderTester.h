@@ -39,14 +39,14 @@ namespace ba
 	private:
 		// Renderer.
 		Renderer renderer_;
-		Renderer::EffectVariableBundleChangeRarely evb_change_rarely_;
-		Renderer::EffectVariableBundleOnStartAndResize evb_on_start_and_resize_;
-		Renderer::EffectVariableBundlePerFrame evb_per_frame_;
+		Renderer::EffectVariableBundleChangeRarely		evb_change_rarely_;
+		Renderer::EffectVariableBundleOnStartAndResize	evb_on_start_and_resize_;
+		Renderer::EffectVariableBundlePerFrame			evb_per_frame_;
 
 		// Shadow map.
 		static const float kShadowMapSize;
-		ShadowMap::BoundingSphere scene_bounds_;
-		ShadowMap shadow_map_;
+		ShadowMap::BoundingSphere	scene_bounds_;
+		ShadowMap					shadow_map_;
 
 		// SSAO map.
 		SSAOMap ssao_map_;
@@ -56,11 +56,11 @@ namespace ba
 
 		// Scene objects.
 		//
-		Model* wolf_model_;
-		Model* floor_model_;
-		std::vector<ModelInstance> model_instances_;
+		Model*						wolf_model_;
+		Model*						floor_model_;
+		std::vector<ModelInstance>	model_instances_;
 
-		DirectionalLight lights_[3];
+		light::DirectionalLight		lights_[3];
 		//__
 
 		// Properties related to camera contorl.
@@ -78,8 +78,8 @@ namespace ba
 		static const float kUpperMovingRate;
 		static const float kRotationRate;
 
-		Camera cam_;
+		Camera	cam_;
 
-		POINT last_mouse_pos_;
+		POINT	last_mouse_pos_;
 	};
 }

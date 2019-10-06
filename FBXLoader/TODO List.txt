@@ -3,6 +3,8 @@ REMEMBER
 
 TODO
 	impl
+		Basic.fx
+			material -> 16개 배열로 변경
 		FBXLoader
 			Load materials and textures.
 		Animation

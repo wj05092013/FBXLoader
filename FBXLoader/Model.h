@@ -21,10 +21,9 @@ namespace ba
 	public:
 		ModelInstance();
 
-		Model* model;
-
-		XMMATRIX scale;
-		XMMATRIX rotation;
-		XMMATRIX translation;
+		Model*		model;
+		XMMATRIX	scale;
+		XMMATRIX	rotation;
+		XMMATRIX	translation;
 	};
 }

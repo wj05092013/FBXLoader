@@ -303,5 +303,11 @@
     <None Include="Model\Wolf_with_Animations.fbx">
       <Filter>Model</Filter>
     </None>
+    <None Include="Model\Dragon 2.5_fbx.fbx">
+      <Filter>Model</Filter>
+    </None>
+    <None Include="Model\Spider_2.fbx">
+      <Filter>Model</Filter>
+    </None>
   </ItemGroup>
 </Project>

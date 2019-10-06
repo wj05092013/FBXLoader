@@ -195,9 +195,9 @@ void ba::NormalMappingEffect::SetTexMapping(const XMMATRIX& matrix)
 	tex_mapping_->SetMatrix(reinterpret_cast<const float*>(&matrix));
 }
 
-void ba::NormalMappingEffect::SetMaterial(const Material& material)
+void ba::NormalMappingEffect::SetMaterial(const light::Material& material)
 {
-	material_->SetRawValue(&material, 0, sizeof(Material));
+	material_->SetRawValue(&material, 0, sizeof(light::Material));
 }
 
 void ba::NormalMappingEffect::SetDiffuseMap(ID3D11ShaderResourceView* srv)
@@ -245,9 +245,9 @@ void ba::NormalMappingEffect::SetProj(const XMMATRIX& matrix)
 	proj_->SetMatrix(reinterpret_cast<const float*>(&matrix));
 }
 
-void ba::NormalMappingEffect::SetDirectionalLights(const DirectionalLight* lits)
+void ba::NormalMappingEffect::SetDirectionalLights(const light::DirectionalLight* lits)
 {
-	directional_lights_->SetRawValue(lits, 0, 3 * sizeof(DirectionalLight));
+	directional_lights_->SetRawValue(lits, 0, 3 * sizeof(light::DirectionalLight));
 }
 
 void ba::NormalMappingEffect::SetFogStart(float distance)

@@ -37,12 +37,12 @@ const DirectX::XMMATRIX& ba::Mesh::transform() const
 	return transform_;
 }
 
-void ba::Mesh::set_material(const Material& material)
+void ba::Mesh::set_material(const light::Material& material)
 {
 	material_ = material;
 }
 
-const ba::Material& ba::Mesh::material() const
+const ba::light::Material& ba::Mesh::material() const
 {
 	return material_;
 }

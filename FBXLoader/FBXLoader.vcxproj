@@ -109,6 +109,8 @@
     <Text Include="TODO List.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Model\Dragon 2.5_fbx.fbx" />
+    <None Include="Model\Spider_2.fbx" />
     <None Include="Model\Wolf.fbx" />
     <None Include="Model\Wolf_fbx.fbx" />
     <None Include="Model\Wolf_with_Animations.fbx" />

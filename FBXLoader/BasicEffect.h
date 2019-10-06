@@ -124,7 +124,7 @@ namespace ba
 		void SetWorld(const XMMATRIX& matrix);
 		void SetWorldInvTrans(const XMMATRIX& matrix);
 		void SetTexMapping(const XMMATRIX& matrix);
-		void SetMaterial(const Material& material);
+		void SetMaterial(const light::Material& material);
 		void SetDiffuseMap(ID3D11ShaderResourceView* srv);
 
 		//  For skinned object.
@@ -149,7 +149,7 @@ namespace ba
 		// Change rarely.
 		//
 		//  'DirectionalLight' array (compulsary size: 3)
-		void SetDirectionalLights(const DirectionalLight* lits);
+		void SetDirectionalLights(const light::DirectionalLight* lits);
 		void SetFogStart(float distance);
 		void SetFogRange(float range);
 		void SetFogColor(const XMVECTOR& color);
