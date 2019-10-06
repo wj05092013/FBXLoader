@@ -32,6 +32,7 @@
 #include <DirectXMath.h>
 
 // Other library header files.
+#define KFBX_DLLINFO
 #include <fbxsdk.h>
 
 // Current project's header files.

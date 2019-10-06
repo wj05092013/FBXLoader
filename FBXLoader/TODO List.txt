@@ -17,3 +17,7 @@ REFERENCE
 	Unreal Engine
 		SlateD3DRenderer
 		SlateD3DRenderingPolicy
+
+ERROR
+	error LNK2001: "public: static char const * const fbxsdk::FbxSurfaceMaterial::sAmbient" (?sAmbient@FbxSurfaceMaterial@fbxsdk@@2PBDB) 외부 기호를 확인할 수 없습니다.
+		libfbxsdk.lib -> libfbxsdk-md.lib 사용

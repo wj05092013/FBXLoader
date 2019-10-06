@@ -92,7 +92,8 @@ bool ba::FBXLoader::LoadNode(FbxNode* node, FBXLoaderModel& out_model)
 	{
 		for (int i = 0; i < node->GetNodeAttributeCount(); ++i)
 		{
-			FbxNodeAttribute::EType attribute_type = node->GetNodeAttributeByIndex(i)->GetAttributeType();
+			FbxNodeAttribute* attribute = node->GetNodeAttributeByIndex(i);
+			FbxNodeAttribute::EType attribute_type = attribute->GetAttributeType();
 
 			switch (attribute_type)
 			{
@@ -100,13 +101,15 @@ bool ba::FBXLoader::LoadNode(FbxNode* node, FBXLoaderModel& out_model)
 			{
 				FbxMesh* fbx_mesh = node->GetMesh();
 				FBXLoaderMesh out_mesh;
-				
+
 				// Load mesh.
-				if (!LoadMesh(fbx_mesh, out_mesh))
+				if (!LoadGeometry(fbx_mesh, out_mesh))
 					return false;
 
 				// Get transform.
 				LoadTransform(node, out_mesh.transform);
+
+				LoadMaterial(node, out_mesh.material);
 
 				out_model.meshes.push_back(out_mesh);
 
@@ -127,23 +130,23 @@ bool ba::FBXLoader::LoadNode(FbxNode* node, FBXLoaderModel& out_model)
 	return true;
 }
 
-bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, FBXLoaderMesh& out_mesh)
+bool ba::FBXLoader::LoadGeometry(FbxMesh* fbx_mesh, FBXLoaderMesh& out_mesh)
 {
 	if (!fbx_mesh->IsTriangleMesh())
 		return false;
 	
 	if (fbx_mesh->GetElementNormalCount() < 1)
-	{
 		return false;
-	}
+	if (fbx_mesh->GetElementUVCount() < 1)
+		return false;
 	if (fbx_mesh->GetElementTangentCount() < 1)
 	{
 		if (!fbx_mesh->GenerateTangentsDataForAllUVSets())
 			return false;
 	}
-	if (fbx_mesh->GetElementUVCount() < 1)
-		return false;
 
+	// Load informations of vertices.
+	//
 	FbxVector4* control_points = fbx_mesh->GetControlPoints();
 
 	int tri_count = fbx_mesh->GetPolygonCount();
@@ -163,6 +166,7 @@ bool ba::FBXLoader::LoadMesh(FbxMesh* fbx_mesh, FBXLoaderMesh& out_mesh)
 			if (!ReadUV(fbx_mesh, control_point_idx, uv_idx, out_mesh.vertices[vertex_idx].uv)) return false;
 		}
 	}
+	//__
 
 	return true;
 }
@@ -183,6 +187,71 @@ void ba::FBXLoader::LoadTransform(FbxNode* node, XMFLOAT4X4& out_transform)
 	FbxAMatrix transform = scale * rotation * translation;
 
 	FbxAMatrixToXMFLOAT4x4(transform, out_transform);
+}
+
+void ba::FBXLoader::LoadMaterial(FbxNode* node, FBXLoaderMaterial& out_material)
+{
+	FbxSurfaceMaterial* fbx_material = node->GetMaterial(0);
+
+	FbxProperty prop;
+	FbxDouble3 color;
+	FbxDouble factor;
+
+	// Get ambient.
+	//
+	prop = fbx_material->FindProperty(FbxSurfaceMaterial::sAmbient);
+	color = prop.Get<FbxDouble3>();
+	prop = fbx_material->FindProperty(FbxSurfaceMaterial::sAmbientFactor);
+	factor = prop.Get<FbxDouble>();
+
+	out_material.ambient.x = static_cast<float>(color.mData[0]);
+	out_material.ambient.y = static_cast<float>(color.mData[1]);
+	out_material.ambient.z = static_cast<float>(color.mData[2]);
+
+	out_material.ambient_factor = static_cast<float>(factor);
+	//__
+
+	// Get diffuse.
+	//
+	prop = fbx_material->FindProperty(FbxSurfaceMaterial::sDiffuse);
+	color = prop.Get<FbxDouble3>();
+	prop = fbx_material->FindProperty(FbxSurfaceMaterial::sDiffuseFactor);
+	factor = prop.Get<FbxDouble>();
+
+	out_material.diffuse.x = static_cast<float>(color.mData[0]);
+	out_material.diffuse.y = static_cast<float>(color.mData[1]);
+	out_material.diffuse.z = static_cast<float>(color.mData[2]);
+
+	out_material.diffuse_factor = static_cast<float>(factor);
+	//__
+
+	// Get specular.
+	//
+	prop = fbx_material->FindProperty(FbxSurfaceMaterial::sSpecular);
+	color = prop.Get<FbxDouble3>();
+	prop = fbx_material->FindProperty(FbxSurfaceMaterial::sSpecularFactor);
+	factor = prop.Get<FbxDouble>();
+
+	out_material.specular.x = static_cast<float>(color.mData[0]);
+	out_material.specular.y = static_cast<float>(color.mData[1]);
+	out_material.specular.z = static_cast<float>(color.mData[2]);
+
+	out_material.specular_factor = static_cast<float>(factor);
+	//__
+
+	// Get reflection.
+	//
+	prop = fbx_material->FindProperty(FbxSurfaceMaterial::sReflection);
+	color = prop.Get<FbxDouble3>();
+	prop = fbx_material->FindProperty(FbxSurfaceMaterial::sReflectionFactor);
+	factor = prop.Get<FbxDouble>();
+
+	out_material.reflection.x = static_cast<float>(color.mData[0]);
+	out_material.reflection.y = static_cast<float>(color.mData[1]);
+	out_material.reflection.z = static_cast<float>(color.mData[2]);
+
+	out_material.reflection_factor = static_cast<float>(factor);
+	//__
 }
 
 void ba::FBXLoader::ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_pos)

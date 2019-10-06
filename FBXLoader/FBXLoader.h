@@ -19,16 +19,21 @@ namespace ba
 
 		struct FBXLoaderMaterial
 		{
-			XMFLOAT4 ambient;
-			XMFLOAT4 diffuse;
-			XMFLOAT4 specular;
-			XMFLOAT4 reflection;
+			XMFLOAT3 ambient;
+			float ambient_factor;
+			XMFLOAT3 diffuse;
+			float diffuse_factor;
+			XMFLOAT3 specular;
+			float specular_factor;
+			XMFLOAT3 reflection;
+			float reflection_factor;
 		};
 
 		struct FBXLoaderMesh
 		{
 			std::vector<FBXLoaderVertex> vertices;
 			XMFLOAT4X4 transform;
+			FBXLoaderMaterial material;
 		};
 
 		struct FBXLoaderModel
@@ -50,8 +55,9 @@ namespace ba
 	private:
 		bool LoadNode(FbxNode* node, FBXLoaderModel& out_model);
 
-		bool LoadMesh(FbxMesh* fbx_mesh, FBXLoaderMesh& out_mesh);
+		bool LoadGeometry(FbxMesh* fbx_mesh, FBXLoaderMesh& out_mesh);
 		void LoadTransform(FbxNode* node, XMFLOAT4X4& out_transform);
+		void LoadMaterial(FbxNode* node, FBXLoaderMaterial& out_material);
 
 		void ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_pos);
 		bool ReadNormal(FbxMesh* fbx_mesh, int control_point_idx, int vertex_idx, XMFLOAT3& out_normal);
