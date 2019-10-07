@@ -234,6 +234,26 @@ void ba::FBXLoader::LoadMaterial(FbxNode* node, FBXLoaderMaterial& out_material,
 	// Get diffuse.
 	//
 	prop = fbx_material->FindProperty(FbxSurfaceMaterial::sDiffuse);
+
+	
+
+	//  Get diffuse map for this material.
+	//
+	int layered_tex_count = prop.GetSrcObjectCount<FbxLayeredTexture>();
+	if (layered_tex_count > 0)
+	{
+
+	}
+
+	for (int i = 0; i < prop.GetSrcObjectCount(); ++i)
+	{
+		FbxTexture* tex = prop.GetSrcObject<FbxTexture>(i);
+		std::string name = tex->GetName();
+
+		FbxTexture::EAlphaSource alpha = tex->GetAlphaSource();
+	}
+	// __
+
 	color = prop.Get<FbxDouble3>();
 	prop = fbx_material->FindProperty(FbxSurfaceMaterial::sDiffuseFactor);
 	factor = prop.Get<FbxDouble>();
