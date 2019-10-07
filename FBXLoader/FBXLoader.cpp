@@ -129,8 +129,6 @@ bool ba::FBXLoader::LoadNode(FbxNode* node, FBXLoaderModel& out_model)
 				// Get transform.
 				LoadTransform(node, out_mesh.transform);
 
-				int mat_count = node->GetMaterialCount();
-
 				LoadMaterial(node, out_mesh.material, 0);
 
 				out_model.meshes.push_back(out_mesh);
