@@ -53,7 +53,8 @@ const ba::light::Material& ba::Mesh::material() const
 //
 
 ba::IndexedMesh::IndexedMesh() :
-	ib_(nullptr)
+	ib_(nullptr),
+	idx_count_(0)
 {
 }
 

@@ -170,7 +170,7 @@ bool ba::FBXLoaderTester::InitModels()
 {
 	// Create an wolf model and insert it into the 'model_instances'.
 	//
-	std::string file_name = "Model/Wolf.fbx";
+	std::string file_name = "Model/Dragon 2.5_fbx.fbx";
 
 	FBXLoader::FBXLoaderModel fbx_model;
 	if (!FBXLoader::GetInstance().Load(file_name, fbx_model))
