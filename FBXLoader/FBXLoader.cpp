@@ -7,6 +7,7 @@
 namespace ba
 {
 	static void FbxAMatrixToXMFLOAT4x4(const FbxAMatrix& fbx_m, XMFLOAT4X4& out_m);
+	static bool LoadTextureInfo(const FbxTexture* fbx_tex, FbxTexture::ETextureUse tex_use, FBXLoadedTextureInfo& out_info);
 }
 
 
@@ -14,11 +15,10 @@ namespace ba
 // FBXLoader class
 //
 
-const int ba::FBXLoader::kMaterialCountMax = 16;
-
 ba::FBXLoader::FBXLoader() :
 	manager_(nullptr),
-	io_settings_(nullptr)
+	io_settings_(nullptr),
+	mesh_counter_(0)
 {
 
 }
@@ -50,7 +50,7 @@ void ba::FBXLoader::Release()
 	}
 }
 
-bool ba::FBXLoader::Load(const std::string& filename, FBXLoaderModel& out_model)
+bool ba::FBXLoader::Load(const std::string& filename, FBXLoadedModel& out_model)
 {
 	// Create and initialize importer.
 	//
@@ -91,7 +91,8 @@ bool ba::FBXLoader::Load(const std::string& filename, FBXLoaderModel& out_model)
 	//
 	FbxNode* root_node = scene->GetRootNode();
 
-	out_model.meshes.resize(0);
+	out_model.meshes.resize(scene->GetGeometryCount());
+	mesh_counter_ = 0;
 
 	//  Load all nodes recursively.
 	ret = LoadNode(root_node, out_model);
@@ -106,7 +107,7 @@ bool ba::FBXLoader::Load(const std::string& filename, FBXLoaderModel& out_model)
 	return true;
 }
 
-bool ba::FBXLoader::LoadNode(FbxNode* node, FBXLoaderModel& out_model)
+bool ba::FBXLoader::LoadNode(FbxNode* node, FBXLoadedModel& out_model)
 {
 	if (node)
 	{
@@ -120,19 +121,18 @@ bool ba::FBXLoader::LoadNode(FbxNode* node, FBXLoaderModel& out_model)
 			case fbxsdk::FbxNodeAttribute::eMesh:
 			{
 				FbxMesh* fbx_mesh = node->GetMesh();
-				FBXLoaderMesh out_mesh;
 
 				// Load geometry data.
-				if (!LoadGeometry(fbx_mesh, out_mesh))
+				if (!LoadGeometry(fbx_mesh, out_model.meshes[mesh_counter_]))
 					return false;
 
 				// Get transform.
-				LoadTransform(node, out_mesh.transform);
+				LoadTransform(node, out_model.meshes[mesh_counter_].transform);
 
 				// Get materials
-				LoadMaterials(node, out_mesh.materials);
+				LoadMaterials(node, out_model.meshes[mesh_counter_].materials);
 
-				out_model.meshes.push_back(out_mesh);
+				++mesh_counter_;
 
 				break;
 			}
@@ -151,12 +151,26 @@ bool ba::FBXLoader::LoadNode(FbxNode* node, FBXLoaderModel& out_model)
 	return true;
 }
 
-bool ba::FBXLoader::LoadGeometry(FbxMesh* fbx_mesh, FBXLoaderMesh& out_mesh)
+bool ba::FBXLoader::LoadGeometry(FbxMesh* fbx_mesh, FBXLoadedMesh& out_mesh)
 {
 	if (!fbx_mesh->IsTriangleMesh())
 		return false;
 
-	FbxLayer* base_layer = fbx_mesh->GetLayer(0);
+	FbxGeometryElementNormal* normal_element = fbx_mesh->GetElementNormal();
+	FbxGeometryElementUV* uv_element = fbx_mesh->GetElementUV();
+	FbxGeometryElementMaterial* material_element = fbx_mesh->GetElementMaterial();
+	FbxGeometryElementTangent* tangent_element = fbx_mesh->GetElementTangent();
+	
+	if (!normal_element)
+		return false;
+	if (!uv_element)
+		return false;
+	if (!material_element)
+		return false;
+
+	out_mesh.b_has_tangent = false;
+	if (tangent_element)
+		out_mesh.b_has_tangent = true;
 	
 	// Load informations of vertices.
 	//
@@ -164,9 +178,12 @@ bool ba::FBXLoader::LoadGeometry(FbxMesh* fbx_mesh, FBXLoaderMesh& out_mesh)
 
 	int tri_count = fbx_mesh->GetPolygonCount();
 	out_mesh.vertices.resize(3 * tri_count);
+	out_mesh.face_material_indices.resize(tri_count);
 
 	for (int tri_idx = 0; tri_idx < tri_count; ++tri_idx)
 	{
+		if (!ReadMaterialIndex(material_element, tri_idx, out_mesh.face_material_indices[tri_idx])) return false;
+
 		for (int i = 0; i < 3; ++i)
 		{
 			int control_point_idx = fbx_mesh->GetPolygonVertex(tri_idx, i);
@@ -174,10 +191,14 @@ bool ba::FBXLoader::LoadGeometry(FbxMesh* fbx_mesh, FBXLoaderMesh& out_mesh)
 			int vertex_idx = 3 * tri_idx + i;
 
 			ReadPosition(control_points[control_point_idx], out_mesh.vertices[vertex_idx].pos);
-			if (!ReadNormal(base_layer, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].normal)) return false;
-			if (!ReadUV(base_layer, control_point_idx, uv_idx, out_mesh.vertices[vertex_idx].uv)) return false;
-			if (!ReadMaterialIndex(base_layer, tri_idx, out_mesh.face_material_indices[tri_idx])) return false;
-			if (!ReadTangent(base_layer, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].tangent)) return false;
+			if (!ReadNormal(normal_element, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].normal)) return false;
+			if (!ReadUV(uv_element, control_point_idx, uv_idx, out_mesh.vertices[vertex_idx].uv)) return false;
+
+			if (out_mesh.b_has_tangent)
+			{
+				if (!ReadTangent(tangent_element, control_point_idx, vertex_idx, out_mesh.vertices[vertex_idx].tangent))
+					return false;
+			}
 		}
 	}
 	//__
@@ -203,22 +224,15 @@ void ba::FBXLoader::LoadTransform(FbxNode* node, XMFLOAT4X4& out_transform)
 	FbxAMatrixToXMFLOAT4x4(transform, out_transform);
 }
 
-void ba::FBXLoader::LoadMaterials(FbxNode* node, std::vector<FBXLoaderMaterial>& out_materials)
+void ba::FBXLoader::LoadMaterials(FbxNode* node, std::vector<FBXLoadedMaterial>& out_materials)
 {
-	int material_count = node->GetMaterialCount();
-	if (material_count < 1)
-		return;
+	int node_material_count = node->GetMaterialCount();
+	out_materials.resize(node_material_count);
 
-	out_materials.resize(material_count);
-
-	for (int i = 0; i < material_count; ++i)
+	// 'material_idx' is the index of material "in the node".
+	for (int material_idx = 0; material_idx < node_material_count; ++material_idx)
 	{
-		FbxSurfaceMaterial* fbx_material = node->GetMaterial(i);
-
-		// Test
-		//
-		fbx_material->GetNameOnly();
-		//
+		FbxSurfaceMaterial* fbx_material = node->GetMaterial(material_idx);
 
 		FbxProperty prop;
 		FbxDouble3 color;
@@ -231,37 +245,24 @@ void ba::FBXLoader::LoadMaterials(FbxNode* node, std::vector<FBXLoaderMaterial>&
 		prop = fbx_material->FindProperty(FbxSurfaceMaterial::sAmbientFactor);
 		factor = prop.Get<FbxDouble>();
 
-		out_materials[i].ambient.x = static_cast<float>(color.mData[0]);
-		out_materials[i].ambient.y = static_cast<float>(color.mData[1]);
-		out_materials[i].ambient.z = static_cast<float>(color.mData[2]);
+		out_materials[material_idx].ambient.x = static_cast<float>(color.mData[0]);
+		out_materials[material_idx].ambient.y = static_cast<float>(color.mData[1]);
+		out_materials[material_idx].ambient.z = static_cast<float>(color.mData[2]);
 		//__
 
 		// Get diffuse.
 		//
 		prop = fbx_material->FindProperty(FbxSurfaceMaterial::sDiffuse);
 
-		//  Get diffuse map for this material.
-		//
-		int layered_tex_count = prop.GetSrcObjectCount<FbxLayeredTexture>();
-		if (layered_tex_count > 0)
-		{
-
-		}
-
-		for (int i = 0; i < prop.GetSrcObjectCount(); ++i)
-		{
-			FbxFileTexture* tex = prop.GetSrcObject<FbxFileTexture>(i);
-			std::string name = tex->GetName();
-		}
-		// __
+		LoadTextureInfos(prop, FbxTexture::ETextureUse::eStandard, out_materials[material_idx].texture_infos);
 
 		color = prop.Get<FbxDouble3>();
 		prop = fbx_material->FindProperty(FbxSurfaceMaterial::sDiffuseFactor);
 		factor = prop.Get<FbxDouble>();
 
-		out_materials[i].diffuse.x = static_cast<float>(color.mData[0]);
-		out_materials[i].diffuse.y = static_cast<float>(color.mData[1]);
-		out_materials[i].diffuse.z = static_cast<float>(color.mData[2]);
+		out_materials[material_idx].diffuse.x = static_cast<float>(color.mData[0]);
+		out_materials[material_idx].diffuse.y = static_cast<float>(color.mData[1]);
+		out_materials[material_idx].diffuse.z = static_cast<float>(color.mData[2]);
 		//__
 
 		// Get specular.
@@ -271,9 +272,9 @@ void ba::FBXLoader::LoadMaterials(FbxNode* node, std::vector<FBXLoaderMaterial>&
 		prop = fbx_material->FindProperty(FbxSurfaceMaterial::sSpecularFactor);
 		factor = prop.Get<FbxDouble>();
 
-		out_materials[i].specular.x = static_cast<float>(color.mData[0]);
-		out_materials[i].specular.y = static_cast<float>(color.mData[1]);
-		out_materials[i].specular.z = static_cast<float>(color.mData[2]);
+		out_materials[material_idx].specular.x = static_cast<float>(color.mData[0]);
+		out_materials[material_idx].specular.y = static_cast<float>(color.mData[1]);
+		out_materials[material_idx].specular.z = static_cast<float>(color.mData[2]);
 		//__
 
 		// Get reflection.
@@ -283,17 +284,56 @@ void ba::FBXLoader::LoadMaterials(FbxNode* node, std::vector<FBXLoaderMaterial>&
 		prop = fbx_material->FindProperty(FbxSurfaceMaterial::sReflectionFactor);
 		factor = prop.Get<FbxDouble>();
 
-		out_materials[i].reflection.x = static_cast<float>(color.mData[0]);
-		out_materials[i].reflection.y = static_cast<float>(color.mData[1]);
-		out_materials[i].reflection.z = static_cast<float>(color.mData[2]);
+		out_materials[material_idx].reflection.x = static_cast<float>(color.mData[0]);
+		out_materials[material_idx].reflection.y = static_cast<float>(color.mData[1]);
+		out_materials[material_idx].reflection.z = static_cast<float>(color.mData[2]);
 		//__
 
 		// Get shininess.
 		prop = fbx_material->FindProperty(FbxSurfaceMaterial::sShininess);
 		FbxDouble shininess = prop.Get<FbxDouble>();
 
-		out_materials[i].shininess = static_cast<float>(shininess);
+		out_materials[material_idx].shininess = static_cast<float>(shininess);
 		//__
+	}
+}
+
+void ba::FBXLoader::LoadTextureInfos(FbxProperty& prop, FbxTexture::ETextureUse tex_use, std::vector<FBXLoadedTextureInfo>& out_infos)
+{
+	int layered_tex_count = prop.GetSrcObjectCount<FbxLayeredTexture>();
+
+	FBXLoadedTextureInfo tex_info;
+	
+	if (layered_tex_count > 0)
+	{
+		for (int layer_idx = 0; layer_idx < layered_tex_count; ++layer_idx)
+		{
+			FbxLayeredTexture* layered_tex = prop.GetSrcObject<FbxLayeredTexture>(layer_idx);
+
+			int tex_count = layered_tex->GetSrcObjectCount<FbxFileTexture>();
+			for (int tex_idx = 0; tex_idx < tex_count; ++tex_idx)
+			{
+				FbxFileTexture* file_tex = layered_tex->GetSrcObject<FbxFileTexture>(tex_idx);
+
+				if (!LoadTextureInfo(file_tex, tex_use, tex_info))
+					continue;
+
+				out_infos.push_back(tex_info);
+			}
+		}
+	}
+	else
+	{
+		int tex_count = prop.GetSrcObjectCount<FbxTexture>();
+		for (int tex_idx = 0; tex_idx < tex_count; ++tex_idx)
+		{
+			FbxTexture* tex = prop.GetSrcObject<FbxTexture>(tex_idx);
+			
+			if (!LoadTextureInfo(tex, tex_use, tex_info))
+				continue;
+
+			out_infos.push_back(tex_info);
+		}
 	}
 }
 
@@ -304,25 +344,21 @@ void ba::FBXLoader::ReadPosition(const FbxVector4& control_point, XMFLOAT3& out_
 	out_pos.z = static_cast<float>(control_point[2]);
 }
 
-bool ba::FBXLoader::ReadNormal(FbxLayer* layer, int control_point_idx, int vertex_idx, XMFLOAT3& out_normal)
+bool ba::FBXLoader::ReadNormal(const FbxGeometryElementNormal* normal_element, int control_point_idx, int vertex_idx, XMFLOAT3& out_normal)
 {
-	const FbxLayerElementNormal* normal_element = layer->GetNormals();
-	if (!normal_element)
-		return false;
-
 	switch (normal_element->GetMappingMode())
 	{
-	case FbxLayerElement::eByControlPoint:
+	case FbxGeometryElement::eByControlPoint:
 		switch (normal_element->GetReferenceMode())
 		{
-		case FbxLayerElement::eDirect:
+		case FbxGeometryElement::eDirect:
 		{
 			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(control_point_idx).mData[0]);
 			out_normal.y = static_cast<float>(normal_element->GetDirectArray().GetAt(control_point_idx).mData[1]);
 			out_normal.z = static_cast<float>(normal_element->GetDirectArray().GetAt(control_point_idx).mData[2]);
 			break;
 		}
-		case FbxLayerElement::eIndexToDirect:
+		case FbxGeometryElement::eIndexToDirect:
 		{
 			int idx = normal_element->GetIndexArray().GetAt(control_point_idx);
 			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[0]);
@@ -335,17 +371,17 @@ bool ba::FBXLoader::ReadNormal(FbxLayer* layer, int control_point_idx, int verte
 		}
 		break;
 
-	case FbxLayerElement::eByPolygonVertex:
+	case FbxGeometryElement::eByPolygonVertex:
 		switch (normal_element->GetReferenceMode())
 		{
-		case FbxLayerElement::eDirect:
+		case FbxGeometryElement::eDirect:
 		{
 			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(vertex_idx).mData[0]);
 			out_normal.y = static_cast<float>(normal_element->GetDirectArray().GetAt(vertex_idx).mData[1]);
 			out_normal.z = static_cast<float>(normal_element->GetDirectArray().GetAt(vertex_idx).mData[2]);
 			break;
 		}
-		case FbxLayerElement::eIndexToDirect:
+		case FbxGeometryElement::eIndexToDirect:
 		{
 			int idx = normal_element->GetIndexArray().GetAt(vertex_idx);
 			out_normal.x = static_cast<float>(normal_element->GetDirectArray().GetAt(idx).mData[0]);
@@ -365,28 +401,74 @@ bool ba::FBXLoader::ReadNormal(FbxLayer* layer, int control_point_idx, int verte
 	return true;
 }
 
-bool ba::FBXLoader::ReadTangent(FbxLayer* layer, int control_point_idx, int vertex_idx, XMFLOAT3& out_tangent)
+bool ba::FBXLoader::ReadUV(const FbxGeometryElementUV* uv_element, int control_point_idx, int uv_idx, XMFLOAT2& out_uv)
 {
-	const FbxLayerElementTangent* tangent_element = layer->GetTangents();
-	if (!tangent_element)
+	switch (uv_element->GetMappingMode())
 	{
-		if (!layer->CreateLayerElementOfType(FbxLayerElement::EType::eTangent))
+	case FbxGeometryElement::eByControlPoint:
+		switch (uv_element->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+		{
+			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(control_point_idx).mData[0]);
+			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(control_point_idx).mData[1]);
+			break;
+		}
+		case FbxGeometryElement::eIndexToDirect:
+		{
+			int idx = uv_element->GetIndexArray().GetAt(control_point_idx);
+			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[0]);
+			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[1]);
+			break;
+		}
+		default:
 			return false;
+		}
+		break;
+
+	case FbxGeometryElement::eByPolygonVertex:
+		switch (uv_element->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+		{
+			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(uv_idx).mData[0]);
+			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(uv_idx).mData[1]);
+			break;
+		}
+		case FbxGeometryElement::eIndexToDirect:
+		{
+			int idx = uv_element->GetIndexArray().GetAt(uv_idx);
+			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[0]);
+			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[1]);
+			break;
+		}
+		default:
+			return false;
+		}
+		break;
+
+	default:
+		return false;
 	}
 
+	return true;
+}
+
+bool ba::FBXLoader::ReadTangent(const FbxGeometryElementTangent* tangent_element, int control_point_idx, int vertex_idx, XMFLOAT3& out_tangent)
+{
 	switch (tangent_element->GetMappingMode())
 	{
-	case FbxLayerElement::eByControlPoint:
+	case FbxGeometryElement::eByControlPoint:
 		switch (tangent_element->GetReferenceMode())
 		{
-		case FbxLayerElement::eDirect:
+		case FbxGeometryElement::eDirect:
 		{
 			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(control_point_idx).mData[0]);
 			out_tangent.y = static_cast<float>(tangent_element->GetDirectArray().GetAt(control_point_idx).mData[1]);
 			out_tangent.z = static_cast<float>(tangent_element->GetDirectArray().GetAt(control_point_idx).mData[2]);
 			break;
 		}
-		case FbxLayerElement::eIndexToDirect:
+		case FbxGeometryElement::eIndexToDirect:
 		{
 			int idx = tangent_element->GetIndexArray().GetAt(control_point_idx);
 			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[0]);
@@ -399,17 +481,17 @@ bool ba::FBXLoader::ReadTangent(FbxLayer* layer, int control_point_idx, int vert
 		}
 		break;
 
-	case FbxLayerElement::eByPolygonVertex:
+	case FbxGeometryElement::eByPolygonVertex:
 		switch (tangent_element->GetReferenceMode())
 		{
-		case FbxLayerElement::eDirect:
+		case FbxGeometryElement::eDirect:
 		{
 			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(vertex_idx).mData[0]);
 			out_tangent.y = static_cast<float>(tangent_element->GetDirectArray().GetAt(vertex_idx).mData[1]);
 			out_tangent.z = static_cast<float>(tangent_element->GetDirectArray().GetAt(vertex_idx).mData[2]);
 			break;
 		}
-		case FbxLayerElement::eIndexToDirect:
+		case FbxGeometryElement::eIndexToDirect:
 		{
 			int idx = tangent_element->GetIndexArray().GetAt(vertex_idx);
 			out_tangent.x = static_cast<float>(tangent_element->GetDirectArray().GetAt(idx).mData[0]);
@@ -429,78 +511,17 @@ bool ba::FBXLoader::ReadTangent(FbxLayer* layer, int control_point_idx, int vert
 	return true;
 }
 
-bool ba::FBXLoader::ReadUV(FbxLayer* layer, int control_point_idx, int uv_idx, XMFLOAT2& out_uv)
+bool ba::FBXLoader::ReadMaterialIndex(const FbxGeometryElementMaterial* material_element, int triangle_idx, int& out_material_idx)
 {
-	const FbxLayerElementUV* uv_element = layer->GetUVs();
-	if (!uv_element)
-		return false;
-
-	switch (uv_element->GetMappingMode())
-	{
-	case FbxLayerElement::eByControlPoint:
-		switch (uv_element->GetReferenceMode())
-		{
-		case FbxLayerElement::eDirect:
-		{
-			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(control_point_idx).mData[0]);
-			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(control_point_idx).mData[1]);
-			break;
-		}
-		case FbxLayerElement::eIndexToDirect:
-		{
-			int idx = uv_element->GetIndexArray().GetAt(control_point_idx);
-			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[0]);
-			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[1]);
-			break;
-		}
-		default:
-			return false;
-		}
-		break;
-
-	case FbxLayerElement::eByPolygonVertex:
-		switch (uv_element->GetReferenceMode())
-		{
-		case FbxLayerElement::eDirect:
-		{
-			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(uv_idx).mData[0]);
-			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(uv_idx).mData[1]);
-			break;
-		}
-		case FbxLayerElement::eIndexToDirect:
-		{
-			int idx = uv_element->GetIndexArray().GetAt(uv_idx);
-			out_uv.x = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[0]);
-			out_uv.y = static_cast<float>(uv_element->GetDirectArray().GetAt(idx).mData[1]);
-			break;
-		}
-		default:
-			return false;
-		}
-		break;
-
-	default:
-		return false;
-	}
-
-	return true;
-}
-
-bool ba::FBXLoader::ReadMaterialIndex(FbxLayer* layer, int triangle_idx, int& out_material_idx)
-{
-	const FbxLayerElementMaterial* material_element = layer->GetMaterials();
-	if (!material_element)
-		return false;
-
 	switch (material_element->GetMappingMode())
 	{
-	case FbxLayerElement::eAllSame:
+	case FbxGeometryElement::eAllSame:
 	{
 		// material index is stored in the IndexArray, not the DirectArray.
 		out_material_idx = material_element->GetIndexArray().GetAt(0);
 		break;
 	}
-	case FbxLayerElement::eByPolygon:
+	case FbxGeometryElement::eByPolygon:
 	{
 		out_material_idx = material_element->GetIndexArray().GetAt(triangle_idx);
 		break;
@@ -537,4 +558,54 @@ void ba::FbxAMatrixToXMFLOAT4x4(const FbxAMatrix& fbx_m, XMFLOAT4X4& out_m)
 	out_m.m[3][1] = static_cast<float>(fbx_m.Get(3, 1));
 	out_m.m[3][2] = static_cast<float>(fbx_m.Get(3, 2));
 	out_m.m[3][3] = static_cast<float>(fbx_m.Get(3, 3));
+}
+
+bool ba::LoadTextureInfo(const FbxTexture* fbx_tex, FbxTexture::ETextureUse tex_use, FBXLoadedTextureInfo& out_info)
+{
+	// Set file name.
+	out_info.file_name = fbx_tex->GetNameOnly();
+
+	if (tex_use != fbx_tex->GetTextureUse())
+		return false;
+
+	// Set blend mode of this texture.
+	switch (fbx_tex->GetBlendMode())
+	{
+	case FbxTexture::EBlendMode::eTranslucent:
+	{
+		out_info.blend_mode = FBXLoadedTextureInfo::kTranslucent;
+		break;
+	}
+	case FbxTexture::EBlendMode::eAdditive:
+	{
+		out_info.blend_mode = FBXLoadedTextureInfo::kAdditive;
+		break;
+	}
+	case FbxTexture::EBlendMode::eModulate:
+	{
+		out_info.blend_mode = FBXLoadedTextureInfo::kModulate;
+		break;
+	}
+	case FbxTexture::EBlendMode::eModulate2:
+	{
+		out_info.blend_mode = FBXLoadedTextureInfo::kModulate2;
+		break;
+	}
+	case FbxTexture::EBlendMode::eOver:
+	{
+		out_info.blend_mode = FBXLoadedTextureInfo::kOver;
+		break;
+	}
+	default:
+		return false;
+	}
+
+	// Calculate transform matrix of this texture.
+	XMMATRIX scale = XMMatrixScaling(static_cast<float>(fbx_tex->GetScaleU()), static_cast<float>(fbx_tex->GetScaleV()), 1.0f);
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(static_cast<float>(fbx_tex->GetRotationV()), static_cast<float>(fbx_tex->GetRotationW()), static_cast<float>(fbx_tex->GetRotationU()));
+	XMMATRIX translation = XMMatrixTranslation(static_cast<float>(fbx_tex->GetTranslationU()), static_cast<float>(fbx_tex->GetTranslationV()), 0.0f);
+
+	XMStoreFloat4x4(&out_info.transform, scale * rotation * translation);
+
+	return true;
 }

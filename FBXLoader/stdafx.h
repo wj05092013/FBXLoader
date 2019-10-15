@@ -58,6 +58,7 @@
 
 #include "InputVertex.h"
 #include "GeometryGenerator.h"
+#include "FBXLoadedData.h"
 #include "FBXLoader.h"
 #include "Mesh.h"
 #include "Model.h"
