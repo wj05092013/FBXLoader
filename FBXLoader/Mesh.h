@@ -15,22 +15,26 @@ namespace ba
 		virtual void Draw(ID3D11DeviceContext* dc) const;
 
 		template<class VertexType>
-		bool set_vertices(ID3D11Device* device, const std::vector<VertexType> vertices);
+		bool BuildVertexBuffer(ID3D11Device* device, const std::vector<VertexType> vertices);
+		bool BuildFaceMaterialIndicesView(ID3D11Device* device, const std::vector<int>& material_indices);
 
 		void set_transform(const XMMATRIX& matrix);
 		const XMMATRIX& transform() const;
 
-		void set_material(const light::Material& material);
-		const light::Material& material() const;
+		ID3D11ShaderResourceView* material_indices_view() const;
+
+	public:
+		std::vector<light::Material> materials;
 
 	protected:
-		ID3D11Buffer*	vb_;
-		UINT			vertex_stride_;
+		ID3D11Buffer* vb_;
+		UINT vertex_stride_;
 
 	private:
-		UINT			vertex_count_;
-		XMMATRIX		transform_;
-		light::Material	material_;
+		UINT vertex_count_;
+		XMMATRIX transform_;
+		
+		ID3D11ShaderResourceView* material_indices_view_;
 	};
 
 	class IndexedMesh : public Mesh
@@ -44,13 +48,13 @@ namespace ba
 		bool set_indices(ID3D11Device* device, const std::vector<UINT> indices);
 
 	private:
-		ID3D11Buffer*	ib_;
-		UINT			idx_count_;
+		ID3D11Buffer* ib_;
+		UINT idx_count_;
 	};
 }
 
 template<class VertexType>
-bool ba::Mesh::set_vertices(ID3D11Device* device, const std::vector<VertexType> vertices)
+bool ba::Mesh::BuildVertexBuffer(ID3D11Device* device, const std::vector<VertexType> vertices)
 {
 	ID3D11Buffer* old_vb = nullptr;
 

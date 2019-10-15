@@ -37,6 +37,7 @@ ba::light::Material::Material() :
 	ambient(0.0f, 0.0f, 0.0f, 0.0f),
 	diffuse(0.0f, 0.0f, 0.0f, 0.0f),
 	specular(0.0f, 0.0f, 0.0f, 0.0f),
-	reflection(0.0f, 0.0f, 0.0f, 0.0f)
+	reflection(0.0f, 0.0f, 0.0f, 0.0f),
+	srv(nullptr)
 {
 }

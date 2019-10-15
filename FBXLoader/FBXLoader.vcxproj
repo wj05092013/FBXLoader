@@ -34,6 +34,7 @@
     <ClInclude Include="BlurSSAOEffect.h" />
     <ClInclude Include="DebugScreen.h" />
     <ClInclude Include="DebugScreenEffect.h" />
+    <ClInclude Include="FBXLoadedData.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="NormalDepthMapEffect.h" />
     <ClInclude Include="NormalMappingEffect.h" />

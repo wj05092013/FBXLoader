@@ -228,8 +228,8 @@ bool ba::FBXLoaderTester::InitModels()
 	
 	floor_model_ = new Model;
 	floor_model_->meshes.resize(1);
-	floor_model_->meshes[0].set_vertices(device_, floor_vertices);
-	floor_model_->meshes[0].set_material(material);
+	floor_model_->meshes[0].BuildVertexBuffer(device_, floor_vertices);
+	floor_model_->meshes[0].set_materials(material);
 
 	ModelInstance floor_instance;
 	floor_instance.model = floor_model_;

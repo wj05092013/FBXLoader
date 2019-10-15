@@ -8,13 +8,15 @@ ba::Mesh::Mesh() :
 	vb_(nullptr),
 	vertex_stride_(0),
 	vertex_count_(0),
-	transform_(XMMatrixIdentity())
+	transform_(XMMatrixIdentity()),
+	material_indices_view_(nullptr)
 {
 }
 
 ba::Mesh::~Mesh()
 {
 	ReleaseCOM(vb_);
+	ReleaseCOM(material_indices_view_);
 }
 
 void ba::Mesh::Draw(ID3D11DeviceContext* dc) const
@@ -27,6 +29,35 @@ void ba::Mesh::Draw(ID3D11DeviceContext* dc) const
 	dc->Draw(vertex_count_, 0);
 }
 
+bool ba::Mesh::BuildFaceMaterialIndicesView(ID3D11Device* device, const std::vector<int>& material_indices)
+{
+	if (material_indices_view_)
+		return false;
+
+	D3D11_TEXTURE1D_DESC tex_desc{};
+	tex_desc.Width = sizeof(int) * material_indices.size();
+	tex_desc.MipLevels = 1;
+	tex_desc.ArraySize = 1;
+	tex_desc.Format = DXGI_FORMAT_R32_SINT;
+	tex_desc.Usage = D3D11_USAGE_IMMUTABLE;
+	tex_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	
+	D3D11_SUBRESOURCE_DATA tex_init{};
+	tex_init.pSysMem = &material_indices[0];
+
+	ID3D11Texture1D* tex = nullptr;
+	HRESULT res = device->CreateTexture1D(&tex_desc, &tex_init, &tex);
+	if (FAILED(res))
+		return false;
+
+	res = device->CreateShaderResourceView(tex, nullptr, &material_indices_view_);
+	ReleaseCOM(tex);
+	if (FAILED(res))
+		return false;
+
+	return true;
+}
+
 void ba::Mesh::set_transform(const XMMATRIX& matrix)
 {
 	transform_ = matrix;
@@ -37,14 +68,9 @@ const DirectX::XMMATRIX& ba::Mesh::transform() const
 	return transform_;
 }
 
-void ba::Mesh::set_material(const light::Material& material)
+ID3D11ShaderResourceView* ba::Mesh::material_indices_view() const
 {
-	material_ = material;
-}
-
-const ba::light::Material& ba::Mesh::material() const
-{
-	return material_;
+	return material_indices_view_;
 }
 
 

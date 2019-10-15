@@ -188,6 +188,9 @@
     <ClInclude Include="DebugScreenEffect.h">
       <Filter>Includes\Graphics\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="FBXLoadedData.h">
+      <Filter>Includes\FBX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">

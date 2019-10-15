@@ -6,7 +6,7 @@
 
 namespace ba
 {
-	static void ConvertMaterial(const FBXLoader::FBXLoaderMaterial& fbx_material, light::Material& out_material);
+	static void ConvertMaterial(const FBXLoadedMaterial& fbx_material, light::Material& out_material);
 }
 
 
@@ -14,12 +14,12 @@ namespace ba
 // Model class
 //
 
-bool ba::Model::Init(ID3D11Device* device, const FBXLoader::FBXLoaderModel& fbx_model)
+bool ba::Model::Init(ID3D11Device* device, const FBXLoadedModel& fbx_model)
 {
 	std::vector<inputvertex::PosNormalTexTangent::Vertex> vertices;
 	light::Material material;
 
-	const std::vector<FBXLoader::FBXLoaderMesh>& fbx_meshes = fbx_model.meshes;
+	const std::vector<FBXLoadedMesh>& fbx_meshes = fbx_model.meshes;
 	meshes.resize(fbx_meshes.size());
 
 	for (UINT mesh_idx = 0; mesh_idx < meshes.size(); ++mesh_idx)
@@ -34,7 +34,7 @@ bool ba::Model::Init(ID3D11Device* device, const FBXLoader::FBXLoaderModel& fbx_
 			vertices[vtx_idx].tangent = fbx_meshes[mesh_idx].vertices[vtx_idx].tangent;
 		}
 
-		if (!meshes[mesh_idx].set_vertices(device, vertices))
+		if (!meshes[mesh_idx].BuildVertexBuffer(device, vertices))
 		{
 			meshes.clear();
 			return false;
@@ -42,8 +42,8 @@ bool ba::Model::Init(ID3D11Device* device, const FBXLoader::FBXLoaderModel& fbx_
 
 		meshes[mesh_idx].set_transform(XMLoadFloat4x4(&fbx_meshes[mesh_idx].transform));
 
-		ConvertMaterial(fbx_meshes[mesh_idx].material, material);
-		meshes[mesh_idx].set_material(material);
+		ConvertMaterial(fbx_meshes[mesh_idx].materials, material);
+		meshes[mesh_idx].set_materials(material);
 	}
 
 	return true;
@@ -67,7 +67,7 @@ ba::ModelInstance::ModelInstance() :
 // Helper functions definitions
 //
 
-void ba::ConvertMaterial(const FBXLoader::FBXLoaderMaterial& fbx_material, light::Material& out_material)
+void ba::ConvertMaterial(const FBXLoadedMaterial& fbx_material, light::Material& out_material)
 {
 	out_material.ambient = XMFLOAT4(
 		fbx_material.ambient.x,
