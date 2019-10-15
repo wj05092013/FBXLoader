@@ -21,6 +21,9 @@ namespace ba
 		void set_transform(const XMMATRIX& matrix);
 		const XMMATRIX& transform() const;
 
+		void set_b_has_tangent(bool b_has);
+		bool b_has_tangent() const;
+
 		ID3D11ShaderResourceView* material_indices_view() const;
 
 	public:
@@ -33,6 +36,7 @@ namespace ba
 	private:
 		UINT vertex_count_;
 		XMMATRIX transform_;
+		bool b_has_tangent_;
 		
 		ID3D11ShaderResourceView* material_indices_view_;
 	};

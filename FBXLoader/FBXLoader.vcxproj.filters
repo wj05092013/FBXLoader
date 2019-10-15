@@ -55,6 +55,9 @@
     <Filter Include="Model">
       <UniqueIdentifier>{80173e56-29e8-472c-a5d8-6416c5320520}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Texture">
+      <UniqueIdentifier>{3e071ff1-6a86-436b-a0d1-56f4f2d4b191}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FX\Basic.fx">

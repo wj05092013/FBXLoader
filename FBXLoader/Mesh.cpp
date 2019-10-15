@@ -9,6 +9,7 @@ ba::Mesh::Mesh() :
 	vertex_stride_(0),
 	vertex_count_(0),
 	transform_(XMMatrixIdentity()),
+	b_has_tangent_(false),
 	material_indices_view_(nullptr)
 {
 }
@@ -66,6 +67,16 @@ void ba::Mesh::set_transform(const XMMATRIX& matrix)
 const DirectX::XMMATRIX& ba::Mesh::transform() const
 {
 	return transform_;
+}
+
+void ba::Mesh::set_b_has_tangent(bool b_has)
+{
+	b_has_tangent_ = b_has;
+}
+
+bool ba::Mesh::b_has_tangent() const
+{
+	return b_has_tangent_;
 }
 
 ID3D11ShaderResourceView* ba::Mesh::material_indices_view() const

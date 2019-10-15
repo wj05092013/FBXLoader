@@ -12,8 +12,6 @@ namespace ba
 		bool Init(ID3D11Device* device, const FBXLoadedModel& fbx_model);
 
 		std::vector<Mesh> meshes;
-
-		// Add diffuse maps, normal-displacement maps.
 	};
 
 	class ModelInstance
