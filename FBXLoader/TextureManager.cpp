@@ -1,5 +1,16 @@
 #include "stdafx.h"
 
+ba::TextureManager::TextureManager() :
+	device_(nullptr)
+{
+}
+
+ba::TextureManager& ba::TextureManager::GetInstance()
+{
+	static TextureManager instance;
+	return instance;
+}
+
 void ba::TextureManager::Init(ID3D11Device* device)
 {
 	device_ = device;

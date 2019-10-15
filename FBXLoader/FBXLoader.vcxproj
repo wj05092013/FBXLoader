@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FX\Basic.fx" />
+    <FxCompile Include="FX\BlendTextures.fx" />
     <FxCompile Include="FX\BlurSSAOMap.fx" />
     <FxCompile Include="FX\DebugScreen.fx" />
     <FxCompile Include="FX\NormalMapping.fx" />
@@ -32,6 +33,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="BasicEffect.h" />
     <ClInclude Include="BlurSSAOEffect.h" />
+    <ClInclude Include="D3DUtil.h" />
     <ClInclude Include="DebugScreen.h" />
     <ClInclude Include="DebugScreenEffect.h" />
     <ClInclude Include="FBXLoadedData.h" />
@@ -70,6 +72,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="BasicEffect.cpp" />
     <ClCompile Include="BlurSSAOEffect.cpp" />
+    <ClCompile Include="D3DUtil.cpp" />
     <ClCompile Include="DebugScreen.cpp" />
     <ClCompile Include="DebugScreenEffect.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />

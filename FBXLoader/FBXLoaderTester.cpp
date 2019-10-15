@@ -89,6 +89,7 @@ bool ba::FBXLoaderTester::InitDirectX()
 	cam_.SetLens(kFovY, aspect_ratio(), kNearZ, kFarZ);
 
 	FBXLoader::GetInstance().Init();
+	TextureManager::GetInstance().Init(device_);
 
 	if (!InitModels())
 		return false;
@@ -136,6 +137,7 @@ void ba::FBXLoaderTester::ReleaseDirectX()
 	ReleaseModels();
 
 	FBXLoader::GetInstance().Release();
+	TextureManager::GetInstance().Release();
 
 	inputvertex::ReleaseAll();
 

@@ -56,6 +56,7 @@
 #include "DebugScreenEffect.h"
 #include "Effects.h"
 
+#include "D3DUtil.h"
 #include "InputVertex.h"
 #include "GeometryGenerator.h"
 #include "FBXLoadedData.h"

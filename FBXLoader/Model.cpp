@@ -14,7 +14,7 @@ namespace ba
 	static void StoreMaterial(const FBXLoadedMaterial& fbx_material, light::Material& out_material);
 	static void StoreMaterial(const std::vector<FBXLoadedMaterial>& fbx_materials, std::vector<light::Material>& out_materials);
 
-	static void CreateTexSRV(ID3D11Device* device, ID3D11DeviceContext* dc, const std::vector<FBXLoadedTextureInfo> tex_infos, ID3D11ShaderResourceView** srv);
+	static bool CreateSRVFromFBXLoadedTextureInfo(ID3D11Device* device, ID3D11DeviceContext* dc, const std::vector<FBXLoadedTextureInfo> tex_infos, ID3D11ShaderResourceView** out_srv);
 }
 
 
@@ -149,13 +149,45 @@ void ba::StoreMaterial(const std::vector<FBXLoadedMaterial>& fbx_materials, std:
 	}
 }
 
-void ba::CreateTexSRV(ID3D11Device* device, ID3D11DeviceContext* dc, const std::vector<FBXLoadedTextureInfo> tex_infos, ID3D11ShaderResourceView** srv)
+bool ba::CreateSRVFromFBXLoadedTextureInfo(ID3D11Device* device, ID3D11DeviceContext* dc, const std::vector<FBXLoadedTextureInfo> tex_infos, ID3D11ShaderResourceView** out_srv)
 {
-	for (int i = 0; i < tex_infos.size(); ++i)
-	{
-		std::wstring file_name(tex_infos[i].file_name.());
-		std::wstring file_path(L"Texture/" + tex_infos[i].file_name);
+	// Create rtv and srv for the base texture.
+	//
+	ID3D11RenderTargetView* base_tex_rtv = nullptr;
+	ID3D11ShaderResourceView* base_tex_srv = nullptr;
 
-		D3DX11CreateShaderResourceViewFromFile(device, file_path.c_str(), )
+	std::vector<UCHAR> init_data(256 * 256 * 4, 0);
+	if (!CreateTexRTVAndSRV(device, 256, 256, DXGI_FORMAT_R8G8B8A8_UNORM, init_data, &base_tex_rtv, &base_tex_srv))
+		return false;
+	//__
+
+	// Create srvs for all textures represented as the instances of 'FBXLoadedTextureInfo'.
+	//
+	std::vector<ID3D11ShaderResourceView*> srvs(tex_infos.size(), nullptr);
+
+	for (int srv_idx = 0; srv_idx < srvs.size(); ++srv_idx)
+	{
+		std::wstring file_name;
+		file_name.assign(tex_infos[srv_idx].file_name.begin(), tex_infos[srv_idx].file_name.end());
+		file_name = L"Texture/" + file_name;
+
+		// Fail to create srv for this texture.
+		if (!TextureManager::GetInstance().CreateSRV(file_name, &srvs[srv_idx]))
+		{
+			ReleaseCOM(base_tex_rtv);
+			ReleaseCOM(base_tex_srv);
+			return false;
+		}
 	}
+	//__
+
+	// Blend all textures.
+	//
+
+	//__
+
+	ReleaseCOM(base_tex_rtv);
+	*out_srv = base_tex_srv;
+
+	return true;
 }
