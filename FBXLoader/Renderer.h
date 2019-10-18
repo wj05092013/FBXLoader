@@ -8,15 +8,33 @@ namespace ba
 {
 	class Renderer : public Uncopiable
 	{
+		//
+		// Initial Setting
+		//
+
 	public:
-		struct RenderingComponents
+		Renderer();
+		~Renderer();
+
+		bool Init(ID3D11Device* device, ID3D11DeviceContext* dc);
+		void Release();
+		
+	private:
+		ID3D11DeviceContext* dc_;
+
+
+		//
+		// Related to Scene Rendering
+		//
+
+		struct SceneRenderingComponents
 		{
 			ID3D11RenderTargetView* rtv;
 			ID3D11DepthStencilView* dsv;
-			D3D11_VIEWPORT*			viewport;
-			Camera*					cam;
-			ShadowMap*				shadow_map;
-			SSAOMap*				ssao_map;
+			D3D11_VIEWPORT* viewport;
+			Camera* cam;
+			ShadowMap* shadow_map;
+			SSAOMap* ssao_map;
 		};
 
 		struct EffectVariableBundlePerFrame
@@ -31,7 +49,7 @@ namespace ba
 
 		struct EffectVariableBundleChangeRarely
 		{
-			light::DirectionalLight*	directional_lights;
+			light::DirectionalLight* directional_lights;
 			float						fog_start;
 			float						fog_range;
 			XMVECTOR					fog_color;
@@ -39,13 +57,6 @@ namespace ba
 			XMMATRIX					to_tex;
 		};
 
-	public:
-		Renderer();
-		~Renderer();
-
-		bool Init(ID3D11Device* device, ID3D11DeviceContext* dc);
-		void Release();
-			
 		void RenderScene(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle);
 		void RenderShadowMap(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle);
 		void RenderNormalDepthMap(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle);
@@ -54,10 +65,33 @@ namespace ba
 
 		void SetEffectVariablesChangeRarely(const EffectVariableBundleChangeRarely& bundle);
 
-		void set_rendering_components(RenderingComponents& rendering_component);
+		void set_rendering_components(SceneRenderingComponents& rendering_component);
+		
+	private:
+		SceneRenderingComponents rendering_components_;
+
+
+		//
+		// Related to Other Renderings
+		//
+
+	public:
+		enum BlendMode
+		{
+			kTranslucent,
+			kAdditive,
+			kModulate,
+			kModulate2,
+			kOver
+		};
+
+		void BlendTexture(ID3D11RenderTargetView* dst, ID3D11ShaderResourceView* src, const D3D11_VIEWPORT* viewport, const XMMATRIX& tex_mapping, BlendMode blend_mode);
 
 	private:
-		ID3D11DeviceContext* dc_;
-		RenderingComponents rendering_components_;
+		bool BuildScreenQuadBuffers(ID3D11Device* device);
+		void ReleaseScreenQuadBuffers();
+
+		ID3D11Buffer* screen_quad_vb_;
+		ID3D11Buffer* screen_quad_ib_;
 	};
 }

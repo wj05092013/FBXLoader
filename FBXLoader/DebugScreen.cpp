@@ -74,16 +74,19 @@ void ba::DebugScreen::set_srv(ID3D11ShaderResourceView* srv)
 
 bool ba::DebugScreen::BuildGeometryBuffers(ID3D11Device* device)
 {
-	GeometryGenerator::Mesh mesh;
-	GeometryGenerator::CreateFullscreenQuad(mesh);
+	if (vb_ || ib_)
+		return false;
 
-	std::vector<inputvertex::PosNormalTex::Vertex> vertices(mesh.vertices.size());
+	GeometryGenerator::Geometry geo;
+	GeometryGenerator::CreateFullscreenQuad(geo);
+
+	std::vector<inputvertex::PosNormalTex::Vertex> vertices(geo.vertices.size());
 
 	for (UINT i = 0; i < vertices.size(); ++i)
 	{
-		vertices[i].pos = mesh.vertices[i].pos;
-		vertices[i].normal = mesh.vertices[i].normal;
-		vertices[i].uv = mesh.vertices[i].uv;
+		vertices[i].pos = geo.vertices[i].pos;
+		vertices[i].normal = geo.vertices[i].normal;
+		vertices[i].uv = geo.vertices[i].uv;
 	}
 
 	D3D11_BUFFER_DESC vb_desc{};
@@ -97,11 +100,11 @@ bool ba::DebugScreen::BuildGeometryBuffers(ID3D11Device* device)
 		return false;
 
 	D3D11_BUFFER_DESC ib_desc{};
-	ib_desc.ByteWidth = sizeof(UINT) * mesh.indices.size();
+	ib_desc.ByteWidth = sizeof(UINT) * geo.indices.size();
 	ib_desc.Usage = D3D11_USAGE_IMMUTABLE;
 	ib_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	D3D11_SUBRESOURCE_DATA ib_init{};
-	ib_init.pSysMem = &mesh.indices[0];
+	ib_init.pSysMem = &geo.indices[0];
 	res = device->CreateBuffer(&ib_desc, &ib_init, &ib_);
 	if (FAILED(res))
 	{

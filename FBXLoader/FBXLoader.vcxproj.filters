@@ -84,7 +84,7 @@
     <FxCompile Include="FX\DebugScreen.fx">
       <Filter>FX</Filter>
     </FxCompile>
-    <FxCompile Include="FX\BlendTextures.fx">
+    <FxCompile Include="FX\RenderTexture.fx">
       <Filter>FX</Filter>
     </FxCompile>
   </ItemGroup>
@@ -200,6 +200,9 @@
     <ClInclude Include="D3DUtil.h">
       <Filter>Includes\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="RenderTextureEffect.h">
+      <Filter>Includes\Graphics\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -288,6 +291,9 @@
     </ClCompile>
     <ClCompile Include="D3DUtil.cpp">
       <Filter>Sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTextureEffect.cpp">
+      <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

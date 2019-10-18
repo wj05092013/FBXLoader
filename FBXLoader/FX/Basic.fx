@@ -1,8 +1,12 @@
 #include "LightingHelper.fx"
 
+//
+// Macros
+//
 
 #define MATERIAL_COUNT_MAX (16)
 #define BONE_COUNT_MAX (96)
+
 
 //
 // Constant Buffers

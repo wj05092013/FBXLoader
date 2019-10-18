@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
-template<class DataType>
-bool ba::CreateTexRTVAndSRV(ID3D11Device* device, UINT width, UINT height, DXGI_FORMAT format, const std::vector<DataType>& init_data, ID3D11RenderTargetView** out_rtv, ID3D11ShaderResourceView** out_srv)
+bool ba::CreateTexRTVAndSRV(ID3D11Device* device, UINT width, UINT height, DXGI_FORMAT format, ID3D11RenderTargetView** out_rtv, ID3D11ShaderResourceView** out_srv)
 {
 	// Create a texture with the initial data.
 	//
@@ -16,12 +15,8 @@ bool ba::CreateTexRTVAndSRV(ID3D11Device* device, UINT width, UINT height, DXGI_
 	tex_desc.Usage = D3D11_USAGE_DEFAULT;
 	tex_desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 
-	D3D11_SUBRESOURCE_DATA init_tex{};
-	init_tex.pSysMem = &init_data[0];
-	init_tex.SysMemPitch = sizeof(DataType) * width;
-
 	ID3D11Texture2D* tex = nullptr;
-	HRESULT res = device->CreateTexture2D(&tex_desc, &init_data, &tex);
+	HRESULT res = device->CreateTexture2D(&tex_desc, nullptr, &tex);
 	if (FAILED(res))
 		return false;
 	//__

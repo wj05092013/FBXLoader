@@ -54,6 +54,7 @@
 #include "SSAOMapEffect.h"
 #include "BlurSSAOEffect.h"
 #include "DebugScreenEffect.h"
+#include "RenderTextureEffect.h"
 #include "Effects.h"
 
 #include "D3DUtil.h"

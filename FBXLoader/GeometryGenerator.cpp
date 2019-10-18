@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-void ba::GeometryGenerator::CreateBox(float width, float height, float depth, Mesh& mesh_data)
+void ba::GeometryGenerator::CreateBox(float width, float height, float depth, Geometry& mesh_data)
 {
 	// Create the vertices.
 	//
@@ -69,7 +69,7 @@ void ba::GeometryGenerator::CreateBox(float width, float height, float depth, Me
 	//__
 }
 
-void ba::GeometryGenerator::CreateSphere(float radius, UINT slice_cnt, UINT stack_cnt, Mesh& mesh_data)
+void ba::GeometryGenerator::CreateSphere(float radius, UINT slice_cnt, UINT stack_cnt, Geometry& mesh_data)
 {
 	mesh_data.vertices.clear();
 	mesh_data.indices.clear();
@@ -165,10 +165,10 @@ void ba::GeometryGenerator::CreateSphere(float radius, UINT slice_cnt, UINT stac
 	//__
 }
 
-void ba::GeometryGenerator::Subdivide(Mesh& mesh_data)
+void ba::GeometryGenerator::Subdivide(Geometry& mesh_data)
 {
 	// Save a copy of the input geometry.
-	Mesh input_copy = mesh_data;
+	Geometry input_copy = mesh_data;
 
 
 	mesh_data.vertices.resize(0);
@@ -239,7 +239,7 @@ void ba::GeometryGenerator::Subdivide(Mesh& mesh_data)
 	}
 }
 
-void ba::GeometryGenerator::CreateGeosphere(float radius, UINT subdivision_cnt, Mesh& mesh_data)
+void ba::GeometryGenerator::CreateGeosphere(float radius, UINT subdivision_cnt, Geometry& mesh_data)
 {
 	// Put a cap on the number of subdivisions.
 	subdivision_cnt = mathhelper::Min(subdivision_cnt, 5u);
@@ -311,7 +311,7 @@ void ba::GeometryGenerator::CreateGeosphere(float radius, UINT subdivision_cnt, 
 	}
 }
 
-void ba::GeometryGenerator::CreateCylinder(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Mesh& mesh_data)
+void ba::GeometryGenerator::CreateCylinder(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Geometry& mesh_data)
 {
 	mesh_data.vertices.clear();
 	mesh_data.indices.clear();
@@ -382,7 +382,7 @@ void ba::GeometryGenerator::CreateCylinder(float bottom_radius, float top_radius
 	BuildCylinderBottomCap(bottom_radius, top_radius, height, slice_cnt, stack_cnt, mesh_data);
 }
 
-void ba::GeometryGenerator::BuildCylinderTopCap(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Mesh& mesh_data)
+void ba::GeometryGenerator::BuildCylinderTopCap(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Geometry& mesh_data)
 {
 	UINT base_idx = (UINT)mesh_data.vertices.size();
 
@@ -417,7 +417,7 @@ void ba::GeometryGenerator::BuildCylinderTopCap(float bottom_radius, float top_r
 	}
 }
 
-void ba::GeometryGenerator::BuildCylinderBottomCap(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Mesh& mesh_data)
+void ba::GeometryGenerator::BuildCylinderBottomCap(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Geometry& mesh_data)
 {
 	// 
 	// Build bottom cap.
@@ -455,7 +455,7 @@ void ba::GeometryGenerator::BuildCylinderBottomCap(float bottom_radius, float to
 	}
 }
 
-void ba::GeometryGenerator::CreateGrid(float width, float depth, UINT x_slice_cnt, UINT z_slice_cnt, Mesh& mesh_data)
+void ba::GeometryGenerator::CreateGrid(float width, float depth, UINT x_slice_cnt, UINT z_slice_cnt, Geometry& mesh_data)
 {
 	UINT vertex_cnt = x_slice_cnt * z_slice_cnt;
 	UINT face_cnt = (x_slice_cnt - 1) * (z_slice_cnt - 1) * 2;
@@ -516,7 +516,7 @@ void ba::GeometryGenerator::CreateGrid(float width, float depth, UINT x_slice_cn
 	}
 }
 
-void ba::GeometryGenerator::CreateFullscreenQuad(Mesh& mesh_data)
+void ba::GeometryGenerator::CreateFullscreenQuad(Geometry& mesh_data)
 {
 	mesh_data.vertices.resize(4);
 	mesh_data.indices.resize(6);

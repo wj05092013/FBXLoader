@@ -42,21 +42,21 @@ namespace ba
 				uv(tex_u, tex_v) {}
 		};
 
-		struct Mesh
+		struct Geometry
 		{
 			std::vector<Vertex> vertices;
 			std::vector<UINT> indices;
 		};
 
-		void CreateBox(float width, float height, float depth, Mesh& mesh_data);
-		void CreateSphere(float radius, UINT slice_cnt, UINT stack_cnt, Mesh& mesh_data);
-		void CreateGeosphere(float radius, UINT subdivision_cnt, Mesh& mesh_data);
-		void CreateCylinder(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Mesh& mesh_data);
-		void CreateGrid(float width, float depth, UINT x_slice_cnt, UINT z_slice_cnt, Mesh& mesh_data);
-		void CreateFullscreenQuad(Mesh& mesh_data);
+		void CreateBox(float width, float height, float depth, Geometry& mesh_data);
+		void CreateSphere(float radius, UINT slice_cnt, UINT stack_cnt, Geometry& mesh_data);
+		void CreateGeosphere(float radius, UINT subdivision_cnt, Geometry& mesh_data);
+		void CreateCylinder(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Geometry& mesh_data);
+		void CreateGrid(float width, float depth, UINT x_slice_cnt, UINT z_slice_cnt, Geometry& mesh_data);
+		void CreateFullscreenQuad(Geometry& mesh_data);
 
-		void Subdivide(Mesh& mesh_data);
-		void BuildCylinderTopCap(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Mesh& mesh_data);
-		void BuildCylinderBottomCap(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Mesh& mesh_data);
+		void Subdivide(Geometry& mesh_data);
+		void BuildCylinderTopCap(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Geometry& mesh_data);
+		void BuildCylinderBottomCap(float bottom_radius, float top_radius, float height, UINT slice_cnt, UINT stack_cnt, Geometry& mesh_data);
 	}
 }

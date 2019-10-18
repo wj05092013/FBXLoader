@@ -98,7 +98,7 @@ bool ba::FBXLoaderTester::InitDirectX()
 	InitLights();
 
 	// Set rendering components participating on all kind of rendering.
-	Renderer::RenderingComponents rendering_component;
+	Renderer::SceneRenderingComponents rendering_component;
 	rendering_component.rtv = rtv_;
 	rendering_component.dsv = dsv_;
 	rendering_component.viewport = &viewport_;

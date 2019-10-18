@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FX\Basic.fx" />
-    <FxCompile Include="FX\BlendTextures.fx" />
+    <FxCompile Include="FX\RenderTexture.fx" />
     <FxCompile Include="FX\BlurSSAOMap.fx" />
     <FxCompile Include="FX\DebugScreen.fx" />
     <FxCompile Include="FX\NormalMapping.fx" />
@@ -41,6 +41,7 @@
     <ClInclude Include="NormalDepthMapEffect.h" />
     <ClInclude Include="NormalMappingEffect.h" />
     <ClInclude Include="RenderStates.h" />
+    <ClInclude Include="RenderTextureEffect.h" />
     <ClInclude Include="ShadowMapEffect.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
@@ -79,6 +80,7 @@
     <ClCompile Include="NormalDepthMapEffect.cpp" />
     <ClCompile Include="NormalMappingEffect.cpp" />
     <ClCompile Include="RenderStates.cpp" />
+    <ClCompile Include="RenderTextureEffect.cpp" />
     <ClCompile Include="ShadowMapEffect.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Effects.cpp" />

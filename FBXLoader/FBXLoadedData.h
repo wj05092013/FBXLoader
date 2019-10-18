@@ -16,24 +16,9 @@ namespace ba
 
 	struct FBXLoadedTextureInfo
 	{
-		enum UsingType
-		{
-			kStandard,
-			kNormal
-		};
-
-		enum BlendMode
-		{
-			kTranslucent,
-			kAdditive,
-			kModulate,
-			kModulate2,
-			kOver
-		};
-
-		std::string file_name;
-		BlendMode	blend_mode;
-		XMFLOAT4X4	transform;
+		std::string			file_name;
+		Renderer::BlendMode	blend_mode;
+		XMFLOAT4X4			transform;
 	};
 
 	struct FBXLoadedMaterial

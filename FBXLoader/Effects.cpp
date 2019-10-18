@@ -7,6 +7,7 @@ ba::NormalDepthMapEffect ba::effects::kNormalDepthMapEffect;
 ba::SSAOMapEffect ba::effects::kSSAOMapEffect;
 ba::BlurSSAOEffect ba::effects::kBlurSSAOEffect;
 ba::DebugScreenEffect ba::effects::kDebugScreenEffect;
+ba::RenderTextureEffect ba::effects::kRenderTextureEffect;
 
 bool ba::effects::InitAll(ID3D11Device* device)
 {
@@ -17,6 +18,7 @@ bool ba::effects::InitAll(ID3D11Device* device)
 	if (!kSSAOMapEffect.Init(device, kSSAOMapEffectFileName)) { ReleaseAll(); return false; }
 	if (!kBlurSSAOEffect.Init(device, kBlurSSAOMapEffectFileName)) { ReleaseAll(); return false; }
 	if (!kDebugScreenEffect.Init(device, kDebugScreenEffectFileName)) { ReleaseAll(); return false; }
+	if (!kRenderTextureEffect.Init(device, kRenderTextureEffectFileName)) { ReleaseAll(); return false; }
 
 	return true;
 }
@@ -30,4 +32,5 @@ void ba::effects::ReleaseAll()
 	kSSAOMapEffect.Release();
 	kBlurSSAOEffect.Release();
 	kDebugScreenEffect.Release();
+	kRenderTextureEffect.Release();
 }

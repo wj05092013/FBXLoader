@@ -16,6 +16,7 @@ bool ba::Renderer::Init(ID3D11Device* device, ID3D11DeviceContext* dc)
 
 	if (!effects::InitAll(device)) { Release(); return false; }
 	if(!renderstates::InitAll(device)) { Release(); return false; }
+	if (!BuildScreenQuadBuffers(device)) { Release(); return false; }
 
 	return true;
 }
@@ -24,6 +25,7 @@ void ba::Renderer::Release()
 {
 	effects::ReleaseAll();
 	renderstates::ReleaseAll();
+	ReleaseScreenQuadBuffers();
 }
 
 void ba::Renderer::RenderScene(const std::vector<ModelInstance>& model_instances, const EffectVariableBundlePerFrame& bundle)
@@ -217,7 +219,76 @@ void ba::Renderer::SetEffectVariablesChangeRarely(const EffectVariableBundleChan
 	// NormalDepthMapEffect
 }
 
-void ba::Renderer::set_rendering_components(RenderingComponents& rendering_component)
+void ba::Renderer::set_rendering_components(SceneRenderingComponents& rendering_component)
 {
 	rendering_components_ = rendering_component;
+}
+
+void ba::Renderer::BlendTexture(ID3D11RenderTargetView* dst, ID3D11ShaderResourceView* src, const D3D11_VIEWPORT* viewport, const XMMATRIX& tex_mapping, BlendMode blend_mode)
+{
+	ID3D11RenderTargetView* rtvs[1] = { dst };
+	
+	dc_->OMSetRenderTargets(1, rtvs, nullptr);
+	dc_->RSSetViewports(1, viewport);
+
+	dc_->IASetInputLayout(inputvertex::PosNormalTex::kInputLayout);
+	dc_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	UINT strides = sizeof(inputvertex::PosNormalTex::Vertex);
+	UINT offsets = 0;
+	dc_->IASetVertexBuffers(0, 1, &screen_quad_vb_, &strides, &offsets);
+	dc_->IASetIndexBuffer(screen_quad_ib_, DXGI_FORMAT_R32_UINT, 0);
+
+	effects::kRenderTextureEffect.SetTexMapping(tex_mapping);
+	effects::kRenderTextureEffect.SetInputImage(src);
+
+	// blend mode, draw
+}
+
+bool ba::Renderer::BuildScreenQuadBuffers(ID3D11Device* device)
+{
+	if (screen_quad_vb_ || screen_quad_ib_)
+		return false;
+
+	GeometryGenerator::Geometry geo;
+	GeometryGenerator::CreateFullscreenQuad(geo);
+
+	std::vector<inputvertex::PosNormalTex::Vertex> vertices(geo.vertices.size());
+
+	for (UINT i = 0; i < vertices.size(); ++i)
+	{
+		vertices[i].pos = geo.vertices[i].pos;
+		vertices[i].normal = geo.vertices[i].normal;
+		vertices[i].uv = geo.vertices[i].uv;
+	}
+
+	D3D11_BUFFER_DESC vb_desc{};
+	vb_desc.ByteWidth = sizeof(inputvertex::PosNormalTex::Vertex) * vertices.size();
+	vb_desc.Usage = D3D11_USAGE_IMMUTABLE;
+	vb_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	D3D11_SUBRESOURCE_DATA vb_init{};
+	vb_init.pSysMem = &vertices[0];
+	HRESULT res = device->CreateBuffer(&vb_desc, &vb_init, &screen_quad_vb_);
+	if (FAILED(res))
+		return false;
+
+	D3D11_BUFFER_DESC ib_desc{};
+	ib_desc.ByteWidth = sizeof(UINT) * geo.indices.size();
+	ib_desc.Usage = D3D11_USAGE_IMMUTABLE;
+	ib_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	D3D11_SUBRESOURCE_DATA ib_init{};
+	ib_init.pSysMem = &geo.indices[0];
+	res = device->CreateBuffer(&ib_desc, &ib_init, &screen_quad_ib_);
+	if (FAILED(res))
+	{
+		ReleaseCOM(screen_quad_vb_);
+		return false;
+	}
+
+	return true;
+}
+
+void ba::Renderer::ReleaseScreenQuadBuffers()
+{
+	
 }
