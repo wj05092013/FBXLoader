@@ -291,5 +291,6 @@ bool ba::Renderer::BuildScreenQuadBuffers(ID3D11Device* device)
 
 void ba::Renderer::ReleaseScreenQuadBuffers()
 {
-	
+	ReleaseCOM(screen_quad_vb_);
+	ReleaseCOM(screen_quad_ib_);
 }
