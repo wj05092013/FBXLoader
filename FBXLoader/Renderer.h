@@ -72,20 +72,11 @@ namespace ba
 
 
 		//
-		// Related to Other Renderings
+		// Related to Texture Blending
 		//
 
 	public:
-		enum BlendMode
-		{
-			kTranslucent,
-			kAdditive,
-			kModulate,
-			kModulate2,
-			kOver
-		};
-
-		void BlendTexture(ID3D11RenderTargetView* dst, ID3D11ShaderResourceView* src, const D3D11_VIEWPORT* viewport, const XMMATRIX& tex_mapping, BlendMode blend_mode);
+		void BlendTexture(ID3D11RenderTargetView* dst, ID3D11ShaderResourceView* src, const D3D11_VIEWPORT* viewport, const XMMATRIX& tex_mapping, renderstates::blend::BlendMode blend_mode);
 
 	private:
 		bool BuildScreenQuadBuffers(ID3D11Device* device);

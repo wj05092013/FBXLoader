@@ -573,27 +573,27 @@ bool ba::LoadTextureInfo(const FbxTexture* fbx_tex, FbxTexture::ETextureUse tex_
 	{
 	case FbxTexture::EBlendMode::eTranslucent:
 	{
-		out_info.blend_mode = Renderer::kTranslucent;
+		out_info.blend_mode = renderstates::blend::kTranslucent;
 		break;
 	}
 	case FbxTexture::EBlendMode::eAdditive:
 	{
-		out_info.blend_mode = Renderer::kAdditive;
+		out_info.blend_mode = renderstates::blend::kAdditive;
 		break;
 	}
 	case FbxTexture::EBlendMode::eModulate:
 	{
-		out_info.blend_mode = Renderer::kModulate;
+		out_info.blend_mode = renderstates::blend::kModulate;
 		break;
 	}
 	case FbxTexture::EBlendMode::eModulate2:
 	{
-		out_info.blend_mode = Renderer::kModulate2;
+		out_info.blend_mode = renderstates::blend::kModulate2;
 		break;
 	}
 	case FbxTexture::EBlendMode::eOver:
 	{
-		out_info.blend_mode = Renderer::kOver;
+		out_info.blend_mode = renderstates::blend::kOver;
 		break;
 	}
 	default:

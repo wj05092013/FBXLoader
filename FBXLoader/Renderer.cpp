@@ -243,6 +243,7 @@ void ba::Renderer::BlendTexture(ID3D11RenderTargetView* dst, ID3D11ShaderResourc
 	effects::kRenderTextureEffect.SetInputImage(src);
 
 	// blend mode, draw
+	check;
 }
 
 bool ba::Renderer::BuildScreenQuadBuffers(ID3D11Device* device)

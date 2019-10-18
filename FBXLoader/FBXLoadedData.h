@@ -16,9 +16,9 @@ namespace ba
 
 	struct FBXLoadedTextureInfo
 	{
-		std::string			file_name;
-		Renderer::BlendMode	blend_mode;
-		XMFLOAT4X4			transform;
+		std::string						file_name;
+		XMFLOAT4X4						transform;
+		renderstates::blend::BlendMode	blend_mode;
 	};
 
 	struct FBXLoadedMaterial
