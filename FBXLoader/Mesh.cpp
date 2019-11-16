@@ -12,6 +12,7 @@ ba::Mesh::Mesh() :
 	b_has_tangent_(false),
 	material_indices_view_(nullptr)
 {
+	materials.resize(1);
 }
 
 ba::Mesh::~Mesh()
