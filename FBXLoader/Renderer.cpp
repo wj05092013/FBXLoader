@@ -15,7 +15,7 @@ bool ba::Renderer::Init(ID3D11Device* device, ID3D11DeviceContext* dc)
 	dc_ = dc;
 
 	if (!effects::InitAll(device)) { Release(); return false; }
-	if(!renderstates::InitAll(device)) { Release(); return false; }
+	if (!renderstates::InitAll(device)) { Release(); return false; }
 	if (!BuildScreenQuadBuffers(device)) { Release(); return false; }
 
 	return true;
@@ -75,7 +75,7 @@ void ba::Renderer::RenderScene(const std::vector<ModelInstance>& model_instances
 				effects::kBasicEffect.SetWorld(world);
 				effects::kBasicEffect.SetWorldInvTrans(world_inv_trans);
 				effects::kBasicEffect.SetTexMapping(XMMatrixIdentity());
-				effects::kBasicEffect.SetMaterial(meshes[mesh_idx].material());
+				effects::kBasicEffect.SetMaterial(meshes[mesh_idx].materials[0]);
 				//effects::kBasicEffect.SetDiffuseMap();
 
 				tech->GetPassByIndex(p)->Apply(0, dc_);
@@ -224,10 +224,10 @@ void ba::Renderer::set_rendering_components(SceneRenderingComponents& rendering_
 	rendering_components_ = rendering_component;
 }
 
-void ba::Renderer::BlendTexture(ID3D11RenderTargetView* dst, ID3D11ShaderResourceView* src, const D3D11_VIEWPORT* viewport, const XMMATRIX& tex_mapping, BlendMode blend_mode)
+void ba::Renderer::BlendTexture(ID3D11RenderTargetView* dst, ID3D11ShaderResourceView* src, const D3D11_VIEWPORT* viewport, const XMMATRIX& tex_mapping, renderstates::blend::BlendMode blend_mode)
 {
 	ID3D11RenderTargetView* rtvs[1] = { dst };
-	
+
 	dc_->OMSetRenderTargets(1, rtvs, nullptr);
 	dc_->RSSetViewports(1, viewport);
 
@@ -243,7 +243,6 @@ void ba::Renderer::BlendTexture(ID3D11RenderTargetView* dst, ID3D11ShaderResourc
 	effects::kRenderTextureEffect.SetInputImage(src);
 
 	// blend mode, draw
-	check;
 }
 
 bool ba::Renderer::BuildScreenQuadBuffers(ID3D11Device* device)

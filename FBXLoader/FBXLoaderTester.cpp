@@ -174,7 +174,7 @@ bool ba::FBXLoaderTester::InitModels()
 	//
 	std::string file_name = "Model/Dragon 2.5_fbx.fbx";
 
-	FBXLoader::FBXLoaderModel fbx_model;
+	FBXLoadedModel fbx_model;
 	if (!FBXLoader::GetInstance().Load(file_name, fbx_model))
 		return false;
 
@@ -231,7 +231,7 @@ bool ba::FBXLoaderTester::InitModels()
 	floor_model_ = new Model;
 	floor_model_->meshes.resize(1);
 	floor_model_->meshes[0].BuildVertexBuffer(device_, floor_vertices);
-	floor_model_->meshes[0].set_materials(material);
+	floor_model_->meshes[0].materials[0] = material;
 
 	ModelInstance floor_instance;
 	floor_instance.model = floor_model_;

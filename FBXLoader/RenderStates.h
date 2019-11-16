@@ -36,11 +36,11 @@ namespace ba
 			bool Init(ID3D11Device* device);
 			void Release();
 
-			ID3D11BlendState* kBSOver;
-			ID3D11BlendState* kBSTranslucent;
-			ID3D11BlendState* kBSAdditive;
-			ID3D11BlendState* kBSModulate;
-			ID3D11BlendState* kBSModulate2;
+			extern ID3D11BlendState* kBSOver;
+			extern ID3D11BlendState* kBSTranslucent;
+			extern ID3D11BlendState* kBSAdditive;
+			extern ID3D11BlendState* kBSModulate;
+			extern ID3D11BlendState* kBSModulate2;
 		}
 
 		bool InitAll(ID3D11Device* device);

@@ -58,6 +58,7 @@
 #include "Effects.h"
 
 #include "D3DUtil.h"
+#include "RenderStates.h"
 #include "InputVertex.h"
 #include "GeometryGenerator.h"
 #include "FBXLoadedData.h"
@@ -67,7 +68,6 @@
 #include "DebugScreen.h"
 #include "TextureManager.h"
 #include "Camera.h"
-#include "RenderStates.h"
 #include "ShadowMap.h"
 #include "SSAOMap.h"
 #include "Renderer.h"

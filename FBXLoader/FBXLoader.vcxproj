@@ -79,6 +79,7 @@
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="NormalDepthMapEffect.cpp" />
     <ClCompile Include="NormalMappingEffect.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderStates.cpp" />
     <ClCompile Include="RenderTextureEffect.cpp" />
     <ClCompile Include="ShadowMapEffect.cpp" />
@@ -86,7 +87,6 @@
     <ClCompile Include="Effects.cpp" />
     <ClCompile Include="EffectWrapper.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="FBXLoader.cpp" />
     <ClCompile Include="FBXLoaderTester.cpp" />
     <ClCompile Include="InputVertex.cpp" />

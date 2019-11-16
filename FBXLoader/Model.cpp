@@ -104,7 +104,7 @@ void ba::StoreVertex(const std::vector<FBXLoadedVertex>& fbx_vertices, std::vect
 
 void ba::StoreTangent(const std::vector<FBXLoadedVertex>& fbx_vertices, std::vector<inputvertex::PosNormalTexTangent::Vertex>& out_vertices)
 {
-	for (int i = 0; i < fbx_vertices.size(); ++i)
+	for (UINT i = 0; i < fbx_vertices.size(); ++i)
 		out_vertices[i].tangent = fbx_vertices[i].tangent;
 }
 
@@ -143,7 +143,7 @@ void ba::StoreMaterial(const std::vector<FBXLoadedMaterial>& fbx_materials, std:
 {
 	out_materials.resize(fbx_materials.size());
 
-	for (int i = 0; i < fbx_materials.size(); ++i)
+	for (UINT i = 0; i < fbx_materials.size(); ++i)
 	{
 		StoreMaterial(fbx_materials[i], out_materials[i]);
 	}
@@ -157,7 +157,7 @@ bool ba::CreateSRVFromFBXLoadedTextureInfo(ID3D11Device* device, ID3D11DeviceCon
 	ID3D11ShaderResourceView* base_tex_srv = nullptr;
 
 	std::vector<UCHAR> init_data(256 * 256 * 4, 0);
-	if (!CreateTexRTVAndSRV(device, 256, 256, DXGI_FORMAT_R8G8B8A8_UNORM, init_data, &base_tex_rtv, &base_tex_srv))
+	if (!CreateTexRTVAndSRV(device, 256, 256, DXGI_FORMAT_R8G8B8A8_UNORM, &base_tex_rtv, &base_tex_srv))
 		return false;
 	//__
 
@@ -165,7 +165,7 @@ bool ba::CreateSRVFromFBXLoadedTextureInfo(ID3D11Device* device, ID3D11DeviceCon
 	//
 	std::vector<ID3D11ShaderResourceView*> srvs(tex_infos.size(), nullptr);
 
-	for (int srv_idx = 0; srv_idx < srvs.size(); ++srv_idx)
+	for (UINT srv_idx = 0; srv_idx < srvs.size(); ++srv_idx)
 	{
 		std::wstring file_name;
 		file_name.assign(tex_infos[srv_idx].file_name.begin(), tex_infos[srv_idx].file_name.end());

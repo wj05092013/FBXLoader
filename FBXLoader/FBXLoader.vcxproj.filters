@@ -262,9 +262,6 @@
     <ClCompile Include="NormalDepthMapEffect.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Sources\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="SSAOMapEffect.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
@@ -295,6 +292,7 @@
     <ClCompile Include="RenderTextureEffect.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FBXLoader.rc">

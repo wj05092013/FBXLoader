@@ -22,11 +22,11 @@ namespace ba
 	private:
 		ID3D11DeviceContext* dc_;
 
-
 		//
 		// Related to Scene Rendering
 		//
 
+	public:
 		struct SceneRenderingComponents
 		{
 			ID3D11RenderTargetView* rtv;
