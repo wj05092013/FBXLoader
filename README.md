@@ -46,4 +46,6 @@ https://free3d.com/ko/3d-models/fbx
 
 #### Runtime
 
-	In the function ba::Mesh::BuildFaceMaterialIndicesView, the 'Width' member of D3D11_TEXTURE1D_DESC must be constrained. (D3D10_REQ_TEXTURE1D_U_DIMENSION)
+	In the function ba::Mesh::BuildFaceMaterialIndicesView,
+	the 'Width' member of D3D11_TEXTURE1D_DESC must be constrained.
+	(D3D10_REQ_TEXTURE1D_U_DIMENSION)
