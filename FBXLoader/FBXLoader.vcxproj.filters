@@ -292,7 +292,9 @@
     <ClCompile Include="RenderTextureEffect.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Sources\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FBXLoader.rc">
@@ -306,11 +308,6 @@
     <Image Include="small.ico">
       <Filter>Resources</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="TODO List.txt">
-      <Filter>Documents</Filter>
-    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="Model\Wolf.fbx">
@@ -327,6 +324,9 @@
     </None>
     <None Include="Model\Spider_2.fbx">
       <Filter>Model</Filter>
+    </None>
+    <None Include="..\README.md">
+      <Filter>Documents</Filter>
     </None>
   </ItemGroup>
 </Project>

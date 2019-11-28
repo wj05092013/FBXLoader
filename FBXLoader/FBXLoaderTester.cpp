@@ -19,7 +19,7 @@ const float ba::FBXLoaderTester::kRotationRate = 0.15f;
 ba::FBXLoaderTester::FBXLoaderTester() :
 	scene_bounds_{},
 
-	wolf_model_(nullptr),
+	dragon_model_(nullptr),
 	
 	last_mouse_pos_{}
 {
@@ -43,8 +43,8 @@ void ba::FBXLoaderTester::Render()
 	// Render on normal render targets.
 	renderer_.RenderScene(model_instances_, evb_per_frame_);
 
-	debug_screen_.set_srv(ssao_map_.normal_depth_map_srv());
-	debug_screen_.Render(dc_);
+	//debug_screen_.set_srv(ssao_map_.normal_depth_map_srv());
+	//debug_screen_.Render(dc_);
 
 	swap_chain_->Present(0U, 0U);
 }
@@ -178,13 +178,13 @@ bool ba::FBXLoaderTester::InitModels()
 	if (!FBXLoader::GetInstance().Load(file_name, fbx_model))
 		return false;
 
-	wolf_model_ = new Model;
-	wolf_model_->Init(device_, fbx_model);
+	dragon_model_ = new Model;
+	dragon_model_->Init(device_, fbx_model);
 
-	ModelInstance wolf_instance;
-	wolf_instance.model = wolf_model_;
-	//wolf_instance.scale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	model_instances_.push_back(wolf_instance);
+	ModelInstance dragon_instance;
+	dragon_instance.model = dragon_model_;
+	dragon_instance.scale = XMMatrixScaling(0.5f, 0.5f, 0.5f);
+	model_instances_.push_back(dragon_instance);
 	//__
 
 	// Createa floor model.
@@ -243,10 +243,10 @@ bool ba::FBXLoaderTester::InitModels()
 
 void ba::FBXLoaderTester::ReleaseModels()
 {
-	if (wolf_model_)
+	if (dragon_model_)
 	{
-		delete wolf_model_;
-		wolf_model_ = nullptr;
+		delete dragon_model_;
+		dragon_model_ = nullptr;
 	}
 	if (floor_model_)
 	{

@@ -33,6 +33,11 @@ void ba::Mesh::Draw(ID3D11DeviceContext* dc) const
 
 bool ba::Mesh::BuildFaceMaterialIndicesView(ID3D11Device* device, const std::vector<int>& material_indices)
 {
+	/*
+		Error on the CreateTexture1D function.
+		tex_desc.Width must be constrained.
+	*/
+
 	if (material_indices_view_)
 		return false;
 

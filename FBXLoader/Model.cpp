@@ -50,11 +50,12 @@ bool ba::Model::Init(ID3D11Device* device, const FBXLoadedModel& fbx_model)
 		material_indices.insert(material_indices.begin(), fbx_meshes[mesh_idx].face_material_indices.begin(), fbx_meshes[mesh_idx].face_material_indices.end());
 
 		// Build a srv for the face material indices.
-		if (!meshes[mesh_idx].BuildFaceMaterialIndicesView(device, material_indices))
+		// Comment out this part because of an error.
+		/*if (!meshes[mesh_idx].BuildFaceMaterialIndicesView(device, material_indices))
 		{
 			meshes.clear();
 			return false;
-		}
+		}*/
 
 		// Convert 'FBXLoadedMaterial's to 'light::Material's.
 		StoreMaterial(fbx_meshes[mesh_idx].materials, meshes[mesh_idx].materials);

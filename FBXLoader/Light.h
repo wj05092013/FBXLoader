@@ -55,7 +55,6 @@ namespace ba
 			XMFLOAT4 diffuse;
 			XMFLOAT4 specular;
 			XMFLOAT4 reflection;
-			ID3D11ShaderResourceView* srv;
 
 			Material();
 		};

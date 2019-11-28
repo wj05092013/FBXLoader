@@ -56,7 +56,7 @@ namespace ba
 
 		// Scene objects.
 		//
-		Model*						wolf_model_;
+		Model*						dragon_model_;
 		Model*						floor_model_;
 		std::vector<ModelInstance>	model_instances_;
 
